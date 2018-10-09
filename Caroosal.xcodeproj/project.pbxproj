@@ -7,13 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36125CE839F35504B34FB0D9 /* Pods_Caroosal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */; };
 		65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9BB2164084300EC4C50 /* AppDelegate.swift */; };
-		65A0D9BE2164084300EC4C50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9BD2164084300EC4C50 /* ViewController.swift */; };
 		65A0D9C12164084300EC4C50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9BF2164084300EC4C50 /* Main.storyboard */; };
 		65A0D9C32164084400EC4C50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9C22164084400EC4C50 /* Assets.xcassets */; };
 		65A0D9C62164084400EC4C50 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9C42164084400EC4C50 /* LaunchScreen.storyboard */; };
 		65A0D9D12164084400EC4C50 /* CaroosalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9D02164084400EC4C50 /* CaroosalTests.swift */; };
 		65A0D9DC2164084400EC4C50 /* CaroosalUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9DB2164084400EC4C50 /* CaroosalUITests.swift */; };
+		65A0D9EB21640A5D00EC4C50 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9EA21640A5D00EC4C50 /* Song.swift */; };
+		65A0D9ED21640A8200EC4C50 /* SongSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9EC21640A8200EC4C50 /* SongSubscriber.swift */; };
+		65A0D9F021640AB200EC4C50 /* DataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9EF21640AB200EC4C50 /* DataStack.swift */; };
+		65A0D9F221640AE100EC4C50 /* SpotifyAPIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9F121640AE100EC4C50 /* SpotifyAPIController.swift */; };
+		65A0D9F421640AFA00EC4C50 /* SongBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9F321640AFA00EC4C50 /* SongBuilder.swift */; };
+		65A0D9F621640B3700EC4C50 /* SongCollectionDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9F521640B3700EC4C50 /* SongCollectionDatasource.swift */; };
+		65A0D9F921640B9200EC4C50 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9F821640B9200EC4C50 /* LoginViewController.swift */; };
+		65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9FA21640BAE00EC4C50 /* SongViewController.swift */; };
+		65A0D9FD21640BDA00EC4C50 /* SongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9FC21640BDA00EC4C50 /* SongCell.swift */; };
+		65A0D9FF21640BFE00EC4C50 /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9FE21640BFE00EC4C50 /* MiniPlayerViewController.swift */; };
+		65A0DA0121640C2000EC4C50 /* MaxiSongCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0DA0021640C2000EC4C50 /* MaxiSongCardViewController.swift */; };
+		65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0DA0221640C3C00EC4C50 /* SongPlayControlViewController.swift */; };
+		65A0DA0821640CAB00EC4C50 /* Song+ImageLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0DA0721640CAB00EC4C50 /* Song+ImageLoad.swift */; };
+		65A0DA0A21640CC200EC4C50 /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0DA0921640CC200EC4C50 /* UIView+Snapshot.swift */; };
+		65A0DA0E21640D8800EC4C50 /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0B21640D8700EC4C50 /* SpotifyAudioPlayback.framework */; };
+		65A0DA0F21640D8800EC4C50 /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0C21640D8700EC4C50 /* SpotifyAuthentication.framework */; };
+		65A0DA1021640D8800EC4C50 /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0D21640D8800EC4C50 /* SpotifyMetadata.framework */; };
+		65F2D6712166AE5B0043C7BF /* PlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F2D6702166AE5B0043C7BF /* PlaylistViewController.swift */; };
+		7CBE97C79C273FE19BCBAB71 /* Pods_CaroosalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */; };
+		F0D259D828726C3BF870BA0B /* Pods_CaroosalUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BA5DE2FCE579A8244BA2CFC /* Pods_CaroosalUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,9 +54,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0BA5DE2FCE579A8244BA2CFC /* Pods_CaroosalUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaroosalUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Caroosal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalTests/Pods-CaroosalTests.debug.xcconfig"; sourceTree = "<group>"; };
+		64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaroosalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0D9B82164084300EC4C50 /* Caroosal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Caroosal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0D9BB2164084300EC4C50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		65A0D9BD2164084300EC4C50 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		65A0D9C02164084300EC4C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		65A0D9C22164084400EC4C50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65A0D9C52164084400EC4C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +70,30 @@
 		65A0D9D72164084400EC4C50 /* CaroosalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CaroosalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0D9DB2164084400EC4C50 /* CaroosalUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaroosalUITests.swift; sourceTree = "<group>"; };
 		65A0D9DD2164084400EC4C50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65A0D9EA21640A5D00EC4C50 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
+		65A0D9EC21640A8200EC4C50 /* SongSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongSubscriber.swift; sourceTree = "<group>"; };
+		65A0D9EF21640AB200EC4C50 /* DataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStack.swift; sourceTree = "<group>"; };
+		65A0D9F121640AE100EC4C50 /* SpotifyAPIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAPIController.swift; sourceTree = "<group>"; };
+		65A0D9F321640AFA00EC4C50 /* SongBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongBuilder.swift; sourceTree = "<group>"; };
+		65A0D9F521640B3700EC4C50 /* SongCollectionDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCollectionDatasource.swift; sourceTree = "<group>"; };
+		65A0D9F821640B9200EC4C50 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		65A0D9FA21640BAE00EC4C50 /* SongViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongViewController.swift; sourceTree = "<group>"; };
+		65A0D9FC21640BDA00EC4C50 /* SongCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCell.swift; sourceTree = "<group>"; };
+		65A0D9FE21640BFE00EC4C50 /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
+		65A0DA0021640C2000EC4C50 /* MaxiSongCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxiSongCardViewController.swift; sourceTree = "<group>"; };
+		65A0DA0221640C3C00EC4C50 /* SongPlayControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPlayControlViewController.swift; sourceTree = "<group>"; };
+		65A0DA0721640CAB00EC4C50 /* Song+ImageLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Song+ImageLoad.swift"; sourceTree = "<group>"; };
+		65A0DA0921640CC200EC4C50 /* UIView+Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
+		65A0DA0B21640D8700EC4C50 /* SpotifyAudioPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAudioPlayback.framework; sourceTree = "<group>"; };
+		65A0DA0C21640D8700EC4C50 /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAuthentication.framework; sourceTree = "<group>"; };
+		65A0DA0D21640D8800EC4C50 /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyMetadata.framework; sourceTree = "<group>"; };
+		65A0DA1121640DEB00EC4C50 /* Caroosal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Caroosal-Bridging-Header.h"; sourceTree = "<group>"; };
+		65F2D6702166AE5B0043C7BF /* PlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewController.swift; sourceTree = "<group>"; };
+		7727A9631EB7342789C5BC78 /* Pods-CaroosalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalTests/Pods-CaroosalTests.release.xcconfig"; sourceTree = "<group>"; };
+		9888712A0B89ACEA4D5B06E4 /* Pods-Caroosal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Caroosal.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal.debug.xcconfig"; sourceTree = "<group>"; };
+		AB8C9D959687243153B00DF0 /* Pods-Caroosal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Caroosal.release.xcconfig"; path = "Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal.release.xcconfig"; sourceTree = "<group>"; };
+		D777D1E898A9C09D8BD13DF6 /* Pods-CaroosalUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalUITests/Pods-CaroosalUITests.release.xcconfig"; sourceTree = "<group>"; };
+		F28CC58DA54BDE1F11ADACEF /* Pods-CaroosalUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalUITests/Pods-CaroosalUITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +101,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65A0DA1021640D8800EC4C50 /* SpotifyMetadata.framework in Frameworks */,
+				36125CE839F35504B34FB0D9 /* Pods_Caroosal.framework in Frameworks */,
+				65A0DA0F21640D8800EC4C50 /* SpotifyAuthentication.framework in Frameworks */,
+				65A0DA0E21640D8800EC4C50 /* SpotifyAudioPlayback.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CBE97C79C273FE19BCBAB71 /* Pods_CaroosalTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0D259D828726C3BF870BA0B /* Pods_CaroosalUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,10 +130,13 @@
 		65A0D9AF2164084300EC4C50 = {
 			isa = PBXGroup;
 			children = (
+				65A0DA1121640DEB00EC4C50 /* Caroosal-Bridging-Header.h */,
 				65A0D9BA2164084300EC4C50 /* Caroosal */,
 				65A0D9CF2164084400EC4C50 /* CaroosalTests */,
 				65A0D9DA2164084400EC4C50 /* CaroosalUITests */,
 				65A0D9B92164084300EC4C50 /* Products */,
+				F87055CDD5FF72F6BB929048 /* Pods */,
+				7BE02CC83C462445E1F483BA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -98,8 +154,10 @@
 			isa = PBXGroup;
 			children = (
 				65A0D9BB2164084300EC4C50 /* AppDelegate.swift */,
-				65A0D9BD2164084300EC4C50 /* ViewController.swift */,
-				65A0D9BF2164084300EC4C50 /* Main.storyboard */,
+				65A0D9E921640A2300EC4C50 /* Model */,
+				65A0D9EE21640A9300EC4C50 /* Data Layer */,
+				65A0D9F721640B4900EC4C50 /* View Layer */,
+				65A0DA0421640C8B00EC4C50 /* Helpers */,
 				65A0D9C22164084400EC4C50 /* Assets.xcassets */,
 				65A0D9C42164084400EC4C50 /* LaunchScreen.storyboard */,
 				65A0D9C72164084400EC4C50 /* Info.plist */,
@@ -125,6 +183,77 @@
 			path = CaroosalUITests;
 			sourceTree = "<group>";
 		};
+		65A0D9E921640A2300EC4C50 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				65A0D9EA21640A5D00EC4C50 /* Song.swift */,
+				65A0D9EC21640A8200EC4C50 /* SongSubscriber.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		65A0D9EE21640A9300EC4C50 /* Data Layer */ = {
+			isa = PBXGroup;
+			children = (
+				65A0D9EF21640AB200EC4C50 /* DataStack.swift */,
+				65A0D9F121640AE100EC4C50 /* SpotifyAPIController.swift */,
+				65A0D9F321640AFA00EC4C50 /* SongBuilder.swift */,
+				65A0D9F521640B3700EC4C50 /* SongCollectionDatasource.swift */,
+			);
+			path = "Data Layer";
+			sourceTree = "<group>";
+		};
+		65A0D9F721640B4900EC4C50 /* View Layer */ = {
+			isa = PBXGroup;
+			children = (
+				65A0D9BF2164084300EC4C50 /* Main.storyboard */,
+				65A0D9F821640B9200EC4C50 /* LoginViewController.swift */,
+				65A0D9FA21640BAE00EC4C50 /* SongViewController.swift */,
+				65A0D9FC21640BDA00EC4C50 /* SongCell.swift */,
+				65A0D9FE21640BFE00EC4C50 /* MiniPlayerViewController.swift */,
+				65A0DA0021640C2000EC4C50 /* MaxiSongCardViewController.swift */,
+				65A0DA0221640C3C00EC4C50 /* SongPlayControlViewController.swift */,
+				65F2D6702166AE5B0043C7BF /* PlaylistViewController.swift */,
+			);
+			path = "View Layer";
+			sourceTree = "<group>";
+		};
+		65A0DA0421640C8B00EC4C50 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				65A0DA0721640CAB00EC4C50 /* Song+ImageLoad.swift */,
+				65A0DA0921640CC200EC4C50 /* UIView+Snapshot.swift */,
+			);
+			name = Helpers;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		7BE02CC83C462445E1F483BA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				65A0DA0B21640D8700EC4C50 /* SpotifyAudioPlayback.framework */,
+				65A0DA0C21640D8700EC4C50 /* SpotifyAuthentication.framework */,
+				65A0DA0D21640D8800EC4C50 /* SpotifyMetadata.framework */,
+				14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */,
+				64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */,
+				0BA5DE2FCE579A8244BA2CFC /* Pods_CaroosalUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F87055CDD5FF72F6BB929048 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9888712A0B89ACEA4D5B06E4 /* Pods-Caroosal.debug.xcconfig */,
+				AB8C9D959687243153B00DF0 /* Pods-Caroosal.release.xcconfig */,
+				47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */,
+				7727A9631EB7342789C5BC78 /* Pods-CaroosalTests.release.xcconfig */,
+				F28CC58DA54BDE1F11ADACEF /* Pods-CaroosalUITests.debug.xcconfig */,
+				D777D1E898A9C09D8BD13DF6 /* Pods-CaroosalUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +261,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65A0D9E02164084400EC4C50 /* Build configuration list for PBXNativeTarget "Caroosal" */;
 			buildPhases = (
+				42FCABB751D5F36D4A897C4B /* [CP] Check Pods Manifest.lock */,
 				65A0D9B42164084300EC4C50 /* Sources */,
 				65A0D9B52164084300EC4C50 /* Frameworks */,
 				65A0D9B62164084300EC4C50 /* Resources */,
+				0A6F88C69F610DA634FDC867 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -149,6 +280,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65A0D9E32164084400EC4C50 /* Build configuration list for PBXNativeTarget "CaroosalTests" */;
 			buildPhases = (
+				28B77892847943FE8C6B8BBD /* [CP] Check Pods Manifest.lock */,
 				65A0D9C82164084400EC4C50 /* Sources */,
 				65A0D9C92164084400EC4C50 /* Frameworks */,
 				65A0D9CA2164084400EC4C50 /* Resources */,
@@ -167,6 +299,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65A0D9E62164084400EC4C50 /* Build configuration list for PBXNativeTarget "CaroosalUITests" */;
 			buildPhases = (
+				A1F1DF16E61E96BE09DE55A3 /* [CP] Check Pods Manifest.lock */,
 				65A0D9D32164084400EC4C50 /* Sources */,
 				65A0D9D42164084400EC4C50 /* Frameworks */,
 				65A0D9D52164084400EC4C50 /* Resources */,
@@ -251,13 +384,104 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0A6F88C69F610DA634FDC867 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		28B77892847943FE8C6B8BBD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CaroosalTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		42FCABB751D5F36D4A897C4B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Caroosal-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1F1DF16E61E96BE09DE55A3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-CaroosalUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		65A0D9B42164084300EC4C50 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65A0D9BE2164084300EC4C50 /* ViewController.swift in Sources */,
+				65A0D9F921640B9200EC4C50 /* LoginViewController.swift in Sources */,
+				65A0D9FD21640BDA00EC4C50 /* SongCell.swift in Sources */,
+				65A0D9FF21640BFE00EC4C50 /* MiniPlayerViewController.swift in Sources */,
+				65A0DA0821640CAB00EC4C50 /* Song+ImageLoad.swift in Sources */,
+				65A0DA0A21640CC200EC4C50 /* UIView+Snapshot.swift in Sources */,
+				65A0D9F021640AB200EC4C50 /* DataStack.swift in Sources */,
+				65A0D9F221640AE100EC4C50 /* SpotifyAPIController.swift in Sources */,
+				65A0D9EB21640A5D00EC4C50 /* Song.swift in Sources */,
+				65F2D6712166AE5B0043C7BF /* PlaylistViewController.swift in Sources */,
+				65A0D9F421640AFA00EC4C50 /* SongBuilder.swift in Sources */,
+				65A0D9ED21640A8200EC4C50 /* SongSubscriber.swift in Sources */,
+				65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */,
 				65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */,
+				65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */,
+				65A0DA0121640C2000EC4C50 /* MaxiSongCardViewController.swift in Sources */,
+				65A0D9F621640B3700EC4C50 /* SongCollectionDatasource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,9 +652,15 @@
 		};
 		65A0D9E12164084400EC4C50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9888712A0B89ACEA4D5B06E4 /* Pods-Caroosal.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B34ZNVSJ9N;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Caroosal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -438,6 +668,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tdeets.Caroosal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Caroosal-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -445,9 +676,15 @@
 		};
 		65A0D9E22164084400EC4C50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB8C9D959687243153B00DF0 /* Pods-Caroosal.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B34ZNVSJ9N;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Caroosal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -455,6 +692,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tdeets.Caroosal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Caroosal-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -462,6 +700,7 @@
 		};
 		65A0D9E42164084400EC4C50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -482,6 +721,7 @@
 		};
 		65A0D9E52164084400EC4C50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7727A9631EB7342789C5BC78 /* Pods-CaroosalTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -502,6 +742,7 @@
 		};
 		65A0D9E72164084400EC4C50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F28CC58DA54BDE1F11ADACEF /* Pods-CaroosalUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -521,6 +762,7 @@
 		};
 		65A0D9E82164084400EC4C50 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D777D1E898A9C09D8BD13DF6 /* Pods-CaroosalUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

@@ -1,0 +1,6 @@
+framework module Pods_CaroosalTests {
+  umbrella header "Pods-CaroosalTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
