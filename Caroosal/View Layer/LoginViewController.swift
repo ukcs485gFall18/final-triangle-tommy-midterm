@@ -81,22 +81,10 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         
     }
     
-    // delegate method that calls once the login was successful. Performs a segue to the main controller
-    func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
-        // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-        print("audioStreamingDidLogin")
-        self.performSegue(withIdentifier: "loginSuccessful", sender: nil)
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
-        let tabVc = segue.destination as! UITabBarController
-        let dvc = tabVc.viewControllers![0] as! SongViewController
-        let playlistVC = tabVc.viewControllers![1] as! PlaylistViewController
-        
-        // send the access token and player over to the SongViewController
+        let dvc = segue.destination as! PartyCreationViewController
         dvc.spotifySession = self.session
-        dvc.playlistVC = playlistVC
     }
 }
 

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		36125CE839F35504B34FB0D9 /* Pods_Caroosal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */; };
+		651CC7F7216D8F48009E5146 /* PartyCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651CC7F6216D8F47009E5146 /* PartyCreationViewController.swift */; };
+		651CC7F9216D9369009E5146 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 651CC7F8216D9369009E5146 /* GoogleService-Info.plist */; };
 		65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9BB2164084300EC4C50 /* AppDelegate.swift */; };
 		65A0D9C12164084300EC4C50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9BF2164084300EC4C50 /* Main.storyboard */; };
 		65A0D9C32164084400EC4C50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9C22164084400EC4C50 /* Assets.xcassets */; };
@@ -58,6 +60,8 @@
 		14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Caroosal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalTests/Pods-CaroosalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaroosalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		651CC7F6216D8F47009E5146 /* PartyCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyCreationViewController.swift; sourceTree = "<group>"; };
+		651CC7F8216D9369009E5146 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		65A0D9B82164084300EC4C50 /* Caroosal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Caroosal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0D9BB2164084300EC4C50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		65A0D9C02164084300EC4C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -153,6 +157,7 @@
 		65A0D9BA2164084300EC4C50 /* Caroosal */ = {
 			isa = PBXGroup;
 			children = (
+				651CC7F8216D9369009E5146 /* GoogleService-Info.plist */,
 				65A0D9BB2164084300EC4C50 /* AppDelegate.swift */,
 				65A0D9E921640A2300EC4C50 /* Model */,
 				65A0D9EE21640A9300EC4C50 /* Data Layer */,
@@ -214,6 +219,7 @@
 				65A0DA0021640C2000EC4C50 /* MaxiSongCardViewController.swift */,
 				65A0DA0221640C3C00EC4C50 /* SongPlayControlViewController.swift */,
 				65F2D6702166AE5B0043C7BF /* PlaylistViewController.swift */,
+				651CC7F6216D8F47009E5146 /* PartyCreationViewController.swift */,
 			);
 			path = "View Layer";
 			sourceTree = "<group>";
@@ -363,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65A0D9C62164084400EC4C50 /* LaunchScreen.storyboard in Resources */,
+				651CC7F9216D9369009E5146 /* GoogleService-Info.plist in Resources */,
 				65A0D9C32164084400EC4C50 /* Assets.xcassets in Resources */,
 				65A0D9C12164084300EC4C50 /* Main.storyboard in Resources */,
 			);
@@ -393,12 +400,22 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/PMSuperButton/PMSuperButton.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMSuperButton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -477,6 +494,7 @@
 				65F2D6712166AE5B0043C7BF /* PlaylistViewController.swift in Sources */,
 				65A0D9F421640AFA00EC4C50 /* SongBuilder.swift in Sources */,
 				65A0D9ED21640A8200EC4C50 /* SongSubscriber.swift in Sources */,
+				651CC7F7216D8F48009E5146 /* PartyCreationViewController.swift in Sources */,
 				65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */,
 				65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */,
 				65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */,

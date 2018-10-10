@@ -8,6 +8,10 @@ target 'Caroosal' do
   # Pods for Caroosal
   pod 'Alamofire', '~> 4.7'
   pod 'SwiftyJSON', '~> 4.0'
+  pod 'Eureka'
+  pod 'Firebase/Core'
+  pod 'Firebase/Database'
+  pod 'PMSuperButton'
 
   target 'CaroosalTests' do
     inherit! :search_paths
