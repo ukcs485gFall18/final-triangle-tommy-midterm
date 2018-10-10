@@ -23,6 +23,7 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     // Added Player
     var player: SPTAudioStreamingController?
     var songPlayerVC: SongPlayControlViewController?
+    var songVC: SongViewController?
     
     weak var sourceView: MaxiPlayerSourceProtocol!
     

@@ -8,10 +8,29 @@
 
 import UIKit
 
+class SongTableCell: UITableViewCell {
+    @IBOutlet weak var upvoteBtn: UIButton!
+    @IBOutlet weak var voteCounterLabel: UILabel!
+    @IBOutlet weak var downvoteBtn: UIButton!
+    
+    var voteCounter = 0
+    @IBAction func tappedUpvote(_ sender: Any) {
+        voteCounter = voteCounter + 1
+        .reloadData()
+    }
+    
+    @IBAction func tappedDownvote(_ sender: Any) {
+        voteCounter = voteCounter - 1
+        .reloadData()
+    }
+}
+
 class PlaylistViewController: UITableViewController {
     
+
     var songs: [String] = ["Song 1", "Song 2", "Song 3"]
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,10 +61,10 @@ class PlaylistViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
         
         cell.textLabel?.text = self.songs[indexPath.row]
-        
+        cell.voteCounterLabel.text = "\(cell.voteCounter)"
         return cell
     }
 
