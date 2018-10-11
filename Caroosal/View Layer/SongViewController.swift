@@ -109,7 +109,7 @@ extension SongViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentSong = datasource.song(at: indexPath.row)
         miniPlayer?.configure(song: currentSong)
-        self.playlistVC?.songs.append((currentSong?.title)!)
+        self.playlistVC?.songs.append((currentSong)!)
         self.playlistVC?.tableView.reloadData()
     }
 }

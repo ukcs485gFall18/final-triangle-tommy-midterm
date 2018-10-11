@@ -10,13 +10,12 @@ import UIKit
 
 class SongTableCell: UITableViewCell {
     @IBOutlet weak var voteCounterLabel: UILabel!
-    var voteCounter = 0
 }
 
 class PlaylistViewController: UITableViewController {
     
 
-    var songs: [String] = ["Song 1", "Song 2", "Song 3"]
+    var songs: [Song] = []
 
     
     override func viewDidLoad() {
@@ -50,9 +49,9 @@ class PlaylistViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
-        
-        cell.textLabel?.text = self.songs[indexPath.row]
-        cell.voteCounterLabel.text = "\(cell.voteCounter)"
+        let currSong = self.songs[indexPath.row]
+        cell.textLabel?.text = currSong.title
+        cell.voteCounterLabel.text = "\(currSong.voteCount)"
         return cell
     }
     
@@ -61,12 +60,10 @@ class PlaylistViewController: UITableViewController {
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
             let rowIndex =  indexPath.row
-             print(rowIndex)
             
             let currentCell = self.tableView.cellForRow(at: indexPath) as! SongTableCell
-            currentCell.voteCounter = currentCell.voteCounter + 1
-            currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
-            
+            songs[indexPath.row].voteCount = songs[indexPath.row].voteCount + 1
+            sortSongs()
         }
     }
     
@@ -75,15 +72,21 @@ class PlaylistViewController: UITableViewController {
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
             let rowIndex =  indexPath.row
-            print(rowIndex)
             
             let currentCell = self.tableView.cellForRow(at: indexPath) as! SongTableCell
-            if currentCell.voteCounter > 0 { // no negatives
-                currentCell.voteCounter = currentCell.voteCounter - 1
-                currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
+            if songs[indexPath.row].voteCount > 0 { // no negatives
+                songs[indexPath.row].voteCount = songs[indexPath.row].voteCount - 1
+              
             }
-            currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
+            sortSongs()
         }
+    }
+    
+    func sortSongs() {
+        self.songs = songs.sorted(by: { $0.voteCount > $1.voteCount})
+        
+        print(self.songs)
+        self.tableView.reloadData()
     }
     
     /*
