@@ -9,20 +9,8 @@
 import UIKit
 
 class SongTableCell: UITableViewCell {
-    @IBOutlet weak var upvoteBtn: UIButton!
     @IBOutlet weak var voteCounterLabel: UILabel!
-    @IBOutlet weak var downvoteBtn: UIButton!
-    
     var voteCounter = 0
-    @IBAction func tappedUpvote(_ sender: Any) {
-        voteCounter = voteCounter + 1
-        .reloadData()
-    }
-    
-    @IBAction func tappedDownvote(_ sender: Any) {
-        voteCounter = voteCounter - 1
-        .reloadData()
-    }
 }
 
 class PlaylistViewController: UITableViewController {
@@ -67,7 +55,37 @@ class PlaylistViewController: UITableViewController {
         cell.voteCounterLabel.text = "\(cell.voteCounter)"
         return cell
     }
-
+    
+    @IBAction func upvoteTouched(_ sender: Any) {
+        // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
+        let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let rowIndex =  indexPath.row
+             print(rowIndex)
+            
+            let currentCell = self.tableView.cellForRow(at: indexPath) as! SongTableCell
+            currentCell.voteCounter = currentCell.voteCounter + 1
+            currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
+            
+        }
+    }
+    
+    @IBAction func downvoteTouched(_ sender: Any) {
+        // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
+        let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let rowIndex =  indexPath.row
+            print(rowIndex)
+            
+            let currentCell = self.tableView.cellForRow(at: indexPath) as! SongTableCell
+            if currentCell.voteCounter > 0 { // no negatives
+                currentCell.voteCounter = currentCell.voteCounter - 1
+                currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
+            }
+            currentCell.voteCounterLabel.text = "\(currentCell.voteCounter)"
+        }
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

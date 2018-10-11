@@ -357,7 +357,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button" image="downvote"/>
                                             <connections>
-                                                <action selector="tappedDownvote:" destination="zr8-nB-nxN" eventType="touchUpInside" id="gvw-zd-w5o"/>
+                                                <action selector="downvoteTouched:" destination="WTq-ud-YFS" eventType="touchUpInside" id="1Ol-fU-aME"/>
                                             </connections>
                                         </button>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tn9-fl-bQg">
@@ -372,7 +372,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Button" image="upvote"/>
                                             <connections>
-                                                <action selector="tappedUpvote:" destination="zr8-nB-nxN" eventType="touchUpInside" id="VdQ-z1-jay"/>
+                                                <action selector="upvoteTouched:" destination="WTq-ud-YFS" eventType="touchUpInside" id="daz-T5-qy5"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -381,8 +381,6 @@
                                     <accessibilityTraits key="traits" button="YES"/>
                                 </accessibility>
                                 <connections>
-                                    <outlet property="downvoteBtn" destination="tK7-bw-v8F" id="fOL-Jw-5DW"/>
-                                    <outlet property="upvoteBtn" destination="17d-ex-Mim" id="uf1-42-a83"/>
                                     <outlet property="voteCounterLabel" destination="Tn9-fl-bQg" id="8ad-zC-vse"/>
                                 </connections>
                             </tableViewCell>

@@ -35,7 +35,8 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         self.accessToken = self.spotifySession?.accessToken
         initializePlayer(authSession: self.spotifySession!)
         if let token = self.accessToken {
-            let queryURL = "me/top/tracks?time_range=medium_term&limit=50&offset=5"
+            print(token)
+            let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
             // loads user's top songs as a default on load
             
 //            Code to grab the current user's UID
@@ -46,9 +47,10 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
                 if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
                     print("Spotify Query nil, loading canned data")
-                    self.datasource.load()
+                    //self.datasource.load()
+                    return
                 }
-                let dict: [[String: Any]] = self.datasource.parseSpotifyTracks(songs: data)
+                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
                 self.datasource.loadSpotify(dict: dict)
             })
         }
@@ -82,7 +84,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         if let token = self.accessToken {
             let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
             //Here is where the link is changed
-            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=5"
+            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
             // loads user's top songs as a default
             SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
                 let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
