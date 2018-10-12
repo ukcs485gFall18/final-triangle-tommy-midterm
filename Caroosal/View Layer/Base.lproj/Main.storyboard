@@ -261,7 +261,7 @@
                                             <rect key="frame" x="339" y="18" width="28" height="28"/>
                                             <state key="normal" image="fast-forward"/>
                                             <connections>
-                                                <action selector="nextTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="DXj-1X-Fcp"/>
+                                                <action selector="nextButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="ESM-1Y-Ifk"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TAy-5q-Hnm">
@@ -502,6 +502,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgU-0i-h5b">
                                         <rect key="frame" x="104" y="0.0" width="28" height="28"/>
                                         <state key="normal" image="fast-forward"/>
+                                        <connections>
+                                            <action selector="nextTapped:" destination="5fx-2A-gHS" eventType="touchUpInside" id="50o-ln-gwf"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>

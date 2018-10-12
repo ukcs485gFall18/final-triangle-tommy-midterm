@@ -69,14 +69,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             try! player!.start(withClientId: auth.clientID)
             self.player!.login(withAccessToken: authSession.accessToken)
             print("Player was initialized")
+            SpotifyPlayer.shared.setPlayer(player: self.player!)
         }
         else {
             print("Error Initializing Player")
         }
-    }
-    
-    func playSong(){
-        print("playing song")
     }
     
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
@@ -109,7 +106,9 @@ extension SongViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentSong = datasource.song(at: indexPath.row)
         miniPlayer?.configure(song: currentSong)
+        SpotifyPlayer.shared.startSong(song: currentSong!)
         self.playlistVC?.songs.append((currentSong)!)
+        SpotifyPlayer.shared.setPlaylist(newPlaylist: (self.playlistVC?.songs)!)
         self.playlistVC?.tableView.reloadData()
     }
 }
@@ -162,6 +161,16 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         print("Started Playing Track")
         print(trackUri)
+        if let maxi = self.currentMaxiCard {
+            let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
+            maxi.backingImage = UIImage(data: coverImageData! as Data)
+            
+            if let songPlayer = maxi.songPlayerVC {
+                songPlayer.currentSong = SpotifyPlayer.shared.currentSong
+                songPlayer.configureFields()
+            }
+            
+        }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didSeekToPosition position: TimeInterval) {
         print("Seeked to Position")

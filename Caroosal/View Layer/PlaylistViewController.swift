@@ -13,14 +13,11 @@ class SongTableCell: UITableViewCell {
 }
 
 class PlaylistViewController: UITableViewController {
-    
-
     var songs: [Song] = []
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -63,7 +60,7 @@ class PlaylistViewController: UITableViewController {
             
             let currentCell = self.tableView.cellForRow(at: indexPath) as! SongTableCell
             songs[indexPath.row].voteCount = songs[indexPath.row].voteCount + 1
-            sortSongs()
+            updatePlaylist()
         }
     }
     
@@ -78,14 +75,14 @@ class PlaylistViewController: UITableViewController {
                 songs[indexPath.row].voteCount = songs[indexPath.row].voteCount - 1
               
             }
-            sortSongs()
+            updatePlaylist()
         }
     }
     
-    func sortSongs() {
+    // sort the playlist in descending order, set it in the player, and reload the tableView
+    func updatePlaylist() {
         self.songs = songs.sorted(by: { $0.voteCount > $1.voteCount})
-        
-        print(self.songs)
+        SpotifyPlayer.shared.setPlaylist(newPlaylist: self.songs)
         self.tableView.reloadData()
     }
     

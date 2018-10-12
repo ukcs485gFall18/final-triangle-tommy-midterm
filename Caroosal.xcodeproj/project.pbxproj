@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		36125CE839F35504B34FB0D9 /* Pods_Caroosal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */; };
+		659EA314217035BA008D31CD /* SpotifyPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EA313217035BA008D31CD /* SpotifyPlayer.swift */; };
 		65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9BB2164084300EC4C50 /* AppDelegate.swift */; };
 		65A0D9C12164084300EC4C50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9BF2164084300EC4C50 /* Main.storyboard */; };
 		65A0D9C32164084400EC4C50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65A0D9C22164084400EC4C50 /* Assets.xcassets */; };
@@ -58,6 +59,7 @@
 		14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Caroosal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalTests/Pods-CaroosalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaroosalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		659EA313217035BA008D31CD /* SpotifyPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyPlayer.swift; sourceTree = "<group>"; };
 		65A0D9B82164084300EC4C50 /* Caroosal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Caroosal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65A0D9BB2164084300EC4C50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		65A0D9C02164084300EC4C50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			children = (
 				65A0D9EF21640AB200EC4C50 /* DataStack.swift */,
 				65A0D9F121640AE100EC4C50 /* SpotifyAPIController.swift */,
+				659EA313217035BA008D31CD /* SpotifyPlayer.swift */,
 				65A0D9F321640AFA00EC4C50 /* SongBuilder.swift */,
 				65A0D9F521640B3700EC4C50 /* SongCollectionDatasource.swift */,
 			);
@@ -480,6 +483,7 @@
 				65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */,
 				65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */,
 				65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */,
+				659EA314217035BA008D31CD /* SpotifyPlayer.swift in Sources */,
 				65A0DA0121640C2000EC4C50 /* MaxiSongCardViewController.swift in Sources */,
 				65A0D9F621640B3700EC4C50 /* SongCollectionDatasource.swift in Sources */,
 			);

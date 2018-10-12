@@ -317,4 +317,3 @@ extension MaxiSongCardViewController {
         animateLowerModule(isPresenting: true)
     }
 }
-
