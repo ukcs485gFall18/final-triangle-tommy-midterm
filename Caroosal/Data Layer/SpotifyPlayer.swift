@@ -57,6 +57,12 @@ class SpotifyPlayer: NSObject {
         self.currentPlaylist = newPlaylist
     }
     
+    // add the song to the playlist
+    func addToPlaylist(song: Song){
+        self.currentPlaylist?.append(song)
+    }
+    
+    
     // set the player to skip to the next song in the queue
     // returns the song to be played
     func skipToNextSong() -> Song? {

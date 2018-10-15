@@ -31,19 +31,20 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         configureFields()
     }
 
-    func updateButtons(isPlaying: Bool){
-        if isPlaying {
+    func updateButtons(){
+        switch SpotifyPlayer.shared.currentPlaybackState {
+        case .isNil?:
+            print("shouldn't happen")
+        case .isPlaying?: // if the player is currently playing, pause the current song
             self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-        }
-        else {
+        case .isPaused?: // if the player is currently paused, resume the song
             self.playButton.setImage(UIImage(named: "play"), for: .normal)
+        case .none:
+            print("shouldn't happen")
         }
     }
     override func viewDidAppear(_ animated: Bool) {
-        // set the playback buttons to the current state on appear
-        if let state = self.player?.playbackState {
-            updateButtons(isPlaying: state.isPlaying)
-        }
+        updateButtons()
     }
     
     @IBAction func playButtonTapped(_ sender: Any) {
@@ -65,8 +66,6 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
     @IBAction func nextTapped(_ sender: Any) {
        SpotifyPlayer.shared.skipToNextSong()
     }
-    
-    
 }
 
 // MARK: - Internal

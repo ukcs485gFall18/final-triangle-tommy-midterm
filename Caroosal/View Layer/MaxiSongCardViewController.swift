@@ -118,9 +118,8 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? SongSubscriber {
-            print("embed segue")
             destination.currentSong = currentSong
-            destination.player = self.player
+            //destination.player = self.player
             self.songPlayerVC = destination as! SongPlayControlViewController
         }
     }

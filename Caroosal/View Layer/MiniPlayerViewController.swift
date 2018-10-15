@@ -34,15 +34,17 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     // Refresh the button state when the view reappears
     // Can't call viewDidAppear because the view technically doesn't disappear
     func refreshButtonState() {
-        // set the playback buttons to the current state on appear
-        if let state = self.player?.playbackState {
-            if (state.isPlaying == true) {
-                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-            }
-            else {
-                self.playButton.setImage(UIImage(named: "play"), for: .normal)
-            }
+        switch SpotifyPlayer.shared.currentPlaybackState {
+        case .isNil?:
+            print("shouldn't happen")
+        case .isPlaying?: // if the player is currently playing, pause the current song
+            self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+        case .isPaused?: // if the player is currently paused, resume the song
+            self.playButton.setImage(UIImage(named: "play"), for: .normal)
+        case .none:
+            print("shouldn't happen")
         }
+        self.configure(song: SpotifyPlayer.shared.currentSong)
     }
     
     @IBAction func playButtonTapped(_ sender: Any) {
