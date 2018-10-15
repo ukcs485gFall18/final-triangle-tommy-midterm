@@ -34,26 +34,29 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         searchBar.delegate = self
         self.accessToken = self.spotifySession?.accessToken
         initializePlayer(authSession: self.spotifySession!)
+        
+        // Long Press gesture code referenced from
+        // https://stackoverflow.com/questions/18848725/long-press-gesture-on-uicollectionviewcell
+        let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureReconizer:)))
+        lpgr.minimumPressDuration = 0.5
+        lpgr.delaysTouchesBegan = true
+        self.collectionView.addGestureRecognizer(lpgr)
+        
         if let token = self.accessToken {
-            let queryURL = "me/top/tracks?time_range=medium_term&limit=50&offset=5"
-            // loads user's top songs as a default on load
-            
-//            Code to grab the current user's UID
-//            SPTUser.requestCurrentUser(withAccessToken: token, callback: { (error, metadata) in
-//
-//            })
-            
+            print(token)
+            // runs a query for Drake songs on load
+            let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
             SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
                 if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
                     print("Spotify Query nil, loading canned data")
-                    self.datasource.load()
+                    //self.datasource.load()
+                    return
                 }
-                let dict: [[String: Any]] = self.datasource.parseSpotifyTracks(songs: data)
+                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
                 self.datasource.loadSpotify(dict: dict)
             })
         }
         self.miniPlayer!.player = self.player
-        print(self.playlistVC?.songs)
     }
     
     // Initialize the Spotify streaming controller
@@ -67,14 +70,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             try! player!.start(withClientId: auth.clientID)
             self.player!.login(withAccessToken: authSession.accessToken)
             print("Player was initialized")
+            SpotifyPlayer.shared.setPlayer(player: self.player!)
         }
         else {
             print("Error Initializing Player")
         }
-    }
-    
-    func playSong(){
-        print("playing song")
     }
     
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
@@ -82,7 +82,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         if let token = self.accessToken {
             let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
             //Here is where the link is changed
-            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=5"
+            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
             // loads user's top songs as a default
             SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
                 let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
@@ -91,6 +91,36 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             })
         }
     }
+    
+    func addToPlaylist(song: Song){
+        SpotifyPlayer.shared.addToPlaylist(song: song)
+        self.playlistVC?.tableView.reloadData()
+    }
+    
+    @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        if gestureReconizer.state != UIGestureRecognizerState.ended {
+            return
+        }
+        let p = gestureReconizer.location(in: self.collectionView)
+        let indexPath = self.collectionView.indexPathForItem(at: p)
+        if let index = indexPath {
+            //var cell = self.collectionView.cellForItem(at: index)
+            // do stuff with your cell, for example print the indexPath
+            currentSong = datasource.song(at: index.row)
+            
+            let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
+                self.addToPlaylist(song: self.currentSong!)
+            }))
+            self.present(alert, animated: true)
+            
+            
+        } else {
+            print("Unable to find index path")
+        }
+    }
+    
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -107,8 +137,7 @@ extension SongViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentSong = datasource.song(at: indexPath.row)
         miniPlayer?.configure(song: currentSong)
-        self.playlistVC?.songs.append((currentSong?.title)!)
-        self.playlistVC?.tableView.reloadData()
+        SpotifyPlayer.shared.startSong(song: currentSong!)
     }
 }
 
@@ -160,6 +189,16 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         print("Started Playing Track")
         print(trackUri)
+        if let maxi = self.currentMaxiCard {
+            let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
+            maxi.coverArtImage.image = UIImage(data: coverImageData! as Data)
+            
+            if let songPlayer = maxi.songPlayerVC {
+                songPlayer.currentSong = SpotifyPlayer.shared.currentSong
+                songPlayer.configureFields()
+            }
+            
+        }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didSeekToPosition position: TimeInterval) {
         print("Seeked to Position")
@@ -170,14 +209,13 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
         if let maxi = self.currentMaxiCard {
             print(maxi)
             if let songPlayer = maxi.songPlayerVC {
-                songPlayer.updateButtons(isPlaying: isPlaying)
+                songPlayer.updateButtons()
             }
         }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
         print("Did Change")
-        print(metadata.currentTrack?.artistName)
+        print(metadata)
     }
 }
-
 

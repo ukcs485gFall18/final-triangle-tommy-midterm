@@ -31,54 +31,40 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         configureFields()
     }
 
-    func test(){
-        print("test function")
-    }
-    
-    func updateButtons(isPlaying: Bool){
-        if isPlaying {
+    func updateButtons(){
+        switch SpotifyPlayer.shared.currentPlaybackState {
+        case .isNil?:
+            print("shouldn't happen")
+        case .isPlaying?: // if the player is currently playing, pause the current song
             self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-        }
-        else {
+        case .isPaused?: // if the player is currently paused, resume the song
             self.playButton.setImage(UIImage(named: "play"), for: .normal)
+        case .none:
+            print("shouldn't happen")
         }
     }
     override func viewDidAppear(_ animated: Bool) {
-        // set the playback buttons to the current state on appear
-        if let state = self.player?.playbackState {
-            updateButtons(isPlaying: state.isPlaying)
+        updateButtons()
+    }
+    
+    @IBAction func playButtonTapped(_ sender: Any) {
+        switch SpotifyPlayer.shared.currentPlaybackState {
+            case .isNil?: // if the player is not yet initialized, play the current song
+                SpotifyPlayer.shared.startSong(song: currentSong!)
+                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+            case .isPlaying?: // if the player is currently playing, pause the current song
+                self.playButton.setImage(UIImage(named: "play"), for: .normal)
+                SpotifyPlayer.shared.pauseSong()
+            case .isPaused?: // if the player is currently paused, resume the song
+                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                SpotifyPlayer.shared.resumeSong()
+            case .none:
+                print("shouldn't happen")
         }
     }
     
-    // Playing functionality: Rob Cala
-    @IBAction func playButtonTapped(_ sender: Any) {
-        // if the player is not yet initialized, play the current song
-        if self.player?.playbackState == nil {
-            self.player?.playSpotifyURI(currentSong?.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
-                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-                return
-            })
-        }
-            // if the user selects a different song, play that one instead: this else if block Added by Thomas
-        else if self.player?.metadata.currentTrack?.uri != currentSong?.mediaURL?.absoluteString{
-            self.player?.playSpotifyURI(currentSong?.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
-                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-                return
-            })
-        }
-            // if the button is tapped when the song is playing, pause the music and set the image to play button
-        else if self.player?.playbackState.isPlaying == true {
-            self.playButton.setImage(UIImage(named: "play"), for: .normal)
-            self.player?.setIsPlaying(false, callback: nil)
-            return
-        }
-            // if the button is tapped when the song is paused, resume the music and set the image to pause button
-        else if self.player?.playbackState.isPlaying == false {
-            self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-            self.player?.setIsPlaying(true, callback: nil)
-            return
-        }
-        
+    @IBAction func nextTapped(_ sender: Any) {
+       SpotifyPlayer.shared.skipToNextSong()
     }
 }
 

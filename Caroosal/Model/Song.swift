@@ -16,4 +16,5 @@ struct Song {
     let artist: String
     var mediaURL: URL?
     var coverArtURL: URL?
+    var voteCount: Int = 0
 }

@@ -17,6 +17,7 @@ class SongBuilder: NSObject {
     private var artist: String?
     private var mediaURL: URL?
     private var coverArtURL: URL?
+    private var voteCount: Int = 0
     
     func build() -> Song? {
         guard let title = title,
@@ -24,7 +25,7 @@ class SongBuilder: NSObject {
                 return nil
         }
         
-        return Song(title: title, duration: duration, artist: artist, mediaURL: mediaURL, coverArtURL: coverArtURL)
+        return Song(title: title, duration: duration, artist: artist, mediaURL: mediaURL, coverArtURL: coverArtURL, voteCount: voteCount)
     }
     
     func with(title: String?) -> Self {
@@ -57,6 +58,11 @@ class SongBuilder: NSObject {
         }
         
         self.coverArtURL = URL(string: urlstring)
+        return self
+    }
+    
+    func with(voteCount: Int?) -> Self {
+        self.voteCount = voteCount ?? 0
         return self
     }
 }

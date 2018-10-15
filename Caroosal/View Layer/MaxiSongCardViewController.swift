@@ -23,6 +23,7 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     // Added Player
     var player: SPTAudioStreamingController?
     var songPlayerVC: SongPlayControlViewController?
+    var songVC: SongViewController?
     
     weak var sourceView: MaxiPlayerSourceProtocol!
     
@@ -117,9 +118,8 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? SongSubscriber {
-            print("embed segue")
             destination.currentSong = currentSong
-            destination.player = self.player
+            //destination.player = self.player
             self.songPlayerVC = destination as! SongPlayControlViewController
         }
     }
@@ -316,4 +316,3 @@ extension MaxiSongCardViewController {
         animateLowerModule(isPresenting: true)
     }
 }
-
