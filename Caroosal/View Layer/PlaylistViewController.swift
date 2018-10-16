@@ -10,6 +10,9 @@ import UIKit
 
 class SongTableCell: UITableViewCell {
     @IBOutlet weak var voteCounterLabel: UILabel!
+    @IBOutlet weak var albumCover: UIImageView!
+    @IBOutlet weak var songTitleLabel: UILabel!
+    @IBOutlet weak var artistLabel: UILabel!
 }
 
 class PlaylistViewController: UITableViewController {
@@ -47,8 +50,13 @@ class PlaylistViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
         let currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
-        cell.textLabel?.text = currSong.title
         cell.voteCounterLabel.text = "\(currSong.voteCount)"
+        cell.songTitleLabel.text = currSong.title
+        cell.artistLabel.text = currSong.artist
+        //cell.albumCover.image  = currSong.coverArtURL
+        currSong.loadSongImage(completion: { image in
+            cell.albumCover.image = image
+        })
         return cell
     }
     
@@ -76,6 +84,10 @@ class PlaylistViewController: UITableViewController {
     func updatePlaylist() {
         SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount > $1.voteCount})
         self.tableView.reloadData()
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
     }
     
     /*
@@ -124,3 +136,4 @@ class PlaylistViewController: UITableViewController {
     */
 
 }
+
