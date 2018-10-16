@@ -184,7 +184,21 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
         print("Skipped To Previous Track")
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
-        print("Stopped Playing Track")
+        
+        if let newSong = SpotifyPlayer.shared.skipToNextSong() {
+            print("woohoo")
+        }
+        else {
+            print("not playing a new song")
+            SpotifyPlayer.shared.player?.setIsPlaying(false, callback: nil)
+            self.miniPlayer?.refreshButtonState()
+            if let maxi = self.currentMaxiCard {
+                print(maxi)
+                if let songPlayer = maxi.songPlayerVC {
+                    songPlayer.updateButtons()
+                }
+            }
+        }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         print("Started Playing Track")
@@ -215,7 +229,6 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
         print("Did Change")
-        print(metadata)
     }
 }
 

@@ -63,8 +63,15 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         }
     }
     @IBAction func nextButtonTapped(_ sender: Any) {
-        var newSong = SpotifyPlayer.shared.skipToNextSong()
-        self.configure(song: newSong)
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+            let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+        else {
+            var newSong = SpotifyPlayer.shared.skipToNextSong()
+            self.configure(song: newSong)
+        }
     }
     
     

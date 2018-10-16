@@ -64,7 +64,14 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
     }
     
     @IBAction func nextTapped(_ sender: Any) {
-       SpotifyPlayer.shared.skipToNextSong()
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+            let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+        else {
+            var newSong = SpotifyPlayer.shared.skipToNextSong()
+        }
     }
 }
 

@@ -336,7 +336,7 @@
             </objects>
             <point key="canvasLocation" x="380" y="598"/>
         </scene>
-        <!--Playlists-->
+        <!--Playlist View Controller-->
         <scene sceneID="YQL-FD-Bmo">
             <objects>
                 <tableViewController id="WTq-ud-YFS" customClass="PlaylistViewController" customModule="Caroosal" customModuleProvider="target" sceneMemberID="viewController">
@@ -390,11 +390,11 @@
                             <outlet property="delegate" destination="WTq-ud-YFS" id="UzA-ux-bb7"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Playlists" id="IFh-OT-bgY"/>
+                    <navigationItem key="navigationItem" id="fqJ-FK-H8o"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T56-bb-mSE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="213.59999999999999" y="1109.5952023988007"/>
+            <point key="canvasLocation" x="1152.8" y="1109.5952023988007"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="6bi-pP-Dgt">
@@ -445,7 +445,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="SJy-oP-cn0" kind="relationship" relationship="viewControllers" id="cFm-fR-yw6"/>
-                        <segue destination="WTq-ud-YFS" kind="relationship" relationship="viewControllers" id="ScI-2j-IoP"/>
+                        <segue destination="5eb-qi-BQj" kind="relationship" relationship="viewControllers" id="ScI-2j-IoP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sJf-o5-3wL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -579,6 +579,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wts-YN-DdE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1542.0289855072465" y="98.641304347826093"/>
+        </scene>
+        <!--Playlists-->
+        <scene sceneID="aYW-gO-5y2">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5eb-qi-BQj" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Playlists" id="IFh-OT-bgY"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="O5f-8f-jzz">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="WTq-ud-YFS" kind="relationship" relationship="rootViewController" id="xdc-FW-ENJ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tHU-Qi-yqq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="213.59999999999999" y="1109.5952023988007"/>
         </scene>
     </scenes>
     <resources>
