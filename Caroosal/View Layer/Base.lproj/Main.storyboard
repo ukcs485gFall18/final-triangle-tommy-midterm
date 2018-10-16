@@ -271,6 +271,14 @@
                                                 <action selector="playButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="jol-v4-cJD"/>
                                             </connections>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ihJ-iF-qXi">
+                                            <rect key="frame" x="267" y="18" width="28" height="28"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <state key="normal" image="fast-forward"/>
+                                            <connections>
+                                                <action selector="plusButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="Qbs-h1-KsX"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <gestureRecognizers/>
                                     <constraints>
@@ -491,6 +499,9 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mrG-Hz-DSy">
                                         <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
                                         <state key="normal" image="rewind"/>
+                                        <connections>
+                                            <action selector="plusButton:" destination="5fx-2A-gHS" eventType="touchUpInside" id="ufj-vX-PAC"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEq-UR-R6r">
                                         <rect key="frame" x="52" y="0.0" width="28" height="28"/>
@@ -508,20 +519,11 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3H7-nB-Vza">
-                                <rect key="frame" x="193" y="161" width="28" height="28"/>
-                                <state key="normal" image="fast-forward"/>
-                                <connections>
-                                    <action selector="addPlaylistTapped:" destination="sTj-eW-olS" eventType="touchUpInside" id="KOJ-rz-JIK"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="0j7-i9-EYJ"/>
-                            <constraint firstItem="3H7-nB-Vza" firstAttribute="top" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="8" id="1mT-6s-rHN"/>
                             <constraint firstItem="2IN-OI-Wt1" firstAttribute="leading" secondItem="paZ-Q5-TZ6" secondAttribute="leadingMargin" id="2dk-nP-Qk2"/>
-                            <constraint firstItem="3H7-nB-Vza" firstAttribute="centerX" secondItem="xOz-xw-DuV" secondAttribute="centerX" id="2sU-80-Vx4"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="centerX" secondItem="Cil-QD-vh6" secondAttribute="centerX" id="3jR-Cd-0WB"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="top" secondItem="Cil-QD-vh6" secondAttribute="bottom" constant="40" id="Obp-uo-ILB"/>
                             <constraint firstItem="djL-bM-Liz" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="20" id="VuE-tO-Hiv"/>
@@ -538,7 +540,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d4K-dB-kUK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="sTj-eW-olS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2010" y="131"/>
         </scene>

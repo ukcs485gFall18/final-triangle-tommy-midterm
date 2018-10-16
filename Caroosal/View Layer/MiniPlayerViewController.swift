@@ -24,6 +24,7 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     @IBOutlet weak var songTitle: UILabel!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var ffButton: UIButton!
+    @IBOutlet weak var plusButton: UIButton!
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -74,7 +75,11 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         }
     }
     
-    
+    @IBAction func plusButtonTapped(_ sender: Any) {
+        print("tapped")
+        print(SpotifyPlayer.shared.currentSong!)
+        SpotifyPlayer.shared.addToPlaylist(song: SpotifyPlayer.shared.currentSong!)
+    }
     
 }
 

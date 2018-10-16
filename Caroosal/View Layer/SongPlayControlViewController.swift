@@ -73,6 +73,13 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
             var newSong = SpotifyPlayer.shared.skipToNextSong()
         }
     }
+    
+    //Plus button that adds the song to the play list in the big player
+    @IBAction func plusButton(_ sender: Any) {
+        
+         SpotifyPlayer.shared.addToPlaylist(song: SpotifyPlayer.shared.currentSong!)
+    }
+    
 }
 
 // MARK: - Internal
