@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseDatabase
 
 class SpotifyPlayer: NSObject {
     enum currentState {
@@ -19,11 +20,13 @@ class SpotifyPlayer: NSObject {
     var currentPlaybackState: currentState?
     var currentPlaylist: [Song]?
     static let shared = SpotifyPlayer()
+    var ref: DatabaseReference!
     
     override init(){
         super.init()
         self.currentPlaybackState = .isNil
         self.currentPlaylist = []
+        self.ref = Database.database().reference()
     }
     
     // set the player to the initialized player
@@ -60,8 +63,8 @@ class SpotifyPlayer: NSObject {
     // add the song to the playlist
     func addToPlaylist(song: Song){
         self.currentPlaylist?.append(song)
+        self.writeSongToFirebase(song: song)
     }
-    
     
     // set the player to skip to the next song in the queue
     // returns the song to be played
@@ -76,4 +79,16 @@ class SpotifyPlayer: NSObject {
         return nil
     }
     
+    // write the entire playlist
+    func writePlaylistToFirebase() {
+        print("writing to firebase")
+        for song in self.currentPlaylist! {
+            print(song.toDict())
+        }
+    }
+    
+    // add the song to the Firebase database
+    func writeSongToFirebase(song: Song){
+        self.ref.child("playlist").childByAutoId().setValue(song.toDict())
+    }
 }

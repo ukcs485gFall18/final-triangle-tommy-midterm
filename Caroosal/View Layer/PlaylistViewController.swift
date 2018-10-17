@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseDatabase
 
 class SongTableCell: UITableViewCell {
     @IBOutlet weak var voteCounterLabel: UILabel!
@@ -16,8 +17,8 @@ class SongTableCell: UITableViewCell {
 }
 
 class PlaylistViewController: UITableViewController {
-//    var SpotifyPlayer.shared.currentPlaylist: [Song] = []
 
+    var ref: DatabaseReference?
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,12 +31,40 @@ class PlaylistViewController: UITableViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         self.tableView.reloadData()
-        print(SpotifyPlayer.shared.currentPlaylist)
     }
+    
+    func setPlaylistListener(){
+        var dataStack = DataStack()
+        var refHandle = self.ref!.child("playlist").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+            let playlistDict = snapshot.value as? [String: Any]
+            //SpotifyPlayer.shared.currentPlaylist?.removeAll()
+            var songArr = [[String: Any]]()
+            for item in playlistDict! {
+                var songVals = item.value as! [String: Any]
+                let artist = songVals["Artist"] as! String
+                let coverURL = songVals["CoverURL"] as! String
+                let duration = 0
+                let mediaURL = songVals["MediaURL"] as! String
+                let title = songVals["Title"] as! String
+                let voteCount = songVals["VoteCount"] as! Int
+                let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL]
+                songArr.append(newDict)
+            }
+            var dictionaryTest:[String: Any] = [:]
+            dictionaryTest["Songs"] = songArr
+            print(dictionaryTest)
+            dataStack.load(dictionary: dictionaryTest) { [weak self] success in
+                print("NEW SONGS NEW SONGS")
+                print(dataStack.allSongs)
+                SpotifyPlayer.shared.currentPlaylist = dataStack.allSongs
+                self?.tableView.reloadData()
+            }
+        })
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 //Portions of this involving search bar created by Steven Gripshover
 class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
@@ -53,6 +54,8 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
                     return
                 }
                 let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
+                print("PRINTING DICT")
+                print(dict)
                 self.datasource.loadSpotify(dict: dict)
             })
         }
@@ -69,6 +72,22 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             self.player!.delegate = self
             try! player!.start(withClientId: auth.clientID)
             self.player!.login(withAccessToken: authSession.accessToken)
+            
+            // Fixing a bug where the audio does not play on device
+            // Code referenced from "Allen's" answer at
+            // https://stackoverflow.com/questions/35457524/avaudioplayer-working-on-simulator-but-not-on-real-device
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
+                
+                do {
+                    try AVAudioSession.sharedInstance().setActive(true)
+                    
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
             print("Player was initialized")
             SpotifyPlayer.shared.setPlayer(player: self.player!)
         }
@@ -112,6 +131,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
                 self.addToPlaylist(song: self.currentSong!)
+//                SpotifyPlayer.shared.writeSongToFirebase(song: self.currentSong!)
             }))
             self.present(alert, animated: true)
             

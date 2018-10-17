@@ -52,7 +52,6 @@ class SongCollectionDatasource: NSObject {
             self?.managedCollection.reloadData()
             print("reloaded data")
         }
-        
     }
     
     //parsetSpotifyTracks function - Coded By Zachary Moore

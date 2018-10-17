@@ -9,10 +9,14 @@
 import UIKit
 
 extension Song {
-    
-    func toDict() -> [String: Any?] {
-        let anyDict = ["Title": self.title,
-                       "Artist": self.artist]
+    // returns the object as a dict so we can write it to firebase
+    func toDict() -> [String: Any] {
+        let anyDict: [String: Any] = ["Title": self.title,
+                                      "Duration": self.duration,
+                                      "Artist": self.artist,
+                                      "MediaURL": self.mediaURL?.absoluteString,
+                                      "CoverURL": self.coverArtURL?.absoluteString,
+                                      "VoteCount": self.voteCount]
         return anyDict
     }
 }

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import FirebaseDatabase
 // LoginViewController
 // Login with Spotify, and upon successful login, go to the main SongViewController scene
 // Created by Thomas Deeter
@@ -98,6 +98,8 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         // send the access token and player over to the SongViewController
         dvc.spotifySession = self.session
         dvc.playlistVC = playlistVC
+        playlistVC.ref = Database.database().reference()
+        playlistVC.setPlaylistListener()
     }
 }
 
