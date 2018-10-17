@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         auth.redirectURL = URL(string: "tdeets.razeware.RazePlayer://")
         auth.sessionUserDefaultsKey = "current session"
+        FirebaseApp.configure()
         return true
     }
     
