@@ -271,10 +271,19 @@
                                                 <action selector="playButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="jol-v4-cJD"/>
                                             </connections>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ihJ-iF-qXi">
+                                            <rect key="frame" x="270" y="20" width="25" height="25"/>
+                                            <state key="normal" image="plus"/>
+                                            <connections>
+                                                <action selector="plusButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="Qbs-h1-KsX"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <gestureRecognizers/>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="vp3-V2-Fac" secondAttribute="trailing" constant="8" id="4Wb-4S-nZs"/>
+                                        <constraint firstItem="ihJ-iF-qXi" firstAttribute="top" secondItem="TAy-5q-Hnm" secondAttribute="top" constant="2" id="6dA-To-wk4"/>
+                                        <constraint firstItem="TAy-5q-Hnm" firstAttribute="leading" secondItem="ihJ-iF-qXi" secondAttribute="trailing" constant="8" id="Dbm-9I-Vnz"/>
                                         <constraint firstItem="vp3-V2-Fac" firstAttribute="leading" secondItem="TAy-5q-Hnm" secondAttribute="trailing" constant="8" id="EDd-ue-GQA"/>
                                         <constraint firstItem="TAy-5q-Hnm" firstAttribute="centerY" secondItem="vp3-V2-Fac" secondAttribute="centerY" id="VYU-wI-Xrf"/>
                                         <constraint firstItem="vp3-V2-Fac" firstAttribute="centerY" secondItem="KOS-rd-SGX" secondAttribute="centerY" id="q40-Y5-cLj"/>
@@ -298,7 +307,7 @@
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y2B-v3-14L">
-                                <rect key="frame" x="84" y="22" width="42" height="20.5"/>
+                                <rect key="frame" x="84" y="21.5" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -507,21 +516,24 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="xOz-xw-DuV">
-                                <rect key="frame" x="141" y="125" width="132" height="28"/>
+                                <rect key="frame" x="142.5" y="125" width="129" height="28"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mrG-Hz-DSy">
-                                        <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
-                                        <state key="normal" image="rewind"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="25" height="28"/>
+                                        <state key="normal" image="plus"/>
+                                        <connections>
+                                            <action selector="plusButton:" destination="5fx-2A-gHS" eventType="touchUpInside" id="ufj-vX-PAC"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEq-UR-R6r">
-                                        <rect key="frame" x="52" y="0.0" width="28" height="28"/>
+                                        <rect key="frame" x="49" y="0.0" width="28" height="28"/>
                                         <state key="normal" image="play"/>
                                         <connections>
                                             <action selector="playButtonTapped:" destination="5fx-2A-gHS" eventType="touchUpInside" id="1HL-fu-FuI"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgU-0i-h5b">
-                                        <rect key="frame" x="104" y="0.0" width="28" height="28"/>
+                                        <rect key="frame" x="101" y="0.0" width="28" height="28"/>
                                         <state key="normal" image="fast-forward"/>
                                         <connections>
                                             <action selector="nextTapped:" destination="5fx-2A-gHS" eventType="touchUpInside" id="50o-ln-gwf"/>
@@ -529,20 +541,11 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3H7-nB-Vza">
-                                <rect key="frame" x="193" y="161" width="28" height="28"/>
-                                <state key="normal" image="fast-forward"/>
-                                <connections>
-                                    <action selector="addPlaylistTapped:" destination="sTj-eW-olS" eventType="touchUpInside" id="KOJ-rz-JIK"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="0j7-i9-EYJ"/>
-                            <constraint firstItem="3H7-nB-Vza" firstAttribute="top" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="8" id="1mT-6s-rHN"/>
                             <constraint firstItem="2IN-OI-Wt1" firstAttribute="leading" secondItem="paZ-Q5-TZ6" secondAttribute="leadingMargin" id="2dk-nP-Qk2"/>
-                            <constraint firstItem="3H7-nB-Vza" firstAttribute="centerX" secondItem="xOz-xw-DuV" secondAttribute="centerX" id="2sU-80-Vx4"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="centerX" secondItem="Cil-QD-vh6" secondAttribute="centerX" id="3jR-Cd-0WB"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="top" secondItem="Cil-QD-vh6" secondAttribute="bottom" constant="40" id="Obp-uo-ILB"/>
                             <constraint firstItem="djL-bM-Liz" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="20" id="VuE-tO-Hiv"/>
@@ -559,7 +562,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d4K-dB-kUK" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="sTj-eW-olS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2010" y="131"/>
         </scene>
@@ -628,7 +630,7 @@
         <image name="music-playlist" width="28" height="28"/>
         <image name="play" width="28" height="28"/>
         <image name="playlist" width="30" height="30"/>
-        <image name="rewind" width="28" height="28"/>
+        <image name="plus" width="25" height="25"/>
         <image name="upvote" width="512" height="512"/>
     </resources>
 </document>

@@ -24,6 +24,7 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     @IBOutlet weak var songTitle: UILabel!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var ffButton: UIButton!
+    @IBOutlet weak var plusButton: UIButton!
     
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -74,8 +75,32 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         }
     }
     
-    
-    
+    @IBAction func plusButtonTapped(_ sender: Any) {
+        // check to make sure the song is not nil
+        var alertTitle: String?
+        var alertMessage: String?
+        if let currSong = SpotifyPlayer.shared.currentSong {
+            SpotifyPlayer.shared.addToPlaylist(song: currSong)
+            alertTitle = "Added to Playlist!"
+            alertMessage = "Successfully added \"\(currSong.title)\" to the playlist"
+            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
+            self.present(alert, animated: true)
+            // code for auto dismissal referenced from
+            // https://stackoverflow.com/questions/27613926/dismiss-uialertview-after-5-seconds-swift
+            let when = DispatchTime.now() + 1
+            DispatchQueue.main.asyncAfter(deadline: when){
+                // your code with delay
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+        else {
+            alertTitle = "No Song Selected"
+            alertMessage = "Please select a song to add to the playlist."
+            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+    }
 }
 
 // MARK: - Internal
