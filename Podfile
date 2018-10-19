@@ -10,6 +10,7 @@ target 'Caroosal' do
   pod 'SwiftyJSON', '~> 4.0'
   pod 'Firebase/Core'
   pod 'Firebase/Database'
+  pod "SwiftSpinner"
 
   target 'CaroosalTests' do
     inherit! :search_paths

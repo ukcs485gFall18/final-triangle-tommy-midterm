@@ -38,6 +38,7 @@ class SpotifyPlayer: NSObject {
     func startSong(song: Song){
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
+            self.currentSong!.ref!.ref.removeValue()
             return
         })
         self.currentPlaybackState = .isPlaying
@@ -71,17 +72,23 @@ class SpotifyPlayer: NSObject {
     func skipToNextSong() -> Song? {
         // TODO: Use the Reccomendation's API endpoint if the queue becomes empty
         if (self.currentPlaylist?.count)! > 0 {
-            let songToPlay = self.currentPlaylist![0]
-            self.startSong(song: songToPlay)
-            self.currentPlaylist?.removeFirst()
-            return songToPlay
+            if self.currentSong != nil {
+                let songToPlay = self.currentPlaylist![0]
+                self.startSong(song: songToPlay)
+                self.currentPlaylist?.removeFirst()
+                return songToPlay
+            }
+            else {
+                let songToPlay = self.currentPlaylist![0]
+                self.startSong(song: songToPlay)
+                self.currentPlaylist?.removeFirst()
+                return songToPlay
+            }
         }
         return nil
     }
-    
     // write the entire playlist
     func writePlaylistToFirebase() {
-        print("writing to firebase")
         for song in self.currentPlaylist! {
             print(song.toDict())
         }
@@ -89,6 +96,8 @@ class SpotifyPlayer: NSObject {
     
     // add the song to the Firebase database
     func writeSongToFirebase(song: Song){
-        self.ref.child("playlist").childByAutoId().setValue(song.toDict())
+        if song.ref != nil {
+            song.ref!.setValue(song.toDict())
+        }
     }
 }

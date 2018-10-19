@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import FirebaseDatabase
 
 // This file is base-code from Tutorial, plus our modifications
 class SongCollectionDatasource: NSObject {
@@ -15,11 +16,13 @@ class SongCollectionDatasource: NSObject {
     // MARK: - Properties
     var dataStack: DataStack
     var managedCollection: UICollectionView
+    var ref: DatabaseReference
     
     // MARK: - Initializers
     init(collectionView: UICollectionView) {
         self.dataStack = DataStack()
         self.managedCollection = collectionView
+        self.ref = Database.database().reference()
         super.init()
         self.managedCollection.dataSource = self
     }
@@ -67,7 +70,7 @@ class SongCollectionDatasource: NSObject {
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
-            
+            songDict["databaseRef"] = self.ref.child("playlist").childByAutoId()
             songArr.append(songDict)
         }
         return songArr
@@ -86,6 +89,7 @@ class SongCollectionDatasource: NSObject {
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
+            songDict["databaseRef"] = self.ref.child("playlist").childByAutoId()
             print(songDict)
             songArr.append(songDict)
         }

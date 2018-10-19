@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import SwiftSpinner
 
 //Portions of this involving search bar created by Steven Gripshover
 class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
@@ -30,6 +31,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        SwiftSpinner.show("Completing Spotify Login")
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
@@ -189,7 +191,7 @@ extension SongViewController: SPTAudioStreamingDelegate {
     // delegate method that calls once the login was successful. Performs a segue to the main controller
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-        print("audioStreamingDidLogin")
+        SwiftSpinner.hide()
     }
 }
 

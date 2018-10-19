@@ -408,10 +408,10 @@
                                     <accessibilityTraits key="traits" button="YES"/>
                                 </accessibility>
                                 <connections>
-                                    <outlet property="albumCover" destination="xKb-KK-hY9" id="Qqi-Sz-Ygf"/>
-                                    <outlet property="artistLabel" destination="w0f-yO-mg6" id="0iF-89-Zpj"/>
-                                    <outlet property="songTitleLabel" destination="k7g-bY-s43" id="Iga-Yn-rHP"/>
-                                    <outlet property="voteCounterLabel" destination="Tn9-fl-bQg" id="8ad-zC-vse"/>
+                                    <outlet property="albumCover" destination="xKb-KK-hY9" id="pPD-LW-ebT"/>
+                                    <outlet property="artistLabel" destination="w0f-yO-mg6" id="2h4-10-VES"/>
+                                    <outlet property="songTitleLabel" destination="k7g-bY-s43" id="fo1-sc-IGH"/>
+                                    <outlet property="voteCounterLabel" destination="Tn9-fl-bQg" id="b0M-G1-9Kk"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -424,7 +424,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T56-bb-mSE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1152.8" y="1109.5952023988007"/>
+            <point key="canvasLocation" x="2092" y="1109.5952023988007"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="6bi-pP-Dgt">
@@ -435,7 +435,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlE-aH-A0P">
-                                <rect key="frame" x="76" y="316.5" width="223" height="34"/>
+                                <rect key="frame" x="76" y="316" width="223" height="35"/>
                                 <color key="backgroundColor" red="0.33401905749999999" green="1" blue="0.2978712295" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="223" id="RfP-kB-vn5"/>
@@ -447,11 +447,25 @@
                                     <action selector="loginPressed:" destination="GxD-LA-2Bt" eventType="touchUpInside" id="FrA-uY-zBA"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZo-Xh-Wye">
+                                <rect key="frame" x="76" y="383" width="223" height="34"/>
+                                <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="8YP-H4-0UE"/>
+                                    <constraint firstAttribute="width" constant="223" id="mrS-Qh-mbt"/>
+                                </constraints>
+                                <state key="normal" title="Vote on Songs">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="VlE-aH-A0P" firstAttribute="centerY" secondItem="yMb-CT-DbJ" secondAttribute="centerY" id="4si-TJ-D12"/>
+                            <constraint firstItem="bZg-K7-fXQ" firstAttribute="bottom" secondItem="aZo-Xh-Wye" secondAttribute="bottom" constant="250" id="9vr-OI-LjQ"/>
                             <constraint firstItem="VlE-aH-A0P" firstAttribute="centerX" secondItem="yMb-CT-DbJ" secondAttribute="centerX" id="YEp-XX-Sz7"/>
+                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="leading" secondItem="VlE-aH-A0P" secondAttribute="leading" id="wRV-mW-djd"/>
+                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="top" secondItem="VlE-aH-A0P" secondAttribute="bottom" constant="32" id="wUI-6g-xOL"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bZg-K7-fXQ"/>
                     </view>
@@ -620,7 +634,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tHU-Qi-yqq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="213.59999999999999" y="1109.5952023988007"/>
+            <point key="canvasLocation" x="1152.8" y="1109.5952023988007"/>
         </scene>
     </scenes>
     <resources>

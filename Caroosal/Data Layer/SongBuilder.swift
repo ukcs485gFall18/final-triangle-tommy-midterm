@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseDatabase
 
 // This file is base-code from Tutorial
 class SongBuilder: NSObject {
@@ -18,6 +19,7 @@ class SongBuilder: NSObject {
     private var mediaURL: URL?
     private var coverArtURL: URL?
     private var voteCount: Int = 0
+    private var ref: DatabaseReference?
     
     func build() -> Song? {
         guard let title = title,
@@ -25,7 +27,7 @@ class SongBuilder: NSObject {
                 return nil
         }
         
-        return Song(title: title, duration: duration, artist: artist, mediaURL: mediaURL, coverArtURL: coverArtURL, voteCount: voteCount)
+        return Song(title: title, duration: duration, artist: artist, mediaURL: mediaURL, coverArtURL: coverArtURL, voteCount: voteCount, ref: ref)
     }
     
     func with(title: String?) -> Self {
@@ -65,4 +67,13 @@ class SongBuilder: NSObject {
         self.voteCount = voteCount ?? 0
         return self
     }
+    
+    func with(databaseRef: DatabaseReference?) -> Self {
+        guard let songRef = databaseRef else {
+            return self
+        }
+        self.ref = databaseRef
+        return self
+    }
+    
 }

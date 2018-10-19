@@ -51,8 +51,23 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     @IBAction func playButtonTapped(_ sender: Any) {
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?: // if the player is not yet initialized, play the current song
-            SpotifyPlayer.shared.startSong(song: currentSong!)
-            self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+            // if there is no song selected and the playlist is not empty
+            if currentSong == nil {
+                if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+                    let alert = UIAlertController(title: "Playlist is Empty", message: "Please select a song or add one to the playlist", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+                else {
+                    currentSong = SpotifyPlayer.shared.skipToNextSong()
+                    self.configure(song: currentSong)
+                    self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                }
+            }
+            else {
+                SpotifyPlayer.shared.startSong(song: currentSong!)
+                self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+            }
         case .isPlaying?: // if the player is currently playing, pause the current song
             self.playButton.setImage(UIImage(named: "play"), for: .normal)
             SpotifyPlayer.shared.pauseSong()

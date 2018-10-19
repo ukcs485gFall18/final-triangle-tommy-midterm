@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseDatabase
 
 extension Song {
     // returns the object as a dict so we can write it to firebase
@@ -18,6 +19,10 @@ extension Song {
                                       "CoverURL": self.coverArtURL?.absoluteString,
                                       "VoteCount": self.voteCount]
         return anyDict
+    }
+    
+    mutating func setRef(newRef: DatabaseReference){
+        self.ref = newRef
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import FirebaseDatabase
 
 enum DataStackState {
     case unloaded
@@ -29,6 +30,8 @@ class DataStack: NSObject {
                     .with(duration: songDictionary["duration"] as? TimeInterval)
                     .with(mediaURL: songDictionary["mediaURL"] as? String)
                     .with(coverArtURL: songDictionary["coverArtURL"] as? String)
+                    .with(voteCount: songDictionary["voteCount"] as? Int)
+                    .with(databaseRef: songDictionary["databaseRef"] as? DatabaseReference)
                 
                 if let song = builder.build() {
                     allSongs.append(song)

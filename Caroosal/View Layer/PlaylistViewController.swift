@@ -9,59 +9,44 @@
 import UIKit
 import FirebaseDatabase
 
-class SongTableCell: UITableViewCell {
-    @IBOutlet weak var voteCounterLabel: UILabel!
-    @IBOutlet weak var albumCover: UIImageView!
-    @IBOutlet weak var songTitleLabel: UILabel!
-    @IBOutlet weak var artistLabel: UILabel!
-}
-
 class PlaylistViewController: UITableViewController {
-
     var ref: DatabaseReference?
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-         self.navigationItem.rightBarButtonItem = self.editButtonItem
+    override func viewDidLoad() {        super.viewDidLoad()        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
     override func viewDidAppear(_ animated: Bool) {
         self.tableView.reloadData()
     }
     
+    // set a listener for playlist updates
     func setPlaylistListener(){
         var dataStack = DataStack()
         var refHandle = self.ref!.child("playlist").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             let playlistDict = snapshot.value as? [String: Any]
-            //SpotifyPlayer.shared.currentPlaylist?.removeAll()
-            var songArr = [[String: Any]]()
-            for item in playlistDict! {
-                var songVals = item.value as! [String: Any]
-                let artist = songVals["Artist"] as! String
-                let coverURL = songVals["CoverURL"] as! String
-                let duration = 0
-                let mediaURL = songVals["MediaURL"] as! String
-                let title = songVals["Title"] as! String
-                let voteCount = songVals["VoteCount"] as! Int
-                let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL]
-                songArr.append(newDict)
-            }
-            var dictionaryTest:[String: Any] = [:]
-            dictionaryTest["Songs"] = songArr
-            print(dictionaryTest)
-            dataStack.load(dictionary: dictionaryTest) { [weak self] success in
-                print("NEW SONGS NEW SONGS")
-                print(dataStack.allSongs)
-                SpotifyPlayer.shared.currentPlaylist = dataStack.allSongs
-                self?.tableView.reloadData()
+            if let songDict = playlistDict {
+                var songArr = [[String: Any]]()
+                for item in songDict {
+                    let newRef = self.ref!.child("playlist").child(item.key)
+                    var songVals = item.value as! [String: Any]
+                    let artist = songVals["Artist"] as! String
+                    let coverURL = songVals["CoverURL"] as! String
+                    let duration = 0
+                    let mediaURL = songVals["MediaURL"] as! String
+                    let title = songVals["Title"] as! String
+                    let voteCount = songVals["VoteCount"] as! Int
+                    let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
+                    songArr.append(newDict)
+                }
+                var dictionaryTest:[String: Any] = [:]
+                dictionaryTest["Songs"] = songArr
+                dataStack.load(dictionary: dictionaryTest) { [weak self] success in
+                    SpotifyPlayer.shared.currentPlaylist = dataStack.allSongs
+                    self?.updatePlaylist()
+                }
             }
         })
     }
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -74,28 +59,38 @@ class PlaylistViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if SpotifyPlayer.shared.currentPlaylist!.isEmpty {
+            return 0
+        }
         return SpotifyPlayer.shared.currentPlaylist!.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
         let currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
-        cell.voteCounterLabel.text = "\(currSong.voteCount)"
+        cell.voteCounterLabel.text = "\(currSong.voteCount!)"
         cell.songTitleLabel.text = currSong.title
         cell.artistLabel.text = currSong.artist
-        //cell.albumCover.image  = currSong.coverArtURL
         currSong.loadSongImage(completion: { image in
             cell.albumCover.image = image
         })
         return cell
     }
     
+    // when the user hits either the upvote / downvote button, update the playlist
+    func updateSongVoteCount(modifier: Int, row: Int){
+        let currSong = SpotifyPlayer.shared.currentPlaylist![row]
+        let newVoteCount = currSong.voteCount! + modifier
+        let childUpdates = ["VoteCount": newVoteCount]
+        currSong.ref!.updateChildValues(childUpdates)
+    }
+    
+    
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount = SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount + 1
-            updatePlaylist()
+            updateSongVoteCount(modifier: 1, row: indexPath.row)
         }
     }
     
@@ -103,16 +98,15 @@ class PlaylistViewController: UITableViewController {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount > 0 { // no negatives
-                SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount = SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount - 1
+            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > 0 { // no negatives
+                updateSongVoteCount(modifier: -1, row: indexPath.row)
             }
-            updatePlaylist()
         }
     }
     
     // sort the playlist in descending order, set it in the player, and reload the tableView
     func updatePlaylist() {
-        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount > $1.voteCount})
+        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount! > $1.voteCount!})
         self.tableView.reloadData()
     }
     
