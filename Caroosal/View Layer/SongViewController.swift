@@ -224,7 +224,7 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         print("Started Playing Track")
-        print(trackUri)
+        SwiftSpinner.hide()
         if let maxi = self.currentMaxiCard {
             let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
             maxi.coverArtImage.image = UIImage(data: coverImageData! as Data)

@@ -25,6 +25,8 @@ class PlaylistViewController: UITableViewController {
         var refHandle = self.ref!.child("playlist").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             let playlistDict = snapshot.value as? [String: Any]
             if let songDict = playlistDict {
+                print("PRINTING SONG DICT")
+                print(songDict)
                 var songArr = [[String: Any]]()
                 for item in songDict {
                     let newRef = self.ref!.child("playlist").child(item.key)
@@ -81,6 +83,12 @@ class PlaylistViewController: UITableViewController {
     func updateSongVoteCount(modifier: Int, row: Int){
         let currSong = SpotifyPlayer.shared.currentPlaylist![row]
         let newVoteCount = currSong.voteCount! + modifier
+        if newVoteCount == -5 {
+            SpotifyPlayer.shared.currentPlaylist?.remove(at: row)
+            currSong.ref?.removeValue()
+            self.tableView.reloadData()
+            return
+        }
         let childUpdates = ["VoteCount": newVoteCount]
         currSong.ref!.updateChildValues(childUpdates)
     }
@@ -98,7 +106,7 @@ class PlaylistViewController: UITableViewController {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > 0 { // no negatives
+            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > -5 { // if song gets to -5, gets booted
                 updateSongVoteCount(modifier: -1, row: indexPath.row)
             }
         }

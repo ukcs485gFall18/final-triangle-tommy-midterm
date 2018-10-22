@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseDatabase
+import SwiftSpinner
 
 class SpotifyPlayer: NSObject {
     enum currentState {
@@ -39,6 +40,7 @@ class SpotifyPlayer: NSObject {
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
             self.currentSong!.ref!.ref.removeValue()
+            SwiftSpinner.show("Loading Track")
             return
         })
         self.currentPlaybackState = .isPlaying
