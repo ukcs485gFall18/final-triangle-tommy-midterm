@@ -8,11 +8,16 @@
 
 import UIKit
 import FirebaseDatabase
+import EmptyDataSet_Swift
 
-class PlaylistViewController: UITableViewController {
+class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
     var ref: DatabaseReference?
-    override func viewDidLoad() {        super.viewDidLoad()        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    override func viewDidLoad() {
+        super.viewDidLoad()
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.tableFooterView = UIView()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -22,14 +27,12 @@ class PlaylistViewController: UITableViewController {
     // set a listener for playlist updates
     func setPlaylistListener(){
         var dataStack = DataStack()
-        var refHandle = self.ref!.child("playlist").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        var refHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             let playlistDict = snapshot.value as? [String: Any]
             if let songDict = playlistDict {
-                print("PRINTING SONG DICT")
-                print(songDict)
                 var songArr = [[String: Any]]()
                 for item in songDict {
-                    let newRef = self.ref!.child("playlist").child(item.key)
+                    let newRef = self.ref!.child("songs").child("queue").child(item.key)
                     var songVals = item.value as! [String: Any]
                     let artist = songVals["Artist"] as! String
                     let coverURL = songVals["CoverURL"] as! String
@@ -82,6 +85,7 @@ class PlaylistViewController: UITableViewController {
     // when the user hits either the upvote / downvote button, update the playlist
     func updateSongVoteCount(modifier: Int, row: Int){
         let currSong = SpotifyPlayer.shared.currentPlaylist![row]
+        print(currSong.ref!)
         let newVoteCount = currSong.voteCount! + modifier
         if newVoteCount == -5 {
             SpotifyPlayer.shared.currentPlaylist?.remove(at: row)
@@ -122,19 +126,11 @@ class PlaylistViewController: UITableViewController {
         return 60.0
     }
     
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             //Delete the song from the playlist
+            SpotifyPlayer.shared.currentPlaylist?[indexPath.row].ref!.removeValue()
             SpotifyPlayer.shared.currentPlaylist?.remove(at: indexPath.row)
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
@@ -145,21 +141,23 @@ class PlaylistViewController: UITableViewController {
     }
     
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    // MARK: - Empty DataSource Delegates
+    
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "No Songs in the Queue"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "Add some songs to the queue and they will be displayed right here!"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
     }
-    */
 
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "song")
+    }
     /*
     // MARK: - Navigation
 
@@ -170,5 +168,8 @@ class PlaylistViewController: UITableViewController {
     }
     */
 
+    
+    
+    
 }
 

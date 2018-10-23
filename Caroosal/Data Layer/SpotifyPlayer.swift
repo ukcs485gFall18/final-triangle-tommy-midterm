@@ -40,6 +40,9 @@ class SpotifyPlayer: NSObject {
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
             self.currentSong!.ref!.ref.removeValue()
+            // set as the current song in the firebase database
+            self.currentSong!.ref! = self.ref.child("songs").child("currentSong")
+            self.writeSongToFirebase(song: self.currentSong!)
             SwiftSpinner.show("Loading Track")
             return
         })
@@ -88,12 +91,6 @@ class SpotifyPlayer: NSObject {
             }
         }
         return nil
-    }
-    // write the entire playlist
-    func writePlaylistToFirebase() {
-        for song in self.currentPlaylist! {
-            print(song.toDict())
-        }
     }
     
     // add the song to the Firebase database

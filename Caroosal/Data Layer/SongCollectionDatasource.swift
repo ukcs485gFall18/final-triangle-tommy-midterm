@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyJSON
 import FirebaseDatabase
+import EmptyDataSet_Swift
 
 // This file is base-code from Tutorial, plus our modifications
 class SongCollectionDatasource: NSObject {
@@ -25,6 +26,8 @@ class SongCollectionDatasource: NSObject {
         self.ref = Database.database().reference()
         super.init()
         self.managedCollection.dataSource = self
+        self.managedCollection.emptyDataSetSource = self
+        self.managedCollection.emptyDataSetDelegate = self
     }
     
     func song(at index: Int) -> Song {
@@ -53,7 +56,6 @@ class SongCollectionDatasource: NSObject {
         dictionaryTest["Songs"] = dict
         dataStack.load(dictionary: dictionaryTest) { [weak self] success in
             self?.managedCollection.reloadData()
-            print("reloaded data")
         }
     }
     
@@ -70,7 +72,7 @@ class SongCollectionDatasource: NSObject {
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
-            songDict["databaseRef"] = self.ref.child("playlist").childByAutoId()
+            songDict["databaseRef"] = self.ref.child("songs").child("queue").childByAutoId()
             songArr.append(songDict)
         }
         return songArr
@@ -83,14 +85,12 @@ class SongCollectionDatasource: NSObject {
         for i in 0..<songs["tracks"]["items"].count {
             var songDict: [String: Any] = [:]
             var song = songs["tracks"]["items"][i]
-            print(song)
             songDict["title"] = song["name"].string
             songDict["artist"] = song["artists"][0]["name"].string
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
-            songDict["databaseRef"] = self.ref.child("playlist").childByAutoId()
-            print(songDict)
+            songDict["databaseRef"] = self.ref.child("songs").child("queue").childByAutoId()
             songArr.append(songDict)
         }
         return songArr
@@ -121,5 +121,23 @@ extension SongCollectionDatasource: UICollectionViewDataSource {
             cell.coverArt.image = image
         }
         return cell
+    }
+}
+
+extension SongCollectionDatasource: EmptyDataSetSource, EmptyDataSetDelegate {
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "No results found"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "Please make sure your words are spelled correctly, or use a different search query."
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "search")
     }
 }

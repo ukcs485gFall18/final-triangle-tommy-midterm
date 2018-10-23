@@ -11,6 +11,7 @@ target 'Caroosal' do
   pod 'Firebase/Core'
   pod 'Firebase/Database'
   pod "SwiftSpinner"
+  pod 'EmptyDataSet-Swift', '~> 4.2.0'
 
   target 'CaroosalTests' do
     inherit! :search_paths

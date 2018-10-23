@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseDatabase
+import SwiftSpinner
 // LoginViewController
 // Login with Spotify, and upon successful login, go to the main SongViewController scene
 // Created by Thomas Deeter
@@ -94,6 +95,7 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
         
         if segue.identifier == "loginSuccessful" {
+            SwiftSpinner.show("Completing Spotify Login")
             let tabVc = segue.destination as! UITabBarController
             let dvc = tabVc.viewControllers![0] as! SongViewController
             let nav = tabVc.viewControllers![1] as! UINavigationController

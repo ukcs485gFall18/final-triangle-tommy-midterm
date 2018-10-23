@@ -8,13 +8,17 @@
 
 import UIKit
 import FirebaseDatabase
+import EmptyDataSet_Swift
 
-class VoterViewController: UITableViewController {
+class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
 
     var ref: DatabaseReference?
     var currentPlaylist: [Song]?
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.tableFooterView = UIView()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -24,7 +28,7 @@ class VoterViewController: UITableViewController {
     // set a listener for playlist updates
     func setPlaylistListener(){
         var dataStack = DataStack()
-        var refHandle = self.ref!.child("playlist").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        var refHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             let playlistDict = snapshot.value as? [String: Any]
             if let songDict = playlistDict {
                 var songArr = [[String: Any]]()
@@ -47,6 +51,36 @@ class VoterViewController: UITableViewController {
                     self?.updatePlaylist()
                 }
             }
+        })
+        var refHandle2 = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            var ref3 = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(snapshot) in
+                let playlistDict = snapshot.value as? [String: Any]
+                if let songDict = playlistDict {
+                    var songArr = [[String: Any]]()
+                    for item in songDict {
+                        let newRef = self.ref!.child("playlist").child(item.key)
+                        var songVals = item.value as! [String: Any]
+                        let artist = songVals["Artist"] as! String
+                        let coverURL = songVals["CoverURL"] as! String
+                        let duration = 0
+                        let mediaURL = songVals["MediaURL"] as! String
+                        let title = songVals["Title"] as! String
+                        let voteCount = songVals["VoteCount"] as! Int
+                        let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
+                        songArr.append(newDict)
+                    }
+                    var dictionaryTest:[String: Any] = [:]
+                    dictionaryTest["Songs"] = songArr
+                    dataStack.load(dictionary: dictionaryTest) { [weak self] success in
+                        self!.currentPlaylist = dataStack.allSongs
+                        self?.updatePlaylist()
+                    }
+                }
+                else {
+                    self.currentPlaylist = []
+                    self.updatePlaylist()
+                }
+            })
         })
     }
 
@@ -120,6 +154,24 @@ class VoterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
+    }
+    
+    // MARK: - Empty DataSource Delegates
+    
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "No Songs in the Queue"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "Add some songs to the queue and they will be displayed right here!"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "song")
     }
     
     /*

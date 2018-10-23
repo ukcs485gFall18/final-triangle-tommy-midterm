@@ -31,7 +31,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        SwiftSpinner.show("Completing Spotify Login")
+//        SwiftSpinner.show("Completing Spotify Login")
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
@@ -49,19 +49,20 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             print(token)
             // runs a query for Drake songs on load
             let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
-            SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
-                if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
-                    print("Spotify Query nil, loading canned data")
-                    //self.datasource.load()
-                    return
-                }
-                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
-                print("PRINTING DICT")
-                print(dict)
-                self.datasource.loadSpotify(dict: dict)
-            })
+            self.performSpotifyQuery(queryURL: queryURL)
         }
         self.miniPlayer!.player = self.player
+    }
+    
+    func performSpotifyQuery(queryURL: String){
+        SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: self.accessToken!, completionHandler: { data in
+            if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
+                print("Spotify Query nil")
+                return
+            }
+            let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
+            self.datasource.loadSpotify(dict: dict)
+        })
     }
     
     // Initialize the Spotify streaming controller
@@ -101,15 +102,15 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let token = self.accessToken {
-            let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-            //Here is where the link is changed
-            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
-            // loads user's top songs as a default
-            SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
-                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
-                print(dict)
-                self.datasource.loadSpotify(dict: dict)
-            })
+            var queryURL: String?
+            if searchText.isEmpty {
+                queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
+            }
+            else {
+                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
+            }
+            self.performSpotifyQuery(queryURL: queryURL!)
         }
     }
     
@@ -133,7 +134,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
                 self.addToPlaylist(song: self.currentSong!)
-//                SpotifyPlayer.shared.writeSongToFirebase(song: self.currentSong!)
             }))
             self.present(alert, animated: true)
             
