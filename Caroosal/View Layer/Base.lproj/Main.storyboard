@@ -410,7 +410,9 @@
                                 <connections>
                                     <outlet property="albumCover" destination="xKb-KK-hY9" id="pPD-LW-ebT"/>
                                     <outlet property="artistLabel" destination="w0f-yO-mg6" id="2h4-10-VES"/>
+                                    <outlet property="downvoteButton" destination="tK7-bw-v8F" id="M54-Pb-buE"/>
                                     <outlet property="songTitleLabel" destination="k7g-bY-s43" id="fo1-sc-IGH"/>
+                                    <outlet property="upvoteButton" destination="17d-ex-Mim" id="XFo-2d-YD3"/>
                                     <outlet property="voteCounterLabel" destination="Tn9-fl-bQg" id="b0M-G1-9Kk"/>
                                 </connections>
                             </tableViewCell>
