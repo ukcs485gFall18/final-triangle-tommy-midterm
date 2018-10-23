@@ -10,9 +10,12 @@ import UIKit
 import FirebaseDatabase
 import EmptyDataSet_Swift
 
+
+
 class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
 
     var ref: DatabaseReference?
+    var votedOn = [Song]()
     var currentPlaylist: [Song]?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +31,6 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
 
     // set a listener for playlist updates
     func setPlaylistListener(){
-        var dataStack = DataStack()
         // listen for updates to vote counts and songs being added to the playlist
         var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             self.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
@@ -88,10 +90,22 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         currSong.ref!.updateChildValues(childUpdates)
     }
 
+    
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
+        
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            for currSong in votedOn
+            {
+                if(votedSong.ref!.key == currSong.ref!.key){
+                    return
+                }
+                
+            }
+            
+            votedOn.append(votedSong)
             updateSongVoteCount(modifier: 1, row: indexPath.row)
         }
     }
@@ -100,6 +114,15 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            for currSong in votedOn
+            {
+                if(votedSong.ref!.key == currSong.ref!.key){
+                    return
+                }
+                
+            }
+            votedOn.append(votedSong)
             if self.currentPlaylist![indexPath.row].voteCount! > -5 {
                 updateSongVoteCount(modifier: -1, row: indexPath.row)
             }

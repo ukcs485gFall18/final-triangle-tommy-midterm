@@ -103,11 +103,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         if let token = self.accessToken {
             var queryURL: String?
             if searchText.isEmpty {
-                queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
+                queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
             }
             else {
                 let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
             }
             self.performSpotifyQuery(queryURL: queryURL!)
         }
