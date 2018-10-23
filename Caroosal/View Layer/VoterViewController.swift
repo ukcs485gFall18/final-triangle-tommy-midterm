@@ -19,6 +19,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
+        self.navigationItem.title = "Queue"
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -28,58 +29,16 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     // set a listener for playlist updates
     func setPlaylistListener(){
         var dataStack = DataStack()
-        var refHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
-            let playlistDict = snapshot.value as? [String: Any]
-            if let songDict = playlistDict {
-                var songArr = [[String: Any]]()
-                for item in songDict {
-                    let newRef = self.ref!.child("playlist").child(item.key)
-                    var songVals = item.value as! [String: Any]
-                    let artist = songVals["Artist"] as! String
-                    let coverURL = songVals["CoverURL"] as! String
-                    let duration = 0
-                    let mediaURL = songVals["MediaURL"] as! String
-                    let title = songVals["Title"] as! String
-                    let voteCount = songVals["VoteCount"] as! Int
-                    let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
-                    songArr.append(newDict)
-                }
-                var dictionaryTest:[String: Any] = [:]
-                dictionaryTest["Songs"] = songArr
-                dataStack.load(dictionary: dictionaryTest) { [weak self] success in
-                    self!.currentPlaylist = dataStack.allSongs
-                    self?.updatePlaylist()
-                }
-            }
+        // listen for updates to vote counts and songs being added to the playlist
+        var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+            self.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
+            self.updatePlaylist()
         })
-        var refHandle2 = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
-            var ref3 = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(snapshot) in
-                let playlistDict = snapshot.value as? [String: Any]
-                if let songDict = playlistDict {
-                    var songArr = [[String: Any]]()
-                    for item in songDict {
-                        let newRef = self.ref!.child("playlist").child(item.key)
-                        var songVals = item.value as! [String: Any]
-                        let artist = songVals["Artist"] as! String
-                        let coverURL = songVals["CoverURL"] as! String
-                        let duration = 0
-                        let mediaURL = songVals["MediaURL"] as! String
-                        let title = songVals["Title"] as! String
-                        let voteCount = songVals["VoteCount"] as! Int
-                        let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
-                        songArr.append(newDict)
-                    }
-                    var dictionaryTest:[String: Any] = [:]
-                    dictionaryTest["Songs"] = songArr
-                    dataStack.load(dictionary: dictionaryTest) { [weak self] success in
-                        self!.currentPlaylist = dataStack.allSongs
-                        self?.updatePlaylist()
-                    }
-                }
-                else {
-                    self.currentPlaylist = []
-                    self.updatePlaylist()
-                }
+        // listen for songs being removed from the playlist
+        var removeHandle = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            var updateRef = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(snapshot) in
+                self.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
+                self.updatePlaylist()
             })
         })
     }
@@ -115,8 +74,10 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
 
     // when the user hits either the upvote / downvote button, update the playlist
     func updateSongVoteCount(modifier: Int, row: Int){
+        // get the song at the given row
         let currSong = self.currentPlaylist![row]
         let newVoteCount = currSong.voteCount! + modifier
+        // remove the song if the vote count hits -5
         if newVoteCount == -5 {
             self.currentPlaylist!.remove(at: row)
             currSong.ref?.removeValue()
@@ -126,7 +87,6 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         let childUpdates = ["VoteCount": newVoteCount]
         currSong.ref!.updateChildValues(childUpdates)
     }
-
 
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
@@ -155,6 +115,15 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Party Queue"
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25.0
+    }
+    
     
     // MARK: - Empty DataSource Delegates
     

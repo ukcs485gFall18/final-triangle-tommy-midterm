@@ -95,7 +95,7 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         var alertTitle: String?
         var alertMessage: String?
         if let currSong = SpotifyPlayer.shared.currentSong {
-            SpotifyPlayer.shared.addToPlaylist(song: currSong)
+            SpotifyPlayer.shared.addToPlaylist(song: currSong, isCurrent: true)
             alertTitle = "Added to Playlist!"
             alertMessage = "Successfully added \"\(currSong.title)\" to the playlist"
             let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)

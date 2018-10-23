@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Define the song cells in the table view
 class SongTableCell: UITableViewCell {
     @IBOutlet weak var voteCounterLabel: UILabel!
     @IBOutlet weak var albumCover: UIImageView!

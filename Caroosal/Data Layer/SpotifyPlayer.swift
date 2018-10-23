@@ -42,7 +42,7 @@ class SpotifyPlayer: NSObject {
             self.currentSong!.ref!.ref.removeValue()
             // set as the current song in the firebase database
             self.currentSong!.ref! = self.ref.child("songs").child("currentSong")
-            self.writeSongToFirebase(song: self.currentSong!)
+            self.writeSongToFirebase(song: self.currentSong!, isCurrent: false)
             SwiftSpinner.show("Loading Track")
             return
         })
@@ -67,9 +67,9 @@ class SpotifyPlayer: NSObject {
     }
     
     // add the song to the playlist
-    func addToPlaylist(song: Song){
+    func addToPlaylist(song: Song, isCurrent: Bool){
         self.currentPlaylist?.append(song)
-        self.writeSongToFirebase(song: song)
+        self.writeSongToFirebase(song: song, isCurrent: isCurrent)
     }
     
     // set the player to skip to the next song in the queue
@@ -94,9 +94,16 @@ class SpotifyPlayer: NSObject {
     }
     
     // add the song to the Firebase database
-    func writeSongToFirebase(song: Song){
-        if song.ref != nil {
-            song.ref!.setValue(song.toDict())
+    // song: Song to write to database, isCurrent: True if the song is the currently playing one
+    func writeSongToFirebase(song: Song, isCurrent: Bool){
+        if isCurrent{
+            let newSongRef = self.ref.child("songs").child("queue").childByAutoId()
+            newSongRef.setValue(song.toDict())
+        }
+        else {
+            if song.ref != nil {
+                song.ref!.setValue(song.toDict())
+            }
         }
     }
 }

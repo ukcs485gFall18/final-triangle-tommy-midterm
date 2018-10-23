@@ -7,6 +7,7 @@
 //
 import UIKit
 // This file is base-code from Tutorial
+// SongCell refers to the songs in the collection view
 class SongCell: UICollectionViewCell {
     
     // MARK: - IBOutlets

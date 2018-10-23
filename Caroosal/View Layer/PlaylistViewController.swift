@@ -14,7 +14,9 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     var ref: DatabaseReference?
     override func viewDidLoad() {
         super.viewDidLoad()
+        // set the delegates and navigation item details
         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        self.navigationItem.title = "Queue"
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
@@ -24,32 +26,18 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         self.tableView.reloadData()
     }
     
-    // set a listener for playlist updates
     func setPlaylistListener(){
-        var dataStack = DataStack()
-        var refHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
-            let playlistDict = snapshot.value as? [String: Any]
-            if let songDict = playlistDict {
-                var songArr = [[String: Any]]()
-                for item in songDict {
-                    let newRef = self.ref!.child("songs").child("queue").child(item.key)
-                    var songVals = item.value as! [String: Any]
-                    let artist = songVals["Artist"] as! String
-                    let coverURL = songVals["CoverURL"] as! String
-                    let duration = 0
-                    let mediaURL = songVals["MediaURL"] as! String
-                    let title = songVals["Title"] as! String
-                    let voteCount = songVals["VoteCount"] as! Int
-                    let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
-                    songArr.append(newDict)
-                }
-                var dictionaryTest:[String: Any] = [:]
-                dictionaryTest["Songs"] = songArr
-                dataStack.load(dictionary: dictionaryTest) { [weak self] success in
-                    SpotifyPlayer.shared.currentPlaylist = dataStack.allSongs
-                    self?.updatePlaylist()
-                }
-            }
+        // listen for updates to vote counts and songs being added to the playlist
+        var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+            SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
+            self.updatePlaylist()
+        })
+        // listen for songs being removed from the playlist
+        var removeHandle = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            var updateHandle = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
+                SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: datasnapshot)
+                self.updatePlaylist()
+            })
         })
     }
     
@@ -140,6 +128,14 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         }    
     }
     
+    // Add the titles for the current song section here
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Party Queue"
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25.0
+    }
 
     // MARK: - Empty DataSource Delegates
     

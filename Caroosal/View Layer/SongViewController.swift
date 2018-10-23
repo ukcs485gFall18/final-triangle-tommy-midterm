@@ -31,7 +31,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-//        SwiftSpinner.show("Completing Spotify Login")
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
@@ -115,7 +114,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     }
     
     func addToPlaylist(song: Song){
-        SpotifyPlayer.shared.addToPlaylist(song: song)
+        SpotifyPlayer.shared.addToPlaylist(song: song, isCurrent: false)
         self.playlistVC?.tableView.reloadData()
     }
     
@@ -126,8 +125,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         let p = gestureReconizer.location(in: self.collectionView)
         let indexPath = self.collectionView.indexPathForItem(at: p)
         if let index = indexPath {
-            //var cell = self.collectionView.cellForItem(at: index)
-            // do stuff with your cell, for example print the indexPath
             currentSong = datasource.song(at: index.row)
             
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
@@ -173,7 +170,6 @@ extension SongViewController: MiniPlayerDelegate {
                 return
         }
         self.currentMaxiCard = maxiCard
-        print(self.currentMaxiCard!)
         //2. Take snapshot of current view
         maxiCard.backingImage = view.makeSnapshot()
         //3. Set current song in the Maxi Player
@@ -223,7 +219,6 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
         }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
-        print("Started Playing Track")
         SwiftSpinner.hide()
         if let maxi = self.currentMaxiCard {
             let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
