@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseDatabase
 // This file is base-code from Tutorial
 struct Song {
     
@@ -16,5 +17,6 @@ struct Song {
     let artist: String
     var mediaURL: URL?
     var coverArtURL: URL?
-    var voteCount: Int = 0
+    var voteCount: Int?
+    var ref: DatabaseReference?
 }

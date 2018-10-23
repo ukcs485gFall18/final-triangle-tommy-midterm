@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import FirebaseDatabase
+import SwiftSpinner
 
 class SpotifyPlayer: NSObject {
     enum currentState {
@@ -19,11 +21,13 @@ class SpotifyPlayer: NSObject {
     var currentPlaybackState: currentState?
     var currentPlaylist: [Song]?
     static let shared = SpotifyPlayer()
+    var ref: DatabaseReference!
     
     override init(){
         super.init()
         self.currentPlaybackState = .isNil
         self.currentPlaylist = []
+        self.ref = Database.database().reference()
     }
     
     // set the player to the initialized player
@@ -35,6 +39,11 @@ class SpotifyPlayer: NSObject {
     func startSong(song: Song){
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
+            self.currentSong!.ref!.ref.removeValue()
+            // set as the current song in the firebase database
+            self.currentSong!.ref! = self.ref.child("songs").child("currentSong")
+            self.writeSongToFirebase(song: self.currentSong!, isCurrent: false)
+            SwiftSpinner.show("Loading Track")
             return
         })
         self.currentPlaybackState = .isPlaying
@@ -58,22 +67,43 @@ class SpotifyPlayer: NSObject {
     }
     
     // add the song to the playlist
-    func addToPlaylist(song: Song){
+    func addToPlaylist(song: Song, isCurrent: Bool){
         self.currentPlaylist?.append(song)
+        self.writeSongToFirebase(song: song, isCurrent: isCurrent)
     }
-    
     
     // set the player to skip to the next song in the queue
     // returns the song to be played
     func skipToNextSong() -> Song? {
         // TODO: Use the Reccomendation's API endpoint if the queue becomes empty
         if (self.currentPlaylist?.count)! > 0 {
-            let songToPlay = self.currentPlaylist![0]
-            self.startSong(song: songToPlay)
-            self.currentPlaylist?.removeFirst()
-            return songToPlay
+            if self.currentSong != nil {
+                let songToPlay = self.currentPlaylist![0]
+                self.startSong(song: songToPlay)
+                self.currentPlaylist?.removeFirst()
+                return songToPlay
+            }
+            else {
+                let songToPlay = self.currentPlaylist![0]
+                self.startSong(song: songToPlay)
+                self.currentPlaylist?.removeFirst()
+                return songToPlay
+            }
         }
         return nil
     }
     
+    // add the song to the Firebase database
+    // song: Song to write to database, isCurrent: True if the song is the currently playing one
+    func writeSongToFirebase(song: Song, isCurrent: Bool){
+        if isCurrent{
+            let newSongRef = self.ref.child("songs").child("queue").childByAutoId()
+            newSongRef.setValue(song.toDict())
+        }
+        else {
+            if song.ref != nil {
+                song.ref!.setValue(song.toDict())
+            }
+        }
+    }
 }

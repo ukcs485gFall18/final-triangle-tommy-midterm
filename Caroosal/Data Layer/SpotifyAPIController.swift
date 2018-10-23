@@ -22,7 +22,6 @@ class SpotifyAPIController: NSObject {
         let token = "Bearer \(accessToken)"
         let headers = ["Accept":"application/json", "Authorization": token]
         let queryURL = baseSpotifyUrl + apiURL
-        print(queryURL)
         // send GET request and do completion handler on response JSON
         Alamofire.request(queryURL, method: .get, parameters: nil, headers: headers).responseJSON(completionHandler: {
             response in

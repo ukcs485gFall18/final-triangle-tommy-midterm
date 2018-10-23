@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVKit
+import SwiftSpinner
 
 //Portions of this involving search bar created by Steven Gripshover
 class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
@@ -46,17 +48,20 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             print(token)
             // runs a query for Drake songs on load
             let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
-            SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
-                if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
-                    print("Spotify Query nil, loading canned data")
-                    //self.datasource.load()
-                    return
-                }
-                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
-                self.datasource.loadSpotify(dict: dict)
-            })
+            self.performSpotifyQuery(queryURL: queryURL)
         }
         self.miniPlayer!.player = self.player
+    }
+    
+    func performSpotifyQuery(queryURL: String){
+        SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: self.accessToken!, completionHandler: { data in
+            if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
+                print("Spotify Query nil")
+                return
+            }
+            let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
+            self.datasource.loadSpotify(dict: dict)
+        })
     }
     
     // Initialize the Spotify streaming controller
@@ -69,6 +74,22 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             self.player!.delegate = self
             try! player!.start(withClientId: auth.clientID)
             self.player!.login(withAccessToken: authSession.accessToken)
+            
+            // Fixing a bug where the audio does not play on device
+            // Code referenced from "Allen's" answer at
+            // https://stackoverflow.com/questions/35457524/avaudioplayer-working-on-simulator-but-not-on-real-device
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
+                
+                do {
+                    try AVAudioSession.sharedInstance().setActive(true)
+                    
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            } catch let error as NSError {
+                print(error.localizedDescription)
+            }
             print("Player was initialized")
             SpotifyPlayer.shared.setPlayer(player: self.player!)
         }
@@ -80,20 +101,20 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if let token = self.accessToken {
-            let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-            //Here is where the link is changed
-            let queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
-            // loads user's top songs as a default
-            SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: token, completionHandler: { data in
-                let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
-                print(dict)
-                self.datasource.loadSpotify(dict: dict)
-            })
+            var queryURL: String?
+            if searchText.isEmpty {
+                queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
+            }
+            else {
+                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
+            }
+            self.performSpotifyQuery(queryURL: queryURL!)
         }
     }
     
     func addToPlaylist(song: Song){
-        SpotifyPlayer.shared.addToPlaylist(song: song)
+        SpotifyPlayer.shared.addToPlaylist(song: song, isCurrent: false)
         self.playlistVC?.tableView.reloadData()
     }
     
@@ -104,8 +125,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         let p = gestureReconizer.location(in: self.collectionView)
         let indexPath = self.collectionView.indexPathForItem(at: p)
         if let index = indexPath {
-            //var cell = self.collectionView.cellForItem(at: index)
-            // do stuff with your cell, for example print the indexPath
             currentSong = datasource.song(at: index.row)
             
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
@@ -151,7 +170,6 @@ extension SongViewController: MiniPlayerDelegate {
                 return
         }
         self.currentMaxiCard = maxiCard
-        print(self.currentMaxiCard!)
         //2. Take snapshot of current view
         maxiCard.backingImage = view.makeSnapshot()
         //3. Set current song in the Maxi Player
@@ -169,7 +187,7 @@ extension SongViewController: SPTAudioStreamingDelegate {
     // delegate method that calls once the login was successful. Performs a segue to the main controller
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-        print("audioStreamingDidLogin")
+        SwiftSpinner.hide()
     }
 }
 
@@ -201,8 +219,7 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
         }
     }
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
-        print("Started Playing Track")
-        print(trackUri)
+        SwiftSpinner.hide()
         if let maxi = self.currentMaxiCard {
             let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
             maxi.coverArtImage.image = UIImage(data: coverImageData! as Data)

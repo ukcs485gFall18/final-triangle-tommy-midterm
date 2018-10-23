@@ -7,35 +7,42 @@
 //
 
 import UIKit
+import FirebaseDatabase
+import EmptyDataSet_Swift
 
-class SongTableCell: UITableViewCell {
-    @IBOutlet weak var voteCounterLabel: UILabel!
-    @IBOutlet weak var albumCover: UIImageView!
-    @IBOutlet weak var songTitleLabel: UILabel!
-    @IBOutlet weak var artistLabel: UILabel!
-}
-
-class PlaylistViewController: UITableViewController {
-//    var SpotifyPlayer.shared.currentPlaylist: [Song] = []
-
+class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
+    var ref: DatabaseReference?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-         self.navigationItem.rightBarButtonItem = self.editButtonItem
+        // set the delegates and navigation item details
+        self.navigationItem.rightBarButtonItem = self.editButtonItem
+        self.navigationItem.title = "Queue"
+        tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.tableFooterView = UIView()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         self.tableView.reloadData()
-        print(SpotifyPlayer.shared.currentPlaylist)
+    }
+    
+    func setPlaylistListener(){
+        // listen for updates to vote counts and songs being added to the playlist
+        var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+            SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
+            self.updatePlaylist()
+        })
+        // listen for songs being removed from the playlist
+        var removeHandle = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            var updateHandle = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
+                SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: datasnapshot)
+                self.updatePlaylist()
+            })
+        })
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source
@@ -45,28 +52,45 @@ class PlaylistViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if SpotifyPlayer.shared.currentPlaylist!.isEmpty {
+            return 0
+        }
         return SpotifyPlayer.shared.currentPlaylist!.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
         let currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
-        cell.voteCounterLabel.text = "\(currSong.voteCount)"
+        cell.voteCounterLabel.text = "\(currSong.voteCount!)"
         cell.songTitleLabel.text = currSong.title
         cell.artistLabel.text = currSong.artist
-        //cell.albumCover.image  = currSong.coverArtURL
         currSong.loadSongImage(completion: { image in
             cell.albumCover.image = image
         })
         return cell
     }
     
+    // when the user hits either the upvote / downvote button, update the playlist
+    func updateSongVoteCount(modifier: Int, row: Int){
+        let currSong = SpotifyPlayer.shared.currentPlaylist![row]
+        print(currSong.ref!)
+        let newVoteCount = currSong.voteCount! + modifier
+        if newVoteCount == -5 {
+            SpotifyPlayer.shared.currentPlaylist?.remove(at: row)
+            currSong.ref?.removeValue()
+            self.tableView.reloadData()
+            return
+        }
+        let childUpdates = ["VoteCount": newVoteCount]
+        currSong.ref!.updateChildValues(childUpdates)
+    }
+    
+    
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount = SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount + 1
-            updatePlaylist()
+            updateSongVoteCount(modifier: 1, row: indexPath.row)
         }
     }
     
@@ -74,16 +98,15 @@ class PlaylistViewController: UITableViewController {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount > 0 { // no negatives
-                SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount = SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount - 1
+            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > -5 { // if song gets to -5, gets booted
+                updateSongVoteCount(modifier: -1, row: indexPath.row)
             }
-            updatePlaylist()
         }
     }
     
     // sort the playlist in descending order, set it in the player, and reload the tableView
     func updatePlaylist() {
-        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount > $1.voteCount})
+        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount! > $1.voteCount!})
         self.tableView.reloadData()
     }
     
@@ -91,19 +114,11 @@ class PlaylistViewController: UITableViewController {
         return 60.0
     }
     
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             //Delete the song from the playlist
+            SpotifyPlayer.shared.currentPlaylist?[indexPath.row].ref!.removeValue()
             SpotifyPlayer.shared.currentPlaylist?.remove(at: indexPath.row)
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
@@ -113,22 +128,32 @@ class PlaylistViewController: UITableViewController {
         }    
     }
     
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    // Add the titles for the current song section here
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Party Queue"
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25.0
     }
-    */
 
+    // MARK: - Empty DataSource Delegates
+    
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "No Songs in the Queue"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        let str = "Add some songs to the queue and they will be displayed right here!"
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "song")
+    }
     /*
     // MARK: - Navigation
 
@@ -139,5 +164,8 @@ class PlaylistViewController: UITableViewController {
     }
     */
 
+    
+    
+    
 }
 

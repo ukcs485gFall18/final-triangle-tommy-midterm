@@ -7,7 +7,8 @@
 //
 
 import UIKit
-
+import FirebaseDatabase
+import SwiftSpinner
 // LoginViewController
 // Login with Spotify, and upon successful login, go to the main SongViewController scene
 // Created by Thomas Deeter
@@ -25,6 +26,7 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     
     
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var voteButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +36,7 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         // Register to receive notification
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateAfterFirstLogin), name: notificationName, object: nil)
         loginButton.layer.cornerRadius = 5
+        voteButton.layer.cornerRadius = 5
     }
     
     // Function that configures the authentication parameters
@@ -90,14 +93,26 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
-        let tabVc = segue.destination as! UITabBarController
-        let dvc = tabVc.viewControllers![0] as! SongViewController
-        let nav = tabVc.viewControllers![1] as! UINavigationController
-        let playlistVC = nav.viewControllers[0] as! PlaylistViewController
         
-        // send the access token and player over to the SongViewController
-        dvc.spotifySession = self.session
-        dvc.playlistVC = playlistVC
+        if segue.identifier == "loginSuccessful" {
+            SwiftSpinner.show("Completing Spotify Login")
+            let tabVc = segue.destination as! UITabBarController
+            let dvc = tabVc.viewControllers![0] as! SongViewController
+            let nav = tabVc.viewControllers![1] as! UINavigationController
+            let playlistVC = nav.viewControllers[0] as! PlaylistViewController
+            
+            // send the access token and player over to the SongViewController
+            dvc.spotifySession = self.session
+            dvc.playlistVC = playlistVC
+            playlistVC.ref = Database.database().reference()
+            playlistVC.setPlaylistListener()
+        }
+        else if segue.identifier == "voteSegue" {
+            let nav = segue.destination as! UINavigationController
+            let voteVC = nav.viewControllers[0] as! VoterViewController
+            voteVC.ref = Database.database().reference()
+            voteVC.setPlaylistListener()
+        }
     }
 }
 
