@@ -28,13 +28,13 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     
     func setPlaylistListener(){
         // listen for updates to vote counts and songs being added to the playlist
-        var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
             self.updatePlaylist()
         })
         // listen for songs being removed from the playlist
-        var removeHandle = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
-            var updateHandle = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
+        self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
                 SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: datasnapshot)
                 self.updatePlaylist()
             })
