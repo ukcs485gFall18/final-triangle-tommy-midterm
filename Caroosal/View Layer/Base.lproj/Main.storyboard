@@ -410,7 +410,9 @@
                                 <connections>
                                     <outlet property="albumCover" destination="xKb-KK-hY9" id="pPD-LW-ebT"/>
                                     <outlet property="artistLabel" destination="w0f-yO-mg6" id="2h4-10-VES"/>
+                                    <outlet property="downvoteButton" destination="tK7-bw-v8F" id="M54-Pb-buE"/>
                                     <outlet property="songTitleLabel" destination="k7g-bY-s43" id="fo1-sc-IGH"/>
+                                    <outlet property="upvoteButton" destination="17d-ex-Mim" id="XFo-2d-YD3"/>
                                     <outlet property="voteCounterLabel" destination="Tn9-fl-bQg" id="b0M-G1-9Kk"/>
                                 </connections>
                             </tableViewCell>
@@ -668,7 +670,9 @@
                                 <connections>
                                     <outlet property="albumCover" destination="A1A-yC-6IQ" id="5Z7-lD-Tzb"/>
                                     <outlet property="artistLabel" destination="cCN-Af-FTW" id="cm9-Ne-cXk"/>
+                                    <outlet property="downvoteButton" destination="Een-ql-dou" id="Hlf-3W-Vzw"/>
                                     <outlet property="songTitleLabel" destination="cSt-OV-f99" id="K2j-dI-NgH"/>
+                                    <outlet property="upvoteButton" destination="YGV-hY-efk" id="3sd-Uf-hlX"/>
                                     <outlet property="voteCounterLabel" destination="4i5-Hh-bG5" id="hPi-ev-hco"/>
                                 </connections>
                             </tableViewCell>

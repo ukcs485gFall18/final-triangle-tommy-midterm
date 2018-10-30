@@ -46,4 +46,20 @@ class FirebaseController: NSObject {
         return []
     }
     
+    // builds the current song from a data snapshot
+    func buildSongFromSnapshot(snapshot: DataSnapshot) -> Song? {
+        let songVals = snapshot.value as? [String: Any]
+        let newRef = self.ref!.child("songs").child("currentSong")
+        let artist = songVals!["Artist"] as! String
+        let coverURL = songVals!["CoverURL"] as! String
+        let duration = 0
+        let mediaURL = songVals!["MediaURL"] as! String
+        let title = songVals!["Title"] as! String
+        let voteCount = songVals!["VoteCount"] as! Int
+        
+        let song = Song(title: title, duration: TimeInterval(duration), artist: artist, mediaURL: URL(string: mediaURL), coverArtURL: URL(string: coverURL), voteCount: voteCount, ref: newRef)
+        return song
+    }
+    
+    
 }
