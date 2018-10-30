@@ -28,13 +28,13 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     
     func setPlaylistListener(){
         // listen for updates to vote counts and songs being added to the playlist
-        var voteHandle = self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
             self.updatePlaylist()
         })
         // listen for songs being removed from the playlist
-        var removeHandle = self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
-            var updateHandle = self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
+        self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
+            self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
                 SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: datasnapshot)
                 self.updatePlaylist()
             })
@@ -48,19 +48,41 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if SpotifyPlayer.shared.currentPlaylist!.isEmpty {
+        if section == 0 {
+            if SpotifyPlayer.shared.currentSong == nil {
+                return 0
+            } else {
+                return 1
+            }
+        } else if section == 1 {
+            if SpotifyPlayer.shared.currentPlaylist!.isEmpty {
+                return 0
+            }
+            return SpotifyPlayer.shared.currentPlaylist!.count
+        } else {
             return 0
         }
-        return SpotifyPlayer.shared.currentPlaylist!.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
-        let currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+        var currSong: Song
+        if indexPath.section == 0 {
+            if SpotifyPlayer.shared.currentSong != nil {
+                currSong = SpotifyPlayer.shared.currentSong!
+                cell.upvoteButton.isHidden = true
+                cell.downvoteButton.isHidden = true
+            }
+            else {
+                return cell
+            }
+        } else {
+            currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+        }
         cell.voteCounterLabel.text = "\(currSong.voteCount!)"
         cell.songTitleLabel.text = currSong.title
         cell.artistLabel.text = currSong.artist
@@ -130,7 +152,14 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     
     // Add the titles for the current song section here
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Party Queue"
+        if section == 0 {
+            return "Currently Playing"
+        } else if section == 1 {
+            return "Party Queue"
+        }
+        
+        return "Empty"
+        
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

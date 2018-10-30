@@ -14,4 +14,9 @@ class SongTableCell: UITableViewCell {
     @IBOutlet weak var albumCover: UIImageView!
     @IBOutlet weak var songTitleLabel: UILabel!
     @IBOutlet weak var artistLabel: UILabel!
+    
+    @IBOutlet weak var upvoteButton: UIButton!
+    @IBOutlet weak var downvoteButton: UIButton!
+    
+    
 }
