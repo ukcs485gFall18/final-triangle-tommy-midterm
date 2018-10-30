@@ -51,6 +51,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             self.performSpotifyQuery(queryURL: queryURL)
         }
         self.miniPlayer!.player = self.player
+        
+        // send a welcome alert
+        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Select songs to add to the playlist by performing a long press gesture and pulling up, or play songs by tapping on them quickly.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
     
     func performSpotifyQuery(queryURL: String){
