@@ -10,9 +10,12 @@ import UIKit
 import FirebaseDatabase
 import EmptyDataSet_Swift
 
+
+
 class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
 
     var ref: DatabaseReference?
+    var votedOnArray = [[String: String]]()
     var currentPlaylist: [Song]?
     var currentSong: Song?
     override func viewDidLoad() {
@@ -21,6 +24,11 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
         self.navigationItem.title = "Queue"
+        
+        // send a welcome alert
+        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Tap on either the upvote or downvote buttons to have your say in what songs to play!", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -115,11 +123,35 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         currSong.ref!.updateChildValues(childUpdates)
     }
 
+    
+    // upvote and downvote code: Users can only up/downvote on a song once, however, they can change their vote on each song
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
+        
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            updateSongVoteCount(modifier: 1, row: indexPath.row)
+            var modifier = 1
+            var indexOfVoted = 0
+            let votedSong = self.currentPlaylist![indexPath.row]
+            for songObj in self.votedOnArray
+            {
+                // if the user clicks on the row with a song they've already voted on
+                if(votedSong.ref!.key == (songObj["songKey"])){
+                    if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
+                        return
+                    }
+                    else { // user decides to upvote on a song they previously downvoted on, so add 2
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = 2
+                        break
+                    }
+                }
+                indexOfVoted = indexOfVoted + 1
+                
+            }
+            let songData = ["songKey": votedSong.ref!.key!, "voteType": "upvote"]
+            votedOnArray.append(songData)
+            updateSongVoteCount(modifier: modifier, row: indexPath.row)
         }
     }
 
@@ -127,9 +159,28 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            if self.currentPlaylist![indexPath.row].voteCount! > -5 {
-                updateSongVoteCount(modifier: -1, row: indexPath.row)
+            var modifier = -1
+            var indexOfVoted = 0
+            let votedSong = self.currentPlaylist![indexPath.row]
+            for songObj in self.votedOnArray
+            {
+                // if the user clicks on the row with a song they've already voted on
+                if(votedSong.ref!.key == (songObj["songKey"])){
+                    if(songObj["voteType"] == "downvote"){ // user cannot downvote on song twice
+                        return
+                    }
+                    else { // user decides to downvote on a song they previously upvoted on, so subtract 2
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = -2
+                        break
+                    }
+                }
+                indexOfVoted = indexOfVoted + 1
+                
             }
+            let songData = ["songKey": votedSong.ref!.key!, "voteType": "downvote"]
+            votedOnArray.append(songData)
+            updateSongVoteCount(modifier: modifier, row: indexPath.row)
         }
     }
 

@@ -12,6 +12,7 @@ import EmptyDataSet_Swift
 
 class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
     var ref: DatabaseReference?
+    var votedOnArray = [[String: String]]()
     override func viewDidLoad() {
         super.viewDidLoad()
         // set the delegates and navigation item details
@@ -107,12 +108,33 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         currSong.ref!.updateChildValues(childUpdates)
     }
     
-    
+    // Code for upvoting and downvoting: The playlist admins can currently vote on playlists, but we may modify this feature in the final product
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            updateSongVoteCount(modifier: 1, row: indexPath.row)
+            var modifier = 1
+            var indexOfVoted = 0
+            let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            for songObj in self.votedOnArray
+            {
+                // if the user clicks on the row with a song they've already voted on
+                if(votedSong.ref!.key == (songObj["songKey"])){
+                    if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
+                        return
+                    }
+                    else { // user decides to upvote on a song they previously downvoted on, so add 2
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = 2
+                        break
+                    }
+                }
+                indexOfVoted = indexOfVoted + 1
+                
+            }
+            let songData = ["songKey": votedSong.ref!.key!, "voteType": "upvote"]
+            votedOnArray.append(songData)
+            updateSongVoteCount(modifier: modifier, row: indexPath.row)
         }
     }
     
@@ -121,7 +143,28 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
             if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > -5 { // if song gets to -5, gets booted
-                updateSongVoteCount(modifier: -1, row: indexPath.row)
+                var modifier = -1
+                var indexOfVoted = 0
+                let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+                for songObj in self.votedOnArray
+                {
+                    // if the user clicks on the row with a song they've already voted on
+                    if(votedSong.ref!.key == (songObj["songKey"])){
+                        if(songObj["voteType"] == "downvote"){ // user cannot upvote on song twice
+                            return
+                        }
+                        else { // user decides to upvote on a song they previously downvoted on, so add 2
+                            self.votedOnArray.remove(at: indexOfVoted)
+                            modifier = -2
+                            break
+                        }
+                    }
+                    indexOfVoted = indexOfVoted + 1
+                    
+                }
+                let songData = ["songKey": votedSong.ref!.key!, "voteType": "downvote"]
+                votedOnArray.append(songData)
+                updateSongVoteCount(modifier: modifier, row: indexPath.row)
             }
         }
     }

@@ -51,6 +51,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             self.performSpotifyQuery(queryURL: queryURL)
         }
         self.miniPlayer!.player = self.player
+        
+        // send a welcome alert
+        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Select songs to add to the playlist by performing a long press gesture and pulling up, or play songs by tapping on them quickly.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
     
     func performSpotifyQuery(queryURL: String){
@@ -103,11 +108,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         if let token = self.accessToken {
             var queryURL: String?
             if searchText.isEmpty {
-                queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
+                queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
             }
             else {
                 let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=15&offset=0"
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
             }
             self.performSpotifyQuery(queryURL: queryURL!)
         }
