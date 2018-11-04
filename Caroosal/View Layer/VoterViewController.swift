@@ -11,13 +11,17 @@ import FirebaseDatabase
 import EmptyDataSet_Swift
 
 
+// Created by: Thomas Deeter
+// VoterViewController: Non authenticated users can vote on the current queue
 
 class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataSetDelegate {
 
-    var ref: DatabaseReference?
-    var votedOnArray = [[String: String]]()
-    var currentPlaylist: [Song]?
-    var currentSong: Song?
+    // MARK: Properties
+    var ref: DatabaseReference? // Reference to database
+    var votedOnArray = [[String: String]]() // Array of currently voted on songs
+    var currentPlaylist: [Song]? // Current party playlist
+    var currentSong: Song? // Currently playing song
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.emptyDataSetSource = self
@@ -35,7 +39,9 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         self.tableView.reloadData()
     }
 
-    // set a listener for playlist updates
+    /**
+     Sets a listener to the firebase database for queue updates
+     */
     func setPlaylistListener(){
         // listen for updates to vote counts and songs being added to the playlist
         self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
@@ -67,6 +73,9 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // 1 row in the first section (the currently playing song)
+        // Length of the queue num rows in the second section
+        
         if section == 0 {
             if self.currentPlaylist == nil {
                 return 0
@@ -107,7 +116,9 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         return cell
     }
 
-    // when the user hits either the upvote / downvote button, update the playlist
+    /**
+     when the user hits either the upvote / downvote button, update the playlist
+    */
     func updateSongVoteCount(modifier: Int, row: Int){
         // get the song at the given row
         let currSong = self.currentPlaylist![row]

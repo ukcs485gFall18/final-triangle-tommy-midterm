@@ -12,6 +12,8 @@ protocol MiniPlayerDelegate: class {
     func expandSong(song: Song)
 }
 
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
+// Plus our modifications
 class MiniPlayerViewController: UIViewController, SongSubscriber {
     
     // MARK: - Properties
@@ -19,21 +21,21 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     weak var delegate: MiniPlayerDelegate?
     var player: SPTAudioStreamingController?
     
-    // MARK: - IBOutlets
     @IBOutlet weak var thumbImage: UIImageView!
     @IBOutlet weak var songTitle: UILabel!
     @IBOutlet weak var playButton: UIButton!
     @IBOutlet weak var ffButton: UIButton!
     @IBOutlet weak var plusButton: UIButton!
     
-    // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(song: nil)
     }
     
-    // Refresh the button state when the view reappears
-    // Can't call viewDidAppear because the view technically doesn't disappear
+    /**
+     Refresh the button state when the view reappears
+     Can't call viewDidAppear because the view technically doesn't disappear
+    */
     func refreshButtonState() {
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?:
@@ -48,6 +50,10 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         self.configure(song: SpotifyPlayer.shared.currentSong)
     }
     
+    /**
+     User hits the play button
+     Either begins a new song, or resumes the current song
+     */
     @IBAction func playButtonTapped(_ sender: Any) {
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?: // if the player is not yet initialized, play the current song
@@ -78,8 +84,13 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
             print("shouldn't happen")
         }
     }
+    
+    /**
+     User hits the next button
+     Either begins a new song, or show alert that the queue is empty
+     */
     @IBAction func nextButtonTapped(_ sender: Any) {
-        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // alert user that queue is empty
             let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
             self.present(alert, animated: true)
@@ -90,6 +101,9 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         }
     }
     
+    /**
+     Adds the song tapped to the currentl playlist
+    */
     @IBAction func plusButtonTapped(_ sender: Any) {
         // check to make sure the song is not nil
         var alertTitle: String?

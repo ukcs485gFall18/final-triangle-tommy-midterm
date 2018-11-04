@@ -9,17 +9,22 @@
 import CoreData
 import FirebaseDatabase
 
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
 enum DataStackState {
     case unloaded
     case loaded
 }
 
-// This file is base-code from Tutorial
 class DataStack: NSObject {
     
     // MARK: - Properties
     private(set) var allSongs: [Song] = []
     
+    /**
+     Loads an array of song metadata and constructs an array of Songs from it
+     - parameter dictionary: The song metadata to parse
+     - parameter completion: Code that executes upon completion of API request
+     */
     func load(dictionary: [String: Any], completion: (Bool) -> Void) {
         allSongs.removeAll()
         if let songs = dictionary["Songs"] as? [[String: Any]] {

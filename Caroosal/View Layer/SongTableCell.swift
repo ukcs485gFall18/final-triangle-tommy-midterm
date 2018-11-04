@@ -8,7 +8,7 @@
 
 import UIKit
 
-// Define the song cells in the table view
+// Define the song cells in the table view for the queue: Added by Zach Moore
 class SongTableCell: UITableViewCell {
     @IBOutlet weak var voteCounterLabel: UILabel!
     @IBOutlet weak var albumCover: UIImageView!

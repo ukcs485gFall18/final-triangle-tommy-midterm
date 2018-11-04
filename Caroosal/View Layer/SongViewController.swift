@@ -24,11 +24,9 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
     
-    // MARK: - IBOutlets
     @IBOutlet weak var collectionView: UICollectionView!
-    
     @IBOutlet weak var searchBar: UISearchBar!
-    // MARK: - View Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         datasource = SongCollectionDatasource(collectionView: collectionView)
@@ -58,6 +56,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         self.present(alert, animated: true)
     }
     
+    
+    /**
+     Perform a Spotify API Query
+     - parameter queryURL: endpoint of url to query
+     */
     func performSpotifyQuery(queryURL: String){
         SpotifyAPIController.shared.sendAPIRequest(apiURL: queryURL, accessToken: self.accessToken!, completionHandler: { data in
             if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
@@ -69,8 +72,11 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         })
     }
     
-    // Initialize the Spotify streaming controller
-    // Code modeled off of Elon Rubin's tutorial
+    /**
+     Initialize the Spotify streaming controller
+     Code modeled off of Elon Rubin's tutorial
+     - parameter authSession: the session object
+     */
     func initializePlayer(authSession:SPTSession){
         // if the player has yet to be initialized, set initialize it w/ access token & set delegate
         if self.player == nil {
@@ -118,28 +124,36 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         }
     }
     
+    /**
+     Add a song to the shared Spotify controller object playlist
+     - parameter song: the song to add to the playlist
+     */
     func addToPlaylist(song: Song){
         SpotifyPlayer.shared.addToPlaylist(song: song, isCurrent: false)
         self.playlistVC?.tableView.reloadData()
     }
     
+    /**
+     Handler for long press gestures
+     - parameter gestureRecognizer: the recognizer that will execute this code
+     */
     @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
         if gestureReconizer.state != UIGestureRecognizerState.ended {
             return
         }
+        // Grab the location of the touch in the collection view
         let p = gestureReconizer.location(in: self.collectionView)
+        // construct the index path of the item
         let indexPath = self.collectionView.indexPathForItem(at: p)
         if let index = indexPath {
             currentSong = datasource.song(at: index.row)
-            
+            // Present alert asking if they want to add the song to the playlist
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
                 self.addToPlaylist(song: self.currentSong!)
             }))
             self.present(alert, animated: true)
-            
-            
         } else {
             print("Unable to find index path")
         }
@@ -196,23 +210,28 @@ extension SongViewController: SPTAudioStreamingDelegate {
     }
 }
 
+// MARK: - SPTAudioStreamingPlaybackDelegate
 extension SongViewController: SPTAudioStreamingPlaybackDelegate {
+    // User logged out
     func audioStreamingDidLogout(_ audioStreaming: SPTAudioStreamingController!) {
         print("Logged Out")
     }
+    // User skipped to the next trakc
     func audioStreamingDidSkip(toNextTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Next Track")
     }
+    // User skipped to previous track
     func audioStreamingDidSkip(toPreviousTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Previous Track")
     }
+    // User stopped playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
         
         if let newSong = SpotifyPlayer.shared.skipToNextSong() {
             print("woohoo")
         }
         else {
-            print("not playing a new song")
+            // refresh the song playing state
             SpotifyPlayer.shared.player?.setIsPlaying(false, callback: nil)
             self.miniPlayer?.refreshButtonState()
             if let maxi = self.currentMaxiCard {
@@ -223,12 +242,12 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
             }
         }
     }
+    // user started playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
-        SwiftSpinner.hide()
+        SwiftSpinner.hide() // hide swift spinner
         if let maxi = self.currentMaxiCard {
             let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
             maxi.coverArtImage.image = UIImage(data: coverImageData! as Data)
-            
             if let songPlayer = maxi.songPlayerVC {
                 songPlayer.currentSong = SpotifyPlayer.shared.currentSong
                 songPlayer.configureFields()
@@ -236,9 +255,13 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
             
         }
     }
+    
+    // User seeks to song position
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didSeekToPosition position: TimeInterval) {
         print("Seeked to Position")
     }
+    
+    // User changes playback status
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
         self.miniPlayer?.refreshButtonState()
         print("Changed Playback Status")
@@ -249,6 +272,7 @@ extension SongViewController: SPTAudioStreamingPlaybackDelegate {
             }
         }
     }
+    // Metadata of song changed
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
         print("Did Change")
     }

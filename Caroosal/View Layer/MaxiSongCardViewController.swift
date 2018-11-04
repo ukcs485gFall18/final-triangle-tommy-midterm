@@ -15,19 +15,19 @@ protocol MaxiPlayerSourceProtocol: class {
 }
 
 
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
+// Plus our modifications
 class MaxiSongCardViewController: UIViewController, SongSubscriber {
     
     // MARK: - Properties
     let cardCornerRadius: CGFloat = 10
     var currentSong: Song?
-    // Added Player
+    
+    // Added Player objects
     var player: SPTAudioStreamingController?
     var songPlayerVC: SongPlayControlViewController?
     var songVC: SongViewController?
-    
     weak var sourceView: MaxiPlayerSourceProtocol!
-    
-    
     let primaryDuration = 0.5
     let backingImageEdgeInset: CGFloat = 15.0
     
@@ -37,7 +37,6 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     
     //cover image constraints
     @IBOutlet weak var coverImageContainerTopInset: NSLayoutConstraint!
-    
     
     //scroller
     @IBOutlet weak var scrollView: UIScrollView!
@@ -80,7 +79,6 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     // Most code below is animation code that we followed along in the tutorial
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         modalPresentationCapturesStatusBarAppearance = true //allow this VC to control the status bar appearance
         modalPresentationStyle = .overFullScreen //dont dismiss the presenting view controller when presented
     }
@@ -110,7 +108,8 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         animateCoverImageIn()
         animateLowerModuleIn()
     }
-    // added by Thomas. Refreshes the mini player buttons when the maxi player disappears.
+    
+    // Added by Thomas Deeter. Refreshes the mini player buttons when the maxi player disappears.
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         self.sourceView.refreshButtonState()

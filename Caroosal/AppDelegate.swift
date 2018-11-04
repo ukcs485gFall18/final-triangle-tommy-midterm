@@ -11,18 +11,15 @@ import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
     var window: UIWindow?
-    
     var auth = SPTAuth()
-    
     // AppDelegate code added by Thomas Deeter: SpotifyLogin Functionality
     // AppDelegate code partially referenced from Elon Rubin's Tutorial on Spotify login
     // URL: https://medium.com/@elonrubin/ios-spotify-sdk-swift-3-0-tutorial-b629af4b889d
     // All this file is new functionality added
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Add Spotify auth and Firebase config details
         auth.redirectURL = URL(string: "tdeets.razeware.RazePlayer://")
         auth.sessionUserDefaultsKey = "current session"
         FirebaseApp.configure()

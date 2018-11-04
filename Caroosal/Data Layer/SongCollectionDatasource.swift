@@ -11,7 +11,8 @@ import SwiftyJSON
 import FirebaseDatabase
 import EmptyDataSet_Swift
 
-// This file is base-code from Tutorial, plus our modifications
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
+// Plus our modifications
 class SongCollectionDatasource: NSObject {
     
     // MARK: - Properties
@@ -30,26 +31,20 @@ class SongCollectionDatasource: NSObject {
         self.managedCollection.emptyDataSetDelegate = self
     }
     
+    /**
+     returns the song at the given index in the datastack
+     - parameter at index: Index to search
+     - Returns: The song at the given index
+     */
     func song(at index: Int) -> Song {
         let realindex = index % dataStack.allSongs.count
         return dataStack.allSongs[realindex]
     }
-    // old load() function from tutorial
-    func load() {
-        guard let file = Bundle.main.path(forResource: "CannedSongs", ofType: "plist") else {
-            assertionFailure("bundle failure - couldnt load CannedSongs.plist - check it's added to target")
-            return
-        }
-        if let dictionary = NSDictionary(contentsOfFile: file) as? [String: Any] {
-            print(dictionary)
-            dataStack.load(dictionary: dictionary) { [weak self] success in
-                self?.managedCollection.reloadData()
-            }
-        }
-    }
-    
-    //Load Spotify Function - Coded By Zachary Moore
-    /*Takes a dictionary with the songs and their attributes and formats another dictionary for feeding into the dataStack load function.
+
+    /**
+     Load Spotify Function - Coded By Zachary Moore
+     Takes a dictionary with the songs and their attributes and formats another dictionary for feeding into the dataStack load function.
+     - parameter dict: dictionary of song metadata
      */
     func loadSpotify(dict: [[String: Any]]) {
         var dictionaryTest:[String: Any] = [:]
@@ -59,8 +54,13 @@ class SongCollectionDatasource: NSObject {
         }
     }
     
-    //parsetSpotifyTracks function - Coded By Zachary Moore
-    /* Takes the JSON provided by the Spotify API and creates an array of dictionaries for the songs. Grabs each song attribute from the API "items" array for allocation into the song dictionaries */
+    /**
+     Parse Spotify Tracks Function - Coded By Zachary Moore
+     Takes the JSON provided by the Spotify API and creates an array of dictionaries for the songs.
+     Grabs each song attribute from the API "items" array for allocation into the song dictionaries
+     - parameter songs: JSON of song metadata from API query response
+     - Returns: Dictionary constructed from that data
+     */
     func parseSpotifyTracks(songs: JSON) -> [[String: Any]] {
         var songArr = [[String: Any]]() //create return array
         for i in 0..<songs["items"].count { //Loop through the API array for each song
@@ -78,8 +78,13 @@ class SongCollectionDatasource: NSObject {
         return songArr
     }
     
-    //Created by Steven Gripshover
-    //This function modified the spotify track search to get what songs were being searched in the search bar.
+
+    /**
+     Parse Spotify Tracks Function - Created by Steven Gripshover
+     Similar to the function parseSpotifyTracks() above, just with slightly different API response structure
+     - parameter songs: JSON of song metadata from API query response
+     - Returns: Dictionary constructed from that data
+     */
     func parseSpotifySearch(songs: JSON) -> [[String: Any]] {
         var songArr = [[String: Any]]()
         for i in 0..<songs["tracks"]["items"].count {
@@ -99,6 +104,7 @@ class SongCollectionDatasource: NSObject {
 }
 
 // MARK: - UICollectionViewDataSource
+// Set the cells within the collection view to represent songs in the datastack
 extension SongCollectionDatasource: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -124,6 +130,8 @@ extension SongCollectionDatasource: UICollectionViewDataSource {
     }
 }
 
+// MARK: - EmptyDataSetSource & EmptyDataSetDelegate
+// Set the view to display message if there are no songs in the search query
 extension SongCollectionDatasource: EmptyDataSetSource, EmptyDataSetDelegate {
     func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
         let str = "No results found"

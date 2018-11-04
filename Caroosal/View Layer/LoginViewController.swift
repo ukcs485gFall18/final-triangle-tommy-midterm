@@ -39,7 +39,9 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         voteButton.layer.cornerRadius = 5
     }
     
-    // Function that configures the authentication parameters
+    /**
+     Function that configures the authentication parameters
+     */
     func setupAuth() {
         // Client ID (Assigned in Spotify Developer Console)
         SPTAuth.defaultInstance().clientID = "ae41de22b4334892a03f943d6d344267"
@@ -52,7 +54,9 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         appUrl = SPTAuth.defaultInstance().spotifyAppAuthenticationURL()
     }
     
-    // Upon first login, initialize certain session objects
+    /**
+     Upon first login, initialize certain session objects
+     */
     @objc func updateAfterFirstLogin () {
         let defaults = UserDefaults.standard
         // Check if the login session is valid
@@ -71,7 +75,9 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         }
     }
 
-    // Handle the login once the button is pressed
+    /**
+     Handle the login once the button is pressed
+    */
     @IBAction func loginPressed(_ sender: Any) {
         // if the user has the App installed, login with that, otherwise, login with Web version
         // This code idea was in Brian Hans' tutorial
@@ -84,7 +90,9 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         
     }
     
-    // delegate method that calls once the login was successful. Performs a segue to the main controller
+    /**
+     delegate method that calls once the login was successful. Performs a segue to the main controller
+    */
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
         print("audioStreamingDidLogin")
@@ -93,7 +101,6 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
-        
         if segue.identifier == "loginSuccessful" {
             SwiftSpinner.show("Completing Spotify Login")
             let tabVc = segue.destination as! UITabBarController

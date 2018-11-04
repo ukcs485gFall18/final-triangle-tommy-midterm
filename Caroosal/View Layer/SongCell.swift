@@ -6,6 +6,7 @@
 //  Copyright © 2018 Tommy Deeter. All rights reserved.
 //
 import UIKit
+
 // This file is base-code from Tutorial
 // SongCell refers to the songs in the collection view
 class SongCell: UICollectionViewCell {

@@ -8,6 +8,8 @@
 
 import UIKit
 
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
+// Plus our modifications
 class SongPlayControlViewController: UIViewController, SongSubscriber {
     
     var player: SPTAudioStreamingController?
@@ -31,6 +33,9 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         configureFields()
     }
 
+    /**
+        Update the buttons depending on the current playback status of the song
+    */
     func updateButtons(){
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?:
@@ -48,6 +53,9 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         updateButtons()
     }
     
+    /**
+     User hits the play button, and the player status is refreshed
+     */
     @IBAction func playButtonTapped(_ sender: Any) {
         switch SpotifyPlayer.shared.currentPlaybackState {
             case .isNil?: // if the player is not yet initialized, play the current song
@@ -64,8 +72,11 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         }
     }
     
+    /**
+     User hits the next button, and the player status is refreshed
+     */
     @IBAction func nextTapped(_ sender: Any) {
-        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
             let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
             self.present(alert, animated: true)
@@ -75,7 +86,9 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         }
     }
     
-    //Plus button that adds the song to the play list in the big player
+    /**
+     Plus button that adds the song to the play list in the big player
+     */
     @IBAction func plusButton(_ sender: Any) {
         // check to make sure the song is not nil
         var alertTitle: String?
@@ -94,7 +107,7 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
                 alert.dismiss(animated: true, completion: nil)
             }
         }
-        else {
+        else { // No current song selected
             alertTitle = "No Song Selected"
             alertMessage = "Please select a song to add to the playlist."
             let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)

@@ -9,21 +9,29 @@
 import UIKit
 import FirebaseDatabase
 
+// Singleton Firebase controller class to control Firebase CRUD operations
+// Created by Tommy Deeter
 class FirebaseController: NSObject {
-    static let shared = FirebaseController()
+    static let shared = FirebaseController() // static instance that is accessed throughout app
     
     override init(){
         super.init()
         self.ref = Database.database().reference()
     }
-    var ref: DatabaseReference!
+    var ref: DatabaseReference! // reference to database
     
-    // Parse the data snapshot for the song queue changes
+    /**
+     Parse Spotify Tracks Function - Coded By Thomas Deeter
+     Parse the data snapshot for the song queue changes
+     - parameter snapshot: firebase data snapshot of song data
+     - Returns: Array of songs constructed from the snapshot
+     */
     func parseQueueSnapshot(snapshot: DataSnapshot) -> [Song]{
         var dataStack = DataStack()
         let playlistDict = snapshot.value as? [String: Any]
         if let songDict = playlistDict {
             var songArr = [[String: Any]]()
+            // Iterate through each item in the snapshot and grab their metadata & parse into Song object
             for item in songDict {
                 let newRef = self.ref!.child("songs").child("queue").child(item.key)
                 var songVals = item.value as! [String: Any]
@@ -46,7 +54,11 @@ class FirebaseController: NSObject {
         return []
     }
     
-    // builds the current song from a data snapshot
+    /**
+     Builds a single song from a data snapshot
+     - parameter snapshot: firebase data snapshot of song data
+     - Returns: a song constructed from the data snapshot
+     */
     func buildSongFromSnapshot(snapshot: DataSnapshot) -> Song? {
         let songVals = snapshot.value as? [String: Any]
         let newRef = self.ref!.child("songs").child("currentSong")

@@ -10,18 +10,20 @@ import UIKit
 import FirebaseDatabase
 import SwiftSpinner
 
+// Created by Thomas Deeter
+// SpotifyPlayer: Singleton class that controls the host's party playlist
 class SpotifyPlayer: NSObject {
     enum currentState {
         case isNil // if a song has not yet been played
         case isPlaying // if a song is currently playing
         case isPaused // if a song is currently paused
     }
-    var currentSong: Song?
-    var player: SPTAudioStreamingController?
-    var currentPlaybackState: currentState?
-    var currentPlaylist: [Song]?
-    static let shared = SpotifyPlayer()
-    var ref: DatabaseReference!
+    var currentSong: Song? // reference to the song currently playing
+    var player: SPTAudioStreamingController? // the player class that controls audio playback
+    var currentPlaybackState: currentState? // current state of the player
+    var currentPlaylist: [Song]? // the playlist (queue)
+    static let shared = SpotifyPlayer() // static reference to class
+    var ref: DatabaseReference! // Firebase database reference
     
     override init(){
         super.init()
@@ -30,12 +32,18 @@ class SpotifyPlayer: NSObject {
         self.ref = Database.database().reference()
     }
     
-    // set the player to the initialized player
+    /**
+     Set the player to the initialized player
+     - parameter player: The SPTAudioStreamingController object that the class controls
+     */
     func setPlayer(player: SPTAudioStreamingController){
         self.player = player
     }
     
-    // set the player to play the current song
+    /**
+     Sets the player to play the current song
+     - parameter song: The song to begin playing
+     */
     func startSong(song: Song){
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
@@ -49,31 +57,44 @@ class SpotifyPlayer: NSObject {
         self.currentPlaybackState = .isPlaying
     }
     
-    // resume the song after it was paused
+    /**
+     Resume the playback status of the player after it was paused
+     */
     func resumeSong(){
         self.player?.setIsPlaying(true, callback: nil)
         self.currentPlaybackState = .isPlaying
     }
     
-    // set the player to pause the current song
+    /**
+     Pause the currently playing song
+     */
     func pauseSong(){
         self.player?.setIsPlaying(false, callback: nil)
         self.currentPlaybackState = .isPaused
     }
     
-    // update the playlist (used because the order will constantly be changing)
+    /**
+     Update the playlist (used because the order will constantly be changing)
+     - parameter newPlaylist: An array of Song objects
+     */
     func setPlaylist(newPlaylist: [Song]){
         self.currentPlaylist = newPlaylist
     }
     
-    // add the song to the playlist
+    /**
+     Add the song to the playlist
+     - parameter song: The song to add to the playlist
+     - parameter isCurrent: A Boolean that is True if the song will immediately play, False otherwise
+     */
     func addToPlaylist(song: Song, isCurrent: Bool){
         self.currentPlaylist?.append(song)
         self.writeSongToFirebase(song: song, isCurrent: isCurrent)
     }
     
-    // set the player to skip to the next song in the queue
-    // returns the song to be played
+    /**
+     set the player to skip to the next song in the queue
+     - Returns: The song to be played
+     */
     func skipToNextSong() -> Song? {
         // TODO: Use the Reccomendation's API endpoint if the queue becomes empty
         if (self.currentPlaylist?.count)! > 0 {
@@ -93,8 +114,11 @@ class SpotifyPlayer: NSObject {
         return nil
     }
     
-    // add the song to the Firebase database
-    // song: Song to write to database, isCurrent: True if the song is the currently playing one
+    /**
+     Add the song to the Firebase database
+     - parameter song: Song to write to databaset
+     - parameter isCurrent: A Boolean that is True if the song will immediately play, False otherwise
+     */
     func writeSongToFirebase(song: Song, isCurrent: Bool){
         if isCurrent{
             let newSongRef = self.ref.child("songs").child("queue").childByAutoId()
