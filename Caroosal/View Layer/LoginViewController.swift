@@ -102,17 +102,24 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
         if segue.identifier == "loginSuccessful" {
-            SwiftSpinner.show("Completing Spotify Login")
-            let tabVc = segue.destination as! UITabBarController
-            let dvc = tabVc.viewControllers![0] as! SongViewController
-            let nav = tabVc.viewControllers![1] as! UINavigationController
-            let playlistVC = nav.viewControllers[0] as! PlaylistViewController
+//            SwiftSpinner.show("Completing Spotify Login")
+//            let tabVc = segue.destination as! UITabBarController
+//            let dvc = tabVc.viewControllers![0] as! SongViewController
+//            let nav = tabVc.viewControllers![1] as! UINavigationController
+//            let playlistVC = nav.viewControllers[0] as! PlaylistViewController
+//
+//            // send the access token and player over to the SongViewController
+//            dvc.spotifySession = self.session
+//            dvc.playlistVC = playlistVC
+//            playlistVC.ref = Database.database().reference()
+//            playlistVC.setPlaylistListener()
             
-            // send the access token and player over to the SongViewController
+//            let dvc = segue.destination as! HostHomeViewController
+            let nav = segue.destination as! UINavigationController
+            let dvc = nav.viewControllers[0] as! HostHomeViewController
             dvc.spotifySession = self.session
-            dvc.playlistVC = playlistVC
-            playlistVC.ref = Database.database().reference()
-            playlistVC.setPlaylistListener()
+            
+            
         }
         else if segue.identifier == "voteSegue" {
             let nav = segue.destination as! UINavigationController

@@ -11,5 +11,4 @@ import Foundation
 protocol SongSubscriber: class {
     var currentSong: Song? { get set }
     // Added this property
-    var player: SPTAudioStreamingController? { get set }
 }

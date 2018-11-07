@@ -31,12 +31,19 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureFields()
+        let stoppedNotification = Notification.Name("songStoppedPlaying")
+        let startedNotification = Notification.Name("songStartedPlaying")
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        // Register to receive notification
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateButtons), name: stoppedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.configureFields), name: startedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateButtons), name: changedPlaybackName, object: nil)
     }
 
     /**
         Update the buttons depending on the current playback status of the song
     */
-    func updateButtons(){
+    @objc func updateButtons(){
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?:
             print("shouldn't happen")
@@ -47,6 +54,11 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         case .none:
             print("shouldn't happen")
         }
+    }
+    
+    @objc func changeCoverImage(){
+        self.currentSong = SpotifyPlayer.shared.currentSong
+        self.configureFields()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -120,7 +132,8 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
 // MARK: - Internal
 extension SongPlayControlViewController {
     
-    func configureFields() {
+    @objc func configureFields() {
+        print("configuring fields!!!!!!!!")
         guard songTitle != nil else {
             return
         }
