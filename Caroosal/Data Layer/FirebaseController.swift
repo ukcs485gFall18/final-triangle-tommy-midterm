@@ -36,9 +36,7 @@ class FirebaseController: NSObject {
                 let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).child(item.key)
                 var songVals = item.value as! [String: Any]
                 if songVals != nil {
-                    print(songVals)
                     let artist = songVals["Artist"] as! String
-                    print(artist)
                     let coverURL = songVals["CoverURL"] as! String
                     let duration = 0
                     let mediaURL = songVals["MediaURL"] as! String
@@ -82,7 +80,7 @@ class FirebaseController: NSObject {
     
     /**
      Builds a single party from a data snapshot
-     - parameter snapshot: firebase data snapshot of party data
+     - parameter snapshot: firebase data snapshot of individual party data
      - Returns: a party constructed from the data snapshot
      */
     func buildPartyFromSnapshot(snapshot: DataSnapshot) -> Party? {
@@ -96,5 +94,26 @@ class FirebaseController: NSObject {
         }
         return nil
     }
+    
+    /**
+     Gets all the parties from the database
+     - parameter snapshot: firebase data snapshot of all party data
+     - Returns: a party constructed from the data snapshot
+     */
+    func getAllParties(snapshot: DataSnapshot) -> [Party] {
+        var allParties = [Party]()
+        var allChildren = snapshot.children.allObjects
+        var currentChild: DataSnapshot?
+        for i in 0..<allChildren.count {
+            currentChild = allChildren[i] as! DataSnapshot
+            let newParty = self.buildPartyFromSnapshot(snapshot: currentChild!)
+            if newParty != nil {
+                allParties.append(newParty!)
+            }
+        }
+        print(allParties)
+        return allParties
+    }
+    
     
 }

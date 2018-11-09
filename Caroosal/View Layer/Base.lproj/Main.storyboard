@@ -449,7 +449,7 @@
                                     <action selector="loginPressed:" destination="GxD-LA-2Bt" eventType="touchUpInside" id="FrA-uY-zBA"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZo-Xh-Wye" customClass="PMSuperButton" customModule="PMSuperButton">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZo-Xh-Wye">
                                 <rect key="frame" x="76" y="383" width="223" height="35"/>
                                 <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -459,7 +459,7 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <segue destination="V6k-3J-zUU" kind="show" identifier="voteSegue" id="fJh-oe-huH"/>
+                                    <action selector="votePressed:" destination="GxD-LA-2Bt" eventType="touchUpInside" id="CcM-X0-ut5"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -844,12 +844,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HUY-n9-mh5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-103.2" y="1232.8335832083958"/>
+            <point key="canvasLocation" x="-2591" y="1202"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HXT-sY-Myq">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="V6k-3J-zUU" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="voteVC" automaticallyAdjustsScrollViewInsets="NO" id="V6k-3J-zUU" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="SVj-AQ-fod">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
@@ -862,7 +862,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HvV-X9-lnu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1897" y="1232"/>
+            <point key="canvasLocation" x="-3519" y="1203"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ruo-fE-Vtc">

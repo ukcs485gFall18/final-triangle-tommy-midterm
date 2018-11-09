@@ -23,6 +23,8 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     var player: SPTAudioStreamingController?
     var webUrl: URL?
     var appUrl: URL?
+    var ref: DatabaseReference?
+    var currentParties: [Party]?
     
     
     @IBOutlet weak var loginButton: UIButton!
@@ -37,6 +39,12 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateAfterFirstLogin), name: notificationName, object: nil)
         loginButton.layer.cornerRadius = 5
         voteButton.layer.cornerRadius = 5
+        self.ref = Database.database().reference()
+        
+        self.ref!.child("parties").observeSingleEvent(of: .value, with: {(snapshot) in
+            self.currentParties = FirebaseController.shared.getAllParties(snapshot: snapshot)
+            print(self.currentParties)
+        })
     }
     
     /**
@@ -74,7 +82,61 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
             print("Error initializing session")
         }
     }
-
+    
+    // Present the user with a dialog to enter the party passphrase, and navigate them to that party if successful
+    @IBAction func votePressed(_ sender: Any) {
+        
+        // Alert Controller w/ Text field code from: https://stackoverflow.com/questions/47045930/swift-4-alert-with-input
+        let alert = UIAlertController(title: "Enter Party Password", message: "Please enter the party passphrase generated.", preferredStyle: .alert)
+        
+        alert.addTextField(configurationHandler: { (textField) in
+            textField.placeholder = "Party Password"
+        })
+        
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Submit", style: .default, handler: { [weak alert] (_) in
+            let enteredPassword = alert?.textFields![0].text!
+            var isSuccessful = false
+            for party in self.currentParties! {
+                if party.password == enteredPassword {
+                    self.presentVoteVC(selectedParty: party)
+                    isSuccessful = true
+                    break
+                }
+            }
+            
+            if !isSuccessful {
+                // send an error message
+                let errorAlert = UIAlertController(title: "Party Not Found",
+                                              message: "Please check to make sure you entered the correct password", preferredStyle: .alert)
+                errorAlert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                self.present(errorAlert, animated: true)
+            }
+            
+        }))
+        self.present(alert, animated: true)
+    }
+    
+    
+    func presentVoteVC(selectedParty: Party){
+        let navVC = self.storyboard?.instantiateViewController(withIdentifier: "voteVC") as! UINavigationController
+        if navVC != nil {
+            let voteVC = navVC.viewControllers[0] as! VoterViewController
+            SpotifyPlayer.shared.setCurrentParty(party: selectedParty)
+            voteVC.currentParty = selectedParty
+            voteVC.ref = Database.database().reference()
+            voteVC.setPlaylistListener()
+            
+            // Set the transition animation parameters
+            navVC.providesPresentationContextTransitionStyle = true
+            navVC.definesPresentationContext = true
+            navVC.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext;
+            navVC.view.backgroundColor = UIColor.init(white: 0.4, alpha: 0.8)
+            self.present(navVC, animated: true, completion: nil)
+        }
+    }
+    
+    
     /**
      Handle the login once the button is pressed
     */
@@ -102,28 +164,18 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // The segue goes into a TabBarController, we know the first view controller after the Tab bar is the SongViewController
         if segue.identifier == "loginSuccessful" {
-//            SwiftSpinner.show("Completing Spotify Login")
-//            let tabVc = segue.destination as! UITabBarController
-//            let dvc = tabVc.viewControllers![0] as! SongViewController
-//            let nav = tabVc.viewControllers![1] as! UINavigationController
-//            let playlistVC = nav.viewControllers[0] as! PlaylistViewController
-//
-//            // send the access token and player over to the SongViewController
-//            dvc.spotifySession = self.session
-//            dvc.playlistVC = playlistVC
-//            playlistVC.ref = Database.database().reference()
-//            playlistVC.setPlaylistListener()
-            
-//            let dvc = segue.destination as! HostHomeViewController
             let nav = segue.destination as! UINavigationController
             let dvc = nav.viewControllers[0] as! HostHomeViewController
             dvc.spotifySession = self.session
-            
-            
         }
         else if segue.identifier == "voteSegue" {
+            print(sender as! Party)
             let nav = segue.destination as! UINavigationController
             let voteVC = nav.viewControllers[0] as! VoterViewController
+            // Set the current party in the Spotify player
+            let selectedParty = (sender as! Party)
+            SpotifyPlayer.shared.setCurrentParty(party: selectedParty)
+            voteVC.currentParty = selectedParty
             voteVC.ref = Database.database().reference()
             voteVC.setPlaylistListener()
         }

@@ -18,7 +18,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var miniPlayer:MiniPlayerViewController?
     var currentSong: Song?
     var accessToken: String?
-//    var spotifySession: SPTSession?
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
     
@@ -30,7 +29,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
-//        self.accessToken = self.spotifySession?.accessToken
         
         // Long Press gesture code referenced from
         // https://stackoverflow.com/questions/18848725/long-press-gesture-on-uicollectionviewcell

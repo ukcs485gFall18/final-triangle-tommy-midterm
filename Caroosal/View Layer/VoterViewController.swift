@@ -21,6 +21,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     var votedOnArray = [[String: String]]() // Array of currently voted on songs
     var currentPlaylist: [Song]? // Current party playlist
     var currentSong: Song? // Currently playing song
+    var currentParty: Party?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,10 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
         self.navigationItem.title = "Queue"
+        
+        let logoutButton = UIBarButtonItem(title: "Home", style: .plain, target: self, action: #selector(homePressed))
+        self.navigationItem.leftItemsSupplementBackButton = true
+        self.navigationItem.leftBarButtonItem = logoutButton
         
         // send a welcome alert
         let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Tap on either the upvote or downvote buttons to have your say in what songs to play!", preferredStyle: .alert)
@@ -38,25 +43,34 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     override func viewDidAppear(_ animated: Bool) {
         self.tableView.reloadData()
     }
+    
+    /**
+     Return the user to the home page
+     */
+    @objc func homePressed(){
+        self.dismiss(animated: true, completion: {})
+    }
 
     /**
      Sets a listener to the firebase database for queue updates
      */
     func setPlaylistListener(){
         // listen for updates to vote counts and songs being added to the playlist
-        self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        let songsRef = self.ref!.child("songs").child("queue").child((self.currentParty?.host)!)
+        songsRef.queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             self.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
             self.updatePlaylist()
         })
         // listen for songs being removed from the playlist
-        self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
-            self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(snapshot) in
+        songsRef.observe(DataEventType.childRemoved, with: { (snapshot) in
+            songsRef.observeSingleEvent(of: .value, with: {(snapshot) in
                 self.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
                 self.updatePlaylist()
             })
         })
         // listen to the current playing song being updated
-        self.ref!.child("songs").child("currentSong").observe(DataEventType.value, with: {(snapshot) in
+        let currentSongRef = self.ref!.child("songs").child("currentSong").child((self.currentParty?.host)!)
+        currentSongRef.observe(DataEventType.value, with: {(snapshot) in
             self.currentSong = FirebaseController.shared.buildSongFromSnapshot(snapshot: snapshot)
             self.tableView.reloadData()
         })
