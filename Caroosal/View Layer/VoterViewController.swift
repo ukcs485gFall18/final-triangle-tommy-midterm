@@ -162,8 +162,11 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
             {
                 // if the user clicks on the row with a song they've already voted on
                 if(votedSong.ref!.key == (songObj["songKey"])){
-                    if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
-                        return
+                    if(songObj["voteType"] == "upvote"){ // If the upvote was pressed already, remove that vote
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = -1
+     
+                        break
                     }
                     else { // user decides to upvote on a song they previously downvoted on, so add 2
                         self.votedOnArray.remove(at: indexOfVoted)
@@ -174,6 +177,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
                 indexOfVoted = indexOfVoted + 1
                 
             }
+            
             let songData = ["songKey": votedSong.ref!.key!, "voteType": "upvote"]
             votedOnArray.append(songData)
             updateSongVoteCount(modifier: modifier, row: indexPath.row)
@@ -192,7 +196,10 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
                 // if the user clicks on the row with a song they've already voted on
                 if(votedSong.ref!.key == (songObj["songKey"])){
                     if(songObj["voteType"] == "downvote"){ // user cannot downvote on song twice
-                        return
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = 1
+                        
+                        break
                     }
                     else { // user decides to downvote on a song they previously upvoted on, so subtract 2
                         self.votedOnArray.remove(at: indexOfVoted)
@@ -203,6 +210,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
                 indexOfVoted = indexOfVoted + 1
                 
             }
+            
             let songData = ["songKey": votedSong.ref!.key!, "voteType": "downvote"]
             votedOnArray.append(songData)
             updateSongVoteCount(modifier: modifier, row: indexPath.row)
