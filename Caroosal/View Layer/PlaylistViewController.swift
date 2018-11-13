@@ -18,6 +18,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     // MARK: Properties
     var ref: DatabaseReference? // Firebase database reference
     var votedOnArray = [[String: String]]() // Array that contains voted on song keys
+    var currentParty: Party?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,14 +38,15 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
      Sets a listener to the firebase database for queue updates
     */
     func setPlaylistListener(){
+        let songsRef = self.ref!.child("songs").child("queue").child((self.currentParty?.host)!)
         // listen for updates to vote counts and songs being added to the playlist
-        self.ref!.child("songs").child("queue").queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
+        songsRef.queryOrdered(byChild: "VoteCount").observe(DataEventType.value, with: { (snapshot) in
             SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: snapshot)
             self.updatePlaylist()
         })
         // listen for songs being removed from the playlist
-        self.ref!.child("songs").child("queue").observe(DataEventType.childRemoved, with: { (snapshot) in
-            self.ref!.child("songs").child("queue").observeSingleEvent(of: .value, with: {(datasnapshot) in
+        songsRef.observe(DataEventType.childRemoved, with: { (snapshot) in
+            songsRef.observeSingleEvent(of: .value, with: {(datasnapshot) in
                 SpotifyPlayer.shared.currentPlaylist = FirebaseController.shared.parseQueueSnapshot(snapshot: datasnapshot)
                 self.updatePlaylist()
             })
@@ -82,7 +84,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
-        var currSong: Song
+        var currSong: Song?
         if indexPath.section == 0 { // The currently playing song
             if SpotifyPlayer.shared.currentSong != nil {
                 currSong = SpotifyPlayer.shared.currentSong!
@@ -93,14 +95,23 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
                 return cell
             }
         } else {
-            currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            if indexPath.row >= SpotifyPlayer.shared.currentPlaylist!.count {
+                print("OUT OF RANGE")
+            }
+            else {
+                currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            }
         }
-        cell.voteCounterLabel.text = "\(currSong.voteCount!)"
-        cell.songTitleLabel.text = currSong.title
-        cell.artistLabel.text = currSong.artist
-        currSong.loadSongImage(completion: { image in
-            cell.albumCover.image = image
-        })
+        
+        if currSong != nil {
+            cell.voteCounterLabel.text = "\(currSong!.voteCount!)"
+            cell.songTitleLabel.text = currSong!.title
+            cell.artistLabel.text = currSong!.artist
+            currSong!.loadSongImage(completion: { image in
+                cell.albumCover.image = image
+            })
+        }
+        
         return cell
     }
     

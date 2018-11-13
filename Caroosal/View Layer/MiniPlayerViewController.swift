@@ -19,7 +19,6 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     // MARK: - Properties
     var currentSong: Song?
     weak var delegate: MiniPlayerDelegate?
-    var player: SPTAudioStreamingController?
     
     @IBOutlet weak var thumbImage: UIImageView!
     @IBOutlet weak var songTitle: UILabel!
@@ -30,13 +29,18 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(song: nil)
+        let startedName = Notification.Name("songStoppedPlaying")
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        // Register to receive notification
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshButtonState), name: startedName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshButtonState), name: changedPlaybackName, object: nil)
     }
     
     /**
      Refresh the button state when the view reappears
      Can't call viewDidAppear because the view technically doesn't disappear
     */
-    func refreshButtonState() {
+    @objc func refreshButtonState() {
         switch SpotifyPlayer.shared.currentPlaybackState {
         case .isNil?:
             print("shouldn't happen")

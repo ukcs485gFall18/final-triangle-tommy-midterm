@@ -18,9 +18,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var miniPlayer:MiniPlayerViewController?
     var currentSong: Song?
     var accessToken: String?
-    var spotifySession: SPTSession?
-    var player: SPTAudioStreamingController?
-    var auth = SPTAuth.defaultInstance()!
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
     
@@ -32,8 +29,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
-        self.accessToken = self.spotifySession?.accessToken
-        initializePlayer(authSession: self.spotifySession!)
         
         // Long Press gesture code referenced from
         // https://stackoverflow.com/questions/18848725/long-press-gesture-on-uicollectionviewcell
@@ -42,20 +37,12 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         lpgr.delaysTouchesBegan = true
         self.collectionView.addGestureRecognizer(lpgr)
         
-        if let token = self.accessToken {
-            print(token)
+        if let _ = self.accessToken {
             // runs a query for Drake songs on load
             let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
             self.performSpotifyQuery(queryURL: queryURL)
         }
-        self.miniPlayer!.player = self.player
-        
-        // send a welcome alert
-        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Select songs to add to the playlist by performing a long press gesture and pulling up, or play songs by tapping on them quickly.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-        self.present(alert, animated: true)
     }
-    
     
     /**
      Perform a Spotify API Query
@@ -70,43 +57,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
             self.datasource.loadSpotify(dict: dict)
         })
-    }
-    
-    /**
-     Initialize the Spotify streaming controller
-     Code modeled off of Elon Rubin's tutorial
-     - parameter authSession: the session object
-     */
-    func initializePlayer(authSession:SPTSession){
-        // if the player has yet to be initialized, set initialize it w/ access token & set delegate
-        if self.player == nil {
-            self.player = SPTAudioStreamingController.sharedInstance()
-            self.player!.playbackDelegate = self
-            self.player!.delegate = self
-            try! player!.start(withClientId: auth.clientID)
-            self.player!.login(withAccessToken: authSession.accessToken)
-            
-            // Fixing a bug where the audio does not play on device
-            // Code referenced from "Allen's" answer at
-            // https://stackoverflow.com/questions/35457524/avaudioplayer-working-on-simulator-but-not-on-real-device
-            do {
-                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: AVAudioSessionCategoryOptions.mixWithOthers)
-                
-                do {
-                    try AVAudioSession.sharedInstance().setActive(true)
-                    
-                } catch let error as NSError {
-                    print(error.localizedDescription)
-                }
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
-            print("Player was initialized")
-            SpotifyPlayer.shared.setPlayer(player: self.player!)
-        }
-        else {
-            print("Error Initializing Player")
-        }
     }
     
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
@@ -196,85 +146,8 @@ extension SongViewController: MiniPlayerDelegate {
         //4. Set the source view
         maxiCard.sourceView = miniPlayer
         //5. Set the MaxiCard's player to the current SPT player
-        maxiCard.player = self.player
+//        maxiCard.player = self.player
         // 6. Present the Maxi Player
         present(maxiCard, animated: false)
     }
 }
-
-extension SongViewController: SPTAudioStreamingDelegate {
-    // delegate method that calls once the login was successful. Performs a segue to the main controller
-    func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
-        // after a user authenticates a session, the SPTAudioStreamingController is then initialized and this method called
-        SwiftSpinner.hide()
-    }
-}
-
-// MARK: - SPTAudioStreamingPlaybackDelegate
-extension SongViewController: SPTAudioStreamingPlaybackDelegate {
-    // User logged out
-    func audioStreamingDidLogout(_ audioStreaming: SPTAudioStreamingController!) {
-        print("Logged Out")
-    }
-    // User skipped to the next trakc
-    func audioStreamingDidSkip(toNextTrack audioStreaming: SPTAudioStreamingController!) {
-        print("Skipped To Next Track")
-    }
-    // User skipped to previous track
-    func audioStreamingDidSkip(toPreviousTrack audioStreaming: SPTAudioStreamingController!) {
-        print("Skipped To Previous Track")
-    }
-    // User stopped playing track
-    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
-        
-        if let newSong = SpotifyPlayer.shared.skipToNextSong() {
-            print("woohoo")
-        }
-        else {
-            // refresh the song playing state
-            SpotifyPlayer.shared.player?.setIsPlaying(false, callback: nil)
-            self.miniPlayer?.refreshButtonState()
-            if let maxi = self.currentMaxiCard {
-                print(maxi)
-                if let songPlayer = maxi.songPlayerVC {
-                    songPlayer.updateButtons()
-                }
-            }
-        }
-    }
-    // user started playing track
-    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
-        SwiftSpinner.hide() // hide swift spinner
-        if let maxi = self.currentMaxiCard {
-            let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
-            maxi.coverArtImage.image = UIImage(data: coverImageData! as Data)
-            if let songPlayer = maxi.songPlayerVC {
-                songPlayer.currentSong = SpotifyPlayer.shared.currentSong
-                songPlayer.configureFields()
-            }
-            
-        }
-    }
-    
-    // User seeks to song position
-    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didSeekToPosition position: TimeInterval) {
-        print("Seeked to Position")
-    }
-    
-    // User changes playback status
-    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChangePlaybackStatus isPlaying: Bool) {
-        self.miniPlayer?.refreshButtonState()
-        print("Changed Playback Status")
-        if let maxi = self.currentMaxiCard {
-            print(maxi)
-            if let songPlayer = maxi.songPlayerVC {
-                songPlayer.updateButtons()
-            }
-        }
-    }
-    // Metadata of song changed
-    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
-        print("Did Change")
-    }
-}
-

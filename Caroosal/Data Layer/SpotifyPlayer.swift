@@ -24,6 +24,7 @@ class SpotifyPlayer: NSObject {
     var currentPlaylist: [Song]? // the playlist (queue)
     static let shared = SpotifyPlayer() // static reference to class
     var ref: DatabaseReference! // Firebase database reference
+    var currentParty: Party?
     
     override init(){
         super.init()
@@ -41,6 +42,15 @@ class SpotifyPlayer: NSObject {
     }
     
     /**
+     Set the party to the current party
+     - parameter player: The SPTAudioStreamingController object that the class controls
+     */
+    func setCurrentParty(party: Party){
+        self.currentParty = party
+    }
+    
+    
+    /**
      Sets the player to play the current song
      - parameter song: The song to begin playing
      */
@@ -49,7 +59,7 @@ class SpotifyPlayer: NSObject {
             self.currentSong = song
             self.currentSong!.ref!.ref.removeValue()
             // set as the current song in the firebase database
-            self.currentSong!.ref! = self.ref.child("songs").child("currentSong")
+            self.currentSong!.ref! = self.ref.child("songs/currentSong").child(self.currentParty!.host)
             self.writeSongToFirebase(song: self.currentSong!, isCurrent: false)
             SwiftSpinner.show("Loading Track")
             return
@@ -121,7 +131,7 @@ class SpotifyPlayer: NSObject {
      */
     func writeSongToFirebase(song: Song, isCurrent: Bool){
         if isCurrent{
-            let newSongRef = self.ref.child("songs").child("queue").childByAutoId()
+            let newSongRef = self.ref.child("songs/currentSong").child(self.currentParty!.host)
             newSongRef.setValue(song.toDict())
         }
         else {

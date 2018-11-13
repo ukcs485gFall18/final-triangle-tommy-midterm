@@ -90,6 +90,12 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         
         coverImageContainer.layer.cornerRadius = cardCornerRadius
         coverImageContainer.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        
+        let startedName = Notification.Name("songStoppedPlaying")
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCoverImage), name: startedName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCoverImage), name: changedPlaybackName, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,6 +128,12 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
             self.songPlayerVC = destination as! SongPlayControlViewController
         }
     }
+    
+    @objc func refreshCoverImage(){
+        let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
+        self.coverArtImage.image = UIImage(data: coverImageData! as Data)
+    }
+    
     
 }
 

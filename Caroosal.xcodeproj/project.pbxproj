@@ -32,6 +32,10 @@
 		65A0DA0E21640D8800EC4C50 /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0B21640D8700EC4C50 /* SpotifyAudioPlayback.framework */; };
 		65A0DA0F21640D8800EC4C50 /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0C21640D8700EC4C50 /* SpotifyAuthentication.framework */; };
 		65A0DA1021640D8800EC4C50 /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A0DA0D21640D8800EC4C50 /* SpotifyMetadata.framework */; };
+		65CD1B2A219141D300054F2B /* HostHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD1B29219141D300054F2B /* HostHomeViewController.swift */; };
+		65CD1B2C2191F52600054F2B /* PartyCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD1B2B2191F52600054F2B /* PartyCreationViewController.swift */; };
+		65CD1B2E2192610700054F2B /* PartyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD1B2D2192610700054F2B /* PartyCell.swift */; };
+		65CD1B302192679200054F2B /* Party.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CD1B2F2192679200054F2B /* Party.swift */; };
 		65D67D00217A30C600CFB3D5 /* VoterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D67CFF217A30C600CFB3D5 /* VoterViewController.swift */; };
 		65D67D02217A314400CFB3D5 /* SongTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D67D01217A314400CFB3D5 /* SongTableCell.swift */; };
 		65D67D04217A345200CFB3D5 /* SongCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D67D03217A345200CFB3D5 /* SongCell.swift */; };
@@ -84,7 +88,7 @@
 		65A0D9F121640AE100EC4C50 /* SpotifyAPIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAPIController.swift; sourceTree = "<group>"; };
 		65A0D9F321640AFA00EC4C50 /* SongBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongBuilder.swift; sourceTree = "<group>"; };
 		65A0D9F521640B3700EC4C50 /* SongCollectionDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCollectionDatasource.swift; sourceTree = "<group>"; };
-		65A0D9F821640B9200EC4C50 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		65A0D9F821640B9200EC4C50 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		65A0D9FA21640BAE00EC4C50 /* SongViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongViewController.swift; sourceTree = "<group>"; };
 		65A0D9FE21640BFE00EC4C50 /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
 		65A0DA0021640C2000EC4C50 /* MaxiSongCardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxiSongCardViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +99,10 @@
 		65A0DA0C21640D8700EC4C50 /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAuthentication.framework; sourceTree = "<group>"; };
 		65A0DA0D21640D8800EC4C50 /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyMetadata.framework; sourceTree = "<group>"; };
 		65A0DA1121640DEB00EC4C50 /* Caroosal-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Caroosal-Bridging-Header.h"; sourceTree = "<group>"; };
+		65CD1B29219141D300054F2B /* HostHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostHomeViewController.swift; sourceTree = "<group>"; };
+		65CD1B2B2191F52600054F2B /* PartyCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyCreationViewController.swift; sourceTree = "<group>"; };
+		65CD1B2D2192610700054F2B /* PartyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyCell.swift; sourceTree = "<group>"; };
+		65CD1B2F2192679200054F2B /* Party.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Party.swift; sourceTree = "<group>"; };
 		65D67CFF217A30C600CFB3D5 /* VoterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoterViewController.swift; sourceTree = "<group>"; };
 		65D67D01217A314400CFB3D5 /* SongTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongTableCell.swift; sourceTree = "<group>"; };
 		65D67D03217A345200CFB3D5 /* SongCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongCell.swift; sourceTree = "<group>"; };
@@ -201,6 +209,7 @@
 			children = (
 				65A0D9EA21640A5D00EC4C50 /* Song.swift */,
 				65A0D9EC21640A8200EC4C50 /* SongSubscriber.swift */,
+				65CD1B2F2192679200054F2B /* Party.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -231,6 +240,9 @@
 				65D67D01217A314400CFB3D5 /* SongTableCell.swift */,
 				65D67D03217A345200CFB3D5 /* SongCell.swift */,
 				65D67CFF217A30C600CFB3D5 /* VoterViewController.swift */,
+				65CD1B29219141D300054F2B /* HostHomeViewController.swift */,
+				65CD1B2B2191F52600054F2B /* PartyCreationViewController.swift */,
+				65CD1B2D2192610700054F2B /* PartyCell.swift */,
 			);
 			path = "View Layer";
 			sourceTree = "<group>";
@@ -344,6 +356,11 @@
 				TargetAttributes = {
 					65A0D9B72164084300EC4C50 = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					65A0D9CB2164084400EC4C50 = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -413,6 +430,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Caroosal/Pods-Caroosal-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/EmptyDataSet-Swift/EmptyDataSet_Swift.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftSpinner/SwiftSpinner.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
@@ -423,6 +441,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EmptyDataSet_Swift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftSpinner.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
@@ -496,10 +515,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				65A0D9F921640B9200EC4C50 /* LoginViewController.swift in Sources */,
+				65CD1B302192679200054F2B /* Party.swift in Sources */,
 				65A0D9FF21640BFE00EC4C50 /* MiniPlayerViewController.swift in Sources */,
+				65CD1B2E2192610700054F2B /* PartyCell.swift in Sources */,
 				65A0DA0821640CAB00EC4C50 /* Song+ImageLoad.swift in Sources */,
 				65A0DA0A21640CC200EC4C50 /* UIView+Snapshot.swift in Sources */,
 				65D67D02217A314400CFB3D5 /* SongTableCell.swift in Sources */,
+				65CD1B2C2191F52600054F2B /* PartyCreationViewController.swift in Sources */,
 				65A0D9F021640AB200EC4C50 /* DataStack.swift in Sources */,
 				65A0D9F221640AE100EC4C50 /* SpotifyAPIController.swift in Sources */,
 				65A0D9EB21640A5D00EC4C50 /* Song.swift in Sources */,
@@ -510,6 +532,7 @@
 				65A0D9ED21640A8200EC4C50 /* SongSubscriber.swift in Sources */,
 				65D67D00217A30C600CFB3D5 /* VoterViewController.swift in Sources */,
 				65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */,
+				65CD1B2A219141D300054F2B /* HostHomeViewController.swift in Sources */,
 				656AE6CB217F6DBF0067C798 /* FirebaseController.swift in Sources */,
 				65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */,
 				65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */,

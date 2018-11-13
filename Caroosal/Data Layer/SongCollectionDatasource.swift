@@ -72,7 +72,8 @@ class SongCollectionDatasource: NSObject {
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
-            songDict["databaseRef"] = self.ref.child("songs").child("queue").childByAutoId()
+            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
+            songDict["databaseRef"] = newRef
             songArr.append(songDict)
         }
         return songArr
@@ -95,7 +96,8 @@ class SongCollectionDatasource: NSObject {
             songDict["duration"] = song["duration_ms"].string
             songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
             songDict["mediaURL"] = song["uri"].string
-            songDict["databaseRef"] = self.ref.child("songs").child("queue").childByAutoId()
+            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
+            songDict["databaseRef"] = newRef
             songArr.append(songDict)
         }
         return songArr
