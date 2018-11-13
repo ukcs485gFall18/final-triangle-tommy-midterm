@@ -447,10 +447,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlE-aH-A0P">
-                                <rect key="frame" x="76" y="316" width="223" height="35"/>
-                                <color key="backgroundColor" red="0.33401905749999999" green="1" blue="0.2978712295" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="72.5" y="354.5" width="230" height="34"/>
+                                <color key="backgroundColor" red="0.87778454462814637" green="0.54731828023761508" blue="0.98657804727554321" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="buE-3v-GZa"/>
+                                    <constraint firstAttribute="width" constant="230" id="L4X-Sc-s6r"/>
                                 </constraints>
                                 <state key="normal" title="Login With Spotify">
                                     <color key="titleColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
@@ -460,10 +460,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aZo-Xh-Wye">
-                                <rect key="frame" x="76" y="383" width="223" height="35"/>
+                                <rect key="frame" x="72.5" y="411" width="230" height="34"/>
                                 <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="oo3-Ro-3CJ"/>
+                                    <constraint firstAttribute="width" constant="230" id="9Ef-JY-7CJ"/>
                                 </constraints>
                                 <state key="normal" title="Vote on Songs">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -472,15 +472,26 @@
                                     <action selector="votePressed:" destination="GxD-LA-2Bt" eventType="touchUpInside" id="CcM-X0-ut5"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Caroosal" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pc0-xC-Dyz">
+                                <rect key="frame" x="98.5" y="33" width="178" height="60"/>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="50"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="carousel app icon no background" translatesAutoresizingMaskIntoConstraints="NO" id="s3a-vc-CR7">
+                                <rect key="frame" x="107.5" y="130" width="160" height="157"/>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.3921568627" green="0.36862745099999999" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="trailing" secondItem="VlE-aH-A0P" secondAttribute="trailing" id="AUq-L0-4m6"/>
-                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="leading" secondItem="VlE-aH-A0P" secondAttribute="leading" id="KiG-30-UVz"/>
-                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="top" secondItem="VlE-aH-A0P" secondAttribute="bottom" constant="32" id="Vca-uF-NaY"/>
-                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="centerX" secondItem="yMb-CT-DbJ" secondAttribute="centerX" id="cKB-0m-GYu"/>
-                            <constraint firstItem="bZg-K7-fXQ" firstAttribute="bottom" secondItem="aZo-Xh-Wye" secondAttribute="bottom" constant="249" id="fNG-IC-Eds"/>
-                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="leading" secondItem="bZg-K7-fXQ" secondAttribute="leading" constant="76" id="msp-Bx-APW"/>
+                            <constraint firstItem="VlE-aH-A0P" firstAttribute="top" secondItem="s3a-vc-CR7" secondAttribute="bottom" constant="67.5" id="1nY-y2-cdR"/>
+                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="top" secondItem="VlE-aH-A0P" secondAttribute="bottom" constant="22.5" id="4ZZ-by-X13"/>
+                            <constraint firstItem="aZo-Xh-Wye" firstAttribute="centerX" secondItem="bZg-K7-fXQ" secondAttribute="centerX" id="FA4-QP-2GX"/>
+                            <constraint firstItem="VlE-aH-A0P" firstAttribute="centerX" secondItem="bZg-K7-fXQ" secondAttribute="centerX" id="Pvi-RP-eiA"/>
+                            <constraint firstItem="pc0-xC-Dyz" firstAttribute="top" secondItem="bZg-K7-fXQ" secondAttribute="top" constant="13" id="YuH-gF-zER"/>
+                            <constraint firstItem="s3a-vc-CR7" firstAttribute="centerX" secondItem="bZg-K7-fXQ" secondAttribute="centerX" id="kQi-6V-GhQ"/>
+                            <constraint firstItem="pc0-xC-Dyz" firstAttribute="centerX" secondItem="bZg-K7-fXQ" secondAttribute="centerX" id="udn-DU-Ljw"/>
+                            <constraint firstItem="s3a-vc-CR7" firstAttribute="top" secondItem="pc0-xC-Dyz" secondAttribute="bottom" constant="37" id="yNT-Ft-t3h"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bZg-K7-fXQ"/>
                     </view>
@@ -548,7 +559,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.30553814021127645" green="0.7667577558032459" blue="0.93533260861451173" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.3921568627" green="0.36862745099999999" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="OZX-tn-ojE" firstAttribute="centerX" secondItem="uqK-gl-Vcq" secondAttribute="centerX" id="56P-WU-Dyy"/>
                                     <constraint firstItem="Bps-kj-Ade" firstAttribute="centerX" secondItem="uqK-gl-Vcq" secondAttribute="centerX" id="87i-6b-9wL"/>
@@ -895,6 +906,7 @@
     </scenes>
     <resources>
         <image name="Avatar" width="50" height="50"/>
+        <image name="carousel app icon no background" width="160" height="157"/>
         <image name="chevron" width="36" height="12"/>
         <image name="downvote" width="512" height="512"/>
         <image name="fast-forward" width="28" height="28"/>

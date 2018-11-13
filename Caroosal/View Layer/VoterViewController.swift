@@ -153,6 +153,8 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         
+        var upButton = sender as! UIButton
+        //upButton.image
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
             var modifier = 1
