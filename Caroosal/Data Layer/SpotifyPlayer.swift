@@ -140,4 +140,10 @@ class SpotifyPlayer: NSObject {
             }
         }
     }
+    
+    func logoutPlayer(){
+        if self.player != nil {
+         self.player!.logout()
+        }
+    }
 }

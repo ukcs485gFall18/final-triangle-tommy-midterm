@@ -91,7 +91,21 @@ class HostHomeViewController: UIViewController {
     }
     
     @objc func logoutPressed(){
-        print("logout pressed")
+        self.auth.session = nil
+        
+        SpotifyPlayer.shared.logoutPlayer()
+        
+        let presentedVc = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as! LoginViewController
+        if presentedVc != nil {
+            presentedVc.providesPresentationContextTransitionStyle = true
+            presentedVc.definesPresentationContext = true
+            presentedVc.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext;
+            presentedVc.view.backgroundColor = UIColor.init(white: 0.4, alpha: 0.8)
+
+            
+            self.dismiss(animated: true, completion: nil)
+            self.present(presentedVc, animated: true, completion: nil)
+        }
     }
     
     
@@ -291,6 +305,7 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
     // User logged out
     func audioStreamingDidLogout(_ audioStreaming: SPTAudioStreamingController!) {
         print("Logged Out")
+        try! SpotifyPlayer.shared.player?.stop()
     }
     // User skipped to the next trakc
     func audioStreamingDidSkip(toNextTrack audioStreaming: SPTAudioStreamingController!) {

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		36125CE839F35504B34FB0D9 /* Pods_Caroosal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */; };
+		65528EC3219B76C100BB6F2B /* PartySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65528EC2219B76C100BB6F2B /* PartySettingsViewController.swift */; };
 		656AE6CB217F6DBF0067C798 /* FirebaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656AE6CA217F6DBF0067C798 /* FirebaseController.swift */; };
 		659EA314217035BA008D31CD /* SpotifyPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EA313217035BA008D31CD /* SpotifyPlayer.swift */; };
 		65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A0D9BB2164084300EC4C50 /* AppDelegate.swift */; };
@@ -68,6 +69,7 @@
 		14BEC9BA206F975DE15EB3A5 /* Pods_Caroosal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Caroosal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		47D7077042BA667E43367FB3 /* Pods-CaroosalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CaroosalTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CaroosalTests/Pods-CaroosalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		64D39512D8D3A15F4F7E45B9 /* Pods_CaroosalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CaroosalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		65528EC2219B76C100BB6F2B /* PartySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartySettingsViewController.swift; sourceTree = "<group>"; };
 		656AE6CA217F6DBF0067C798 /* FirebaseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseController.swift; sourceTree = "<group>"; };
 		659EA313217035BA008D31CD /* SpotifyPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyPlayer.swift; sourceTree = "<group>"; };
 		65A0D9B82164084300EC4C50 /* Caroosal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Caroosal.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -243,6 +245,7 @@
 				65CD1B29219141D300054F2B /* HostHomeViewController.swift */,
 				65CD1B2B2191F52600054F2B /* PartyCreationViewController.swift */,
 				65CD1B2D2192610700054F2B /* PartyCell.swift */,
+				65528EC2219B76C100BB6F2B /* PartySettingsViewController.swift */,
 			);
 			path = "View Layer";
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				65A0D9FB21640BAE00EC4C50 /* SongViewController.swift in Sources */,
 				65CD1B2A219141D300054F2B /* HostHomeViewController.swift in Sources */,
 				656AE6CB217F6DBF0067C798 /* FirebaseController.swift in Sources */,
+				65528EC3219B76C100BB6F2B /* PartySettingsViewController.swift in Sources */,
 				65A0D9BC2164084300EC4C50 /* AppDelegate.swift in Sources */,
 				65A0DA0321640C3C00EC4C50 /* SongPlayControlViewController.swift in Sources */,
 				659EA314217035BA008D31CD /* SpotifyPlayer.swift in Sources */,

@@ -20,6 +20,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var accessToken: String?
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
+    var searchTimer: Timer?
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -61,17 +62,22 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let token = self.accessToken {
-            var queryURL: String?
-            if searchText.isEmpty {
-                queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
+        searchTimer?.invalidate()
+        
+        // Timer code referenced from Andre: https://stackoverflow.com/questions/43327991/delayed-search-in-swift-ios-app
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
+            if let token = self.accessToken {
+                var queryURL: String?
+                if searchText.isEmpty {
+                    queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
+                }
+                else {
+                    let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                    queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
+                }
+                self.performSpotifyQuery(queryURL: queryURL!)
             }
-            else {
-                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
-            }
-            self.performSpotifyQuery(queryURL: queryURL!)
-        }
+        })
     }
     
     /**
