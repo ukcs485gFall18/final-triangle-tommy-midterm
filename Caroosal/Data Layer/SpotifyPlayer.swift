@@ -25,12 +25,17 @@ class SpotifyPlayer: NSObject {
     static let shared = SpotifyPlayer() // static reference to class
     var ref: DatabaseReference! // Firebase database reference
     var currentParty: Party?
+    var previousPlayedURI: [String]?
+    var accessToken: String?
+    var dataStack: DataStack
     
     override init(){
-        super.init()
         self.currentPlaybackState = .isNil
         self.currentPlaylist = []
+        self.previousPlayedURI = []
         self.ref = Database.database().reference()
+        self.dataStack = DataStack()
+        super.init()
     }
     
     /**
@@ -49,6 +54,22 @@ class SpotifyPlayer: NSObject {
         self.currentParty = party
     }
     
+    /**
+     Set the access token to the token provided
+     - parameter token: A Spotify access token
+     */
+    func setAccessToken(token: String){
+        self.accessToken = token
+    }
+    
+    // Returns just the track ID from the MediaURL of the track:
+    // i.e. Is stored in database like: "spotify:track:5mCPDVBb16L4XQwDdbRUpz"
+    // we just want the "5mCPDVBb16L4XQwDdbRUpz" for song recommendations
+    func getTrackIDfromURI(uri: String) -> String{
+        let split = uri.components(separatedBy: ":")
+        return split[2]
+    }
+    
     
     /**
      Sets the player to play the current song
@@ -57,6 +78,7 @@ class SpotifyPlayer: NSObject {
     func startSong(song: Song){
         self.player?.playSpotifyURI(song.mediaURL?.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
             self.currentSong = song
+            self.previousPlayedURI!.append(self.getTrackIDfromURI(uri: (song.mediaURL?.absoluteString)!))
             self.currentSong!.ref!.ref.removeValue()
             // set as the current song in the firebase database
             self.currentSong!.ref! = self.ref.child("songs/currentSong").child(self.currentParty!.host)
@@ -65,6 +87,20 @@ class SpotifyPlayer: NSObject {
             return
         })
         self.currentPlaybackState = .isPlaying
+    }
+    
+    /**
+     Pull from the party recommended songs and begin playing a track
+     */
+    func startRecommendedSong(completion: @escaping ([Song]) ->Void){
+        SpotifyAPIController.shared.sendRecommendationsRequest(accessToken: self.accessToken!, completionHandler: { data in
+            let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifyRecommendations(songs: data)
+            var dictionaryTest:[String: Any] = [:]
+            dictionaryTest["Songs"] = dict
+            self.dataStack.load(dictionary: dictionaryTest) { [weak self] success in
+                completion((self?.dataStack.allSongs)!)
+            }
+        })
     }
     
     /**

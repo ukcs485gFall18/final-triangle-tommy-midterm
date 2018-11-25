@@ -27,8 +27,6 @@ class SongCollectionDatasource: NSObject {
         self.ref = Database.database().reference()
         super.init()
         self.managedCollection.dataSource = self
-        self.managedCollection.emptyDataSetSource = self
-        self.managedCollection.emptyDataSetDelegate = self
     }
     
     /**
@@ -54,55 +52,72 @@ class SongCollectionDatasource: NSObject {
         }
     }
     
-    /**
-     Parse Spotify Tracks Function - Coded By Zachary Moore
-     Takes the JSON provided by the Spotify API and creates an array of dictionaries for the songs.
-     Grabs each song attribute from the API "items" array for allocation into the song dictionaries
-     - parameter songs: JSON of song metadata from API query response
-     - Returns: Dictionary constructed from that data
-     */
-    func parseSpotifyTracks(songs: JSON) -> [[String: Any]] {
-        var songArr = [[String: Any]]() //create return array
-        for i in 0..<songs["items"].count { //Loop through the API array for each song
-            var songDict: [String: Any] = [:]
-            //Assign the necessary attributes
-            var song = songs["items"][i]
-            songDict["title"] = song["name"].string
-            songDict["artist"] = song["artists"][0]["name"].string
-            songDict["duration"] = song["duration_ms"].string
-            songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
-            songDict["mediaURL"] = song["uri"].string
-            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
-            songDict["databaseRef"] = newRef
-            songArr.append(songDict)
-        }
-        return songArr
-    }
-    
-
-    /**
-     Parse Spotify Tracks Function - Created by Steven Gripshover
-     Similar to the function parseSpotifyTracks() above, just with slightly different API response structure
-     - parameter songs: JSON of song metadata from API query response
-     - Returns: Dictionary constructed from that data
-     */
-    func parseSpotifySearch(songs: JSON) -> [[String: Any]] {
-        var songArr = [[String: Any]]()
-        for i in 0..<songs["tracks"]["items"].count {
-            var songDict: [String: Any] = [:]
-            var song = songs["tracks"]["items"][i]
-            songDict["title"] = song["name"].string
-            songDict["artist"] = song["artists"][0]["name"].string
-            songDict["duration"] = song["duration_ms"].string
-            songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
-            songDict["mediaURL"] = song["uri"].string
-            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
-            songDict["databaseRef"] = newRef
-            songArr.append(songDict)
-        }
-        return songArr
-    }
-    
+//    /**
+//     Parse Spotify Tracks Function - Coded By Zachary Moore
+//     Takes the JSON provided by the Spotify API and creates an array of dictionaries for the songs.
+//     Grabs each song attribute from the API "items" array for allocation into the song dictionaries
+//     - parameter songs: JSON of song metadata from API query response
+//     - Returns: Dictionary constructed from that data
+//     */
+//    func parseSpotifyTracks(songs: JSON) -> [[String: Any]] {
+//        var songArr = [[String: Any]]() //create return array
+//        for i in 0..<songs["items"].count { //Loop through the API array for each song
+//            var songDict: [String: Any] = [:]
+//            //Assign the necessary attributes
+//            var song = songs["items"][i]
+//            songDict["title"] = song["name"].string
+//            songDict["artist"] = song["artists"][0]["name"].string
+//            songDict["duration"] = song["duration_ms"].string
+//            songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
+//            songDict["mediaURL"] = song["uri"].string
+//            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
+//            songDict["databaseRef"] = newRef
+//            songArr.append(songDict)
+//        }
+//        return songArr
+//    }
+//
+//
+//    /**
+//     Parse Spotify Tracks Function - Created by Steven Gripshover
+//     Similar to the function parseSpotifyTracks() above, just with slightly different API response structure
+//     - parameter songs: JSON of song metadata from API query response
+//     - Returns: Dictionary constructed from that data
+//     */
+//    func parseSpotifySearch(songs: JSON) -> [[String: Any]] {
+//        var songArr = [[String: Any]]()
+//        for i in 0..<songs["tracks"]["items"].count {
+//            var songDict: [String: Any] = [:]
+//            var song = songs["tracks"]["items"][i]
+//            songDict["title"] = song["name"].string
+//            songDict["artist"] = song["artists"][0]["name"].string
+//            songDict["duration"] = song["duration_ms"].string
+//            songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
+//            songDict["mediaURL"] = song["uri"].string
+//            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
+//            songDict["databaseRef"] = newRef
+//            songArr.append(songDict)
+//        }
+//        return songArr
+//    }
+//
+//
+//    func parseSpotifyRecommendations(songs: JSON) -> [[String: Any]] {
+//        var songArr = [[String: Any]]()
+//        for i in 0..<songs["tracks"].count {
+//            var songDict: [String: Any] = [:]
+//            var song = songs["tracks"][i]
+//            songDict["title"] = song["name"].string
+//            songDict["artist"] = song["artists"][0]["name"].string
+//            songDict["duration"] = song["duration_ms"].string
+//            songDict["coverArtURL"] = song["album"]["images"][0]["url"].string
+//            songDict["mediaURL"] = song["uri"].string
+//            let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).childByAutoId()
+//            songDict["databaseRef"] = newRef
+//            songArr.append(songDict)
+//        }
+//        return songArr
+//    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -129,25 +144,5 @@ extension SongCollectionDatasource: UICollectionViewDataSource {
             cell.coverArt.image = image
         }
         return cell
-    }
-}
-
-// MARK: - EmptyDataSetSource & EmptyDataSetDelegate
-// Set the view to display message if there are no songs in the search query
-extension SongCollectionDatasource: EmptyDataSetSource, EmptyDataSetDelegate {
-    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
-        let str = "No results found"
-        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
-        return NSAttributedString(string: str, attributes: attrs)
-    }
-    
-    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
-        let str = "Please make sure your words are spelled correctly, or use a different search query."
-        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
-        return NSAttributedString(string: str, attributes: attrs)
-    }
-    
-    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
-        return UIImage(named: "search")
     }
 }

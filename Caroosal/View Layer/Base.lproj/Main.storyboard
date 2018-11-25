@@ -93,12 +93,14 @@
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="DCn-eJ-vUL">
-                                <rect key="frame" x="29" y="32" width="317" height="29"/>
+                                <rect key="frame" x="82" y="32" width="211" height="29"/>
                                 <segments>
                                     <segment title="Search"/>
                                     <segment title="Recommended"/>
-                                    <segment title="Popular"/>
                                 </segments>
+                                <connections>
+                                    <action selector="songSegmentChanged:" destination="SJy-oP-cn0" eventType="valueChanged" id="2Gb-ge-0XE"/>
+                                </connections>
                             </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -122,6 +124,7 @@
                     <connections>
                         <outlet property="collectionView" destination="gA2-gj-rFn" id="HqI-1T-dn9"/>
                         <outlet property="searchBar" destination="M6G-4j-AG3" id="VUu-kS-tuG"/>
+                        <outlet property="songSegment" destination="DCn-eJ-vUL" id="inQ-Ip-XXk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OhU-1j-4Zq" sceneMemberID="firstResponder"/>
@@ -281,12 +284,18 @@
                                                 <action selector="playButtonTapped:" destination="guh-pd-ZQs" eventType="touchUpInside" id="jol-v4-cJD"/>
                                             </connections>
                                         </button>
+                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4fW-zt-oIH">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
+                                        </progressView>
                                     </subviews>
                                     <gestureRecognizers/>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="vp3-V2-Fac" secondAttribute="trailing" constant="8" id="4Wb-4S-nZs"/>
                                         <constraint firstItem="vp3-V2-Fac" firstAttribute="leading" secondItem="TAy-5q-Hnm" secondAttribute="trailing" constant="8" id="EDd-ue-GQA"/>
+                                        <constraint firstItem="4fW-zt-oIH" firstAttribute="width" secondItem="KOS-rd-SGX" secondAttribute="width" id="Kqr-a0-K6H"/>
                                         <constraint firstItem="TAy-5q-Hnm" firstAttribute="centerY" secondItem="vp3-V2-Fac" secondAttribute="centerY" id="VYU-wI-Xrf"/>
+                                        <constraint firstItem="4fW-zt-oIH" firstAttribute="top" secondItem="KOS-rd-SGX" secondAttribute="top" id="W3p-gm-7wf"/>
+                                        <constraint firstItem="4fW-zt-oIH" firstAttribute="leading" secondItem="KOS-rd-SGX" secondAttribute="leading" id="kCf-4E-txF"/>
                                         <constraint firstItem="vp3-V2-Fac" firstAttribute="centerY" secondItem="KOS-rd-SGX" secondAttribute="centerY" id="q40-Y5-cLj"/>
                                     </constraints>
                                 </view>
@@ -333,6 +342,7 @@
                     <connections>
                         <outlet property="ffButton" destination="vp3-V2-Fac" id="Ko9-su-ciP"/>
                         <outlet property="playButton" destination="TAy-5q-Hnm" id="xOM-tx-SHL"/>
+                        <outlet property="songProgressBar" destination="4fW-zt-oIH" id="rgg-sq-DYb"/>
                         <outlet property="songTitle" destination="y2B-v3-14L" id="WuC-iH-KRf"/>
                         <outlet property="thumbImage" destination="Xin-Sh-f5I" id="9VK-bu-rtf"/>
                     </connections>
@@ -344,7 +354,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1318" y="590"/>
+            <point key="canvasLocation" x="1317.5999999999999" y="589.20539730134942"/>
         </scene>
         <!--Playlist View Controller-->
         <scene sceneID="YQL-FD-Bmo">

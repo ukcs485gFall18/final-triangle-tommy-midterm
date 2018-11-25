@@ -32,7 +32,7 @@ class DataStack: NSObject {
                 let builder = SongBuilder()
                     .with(title: (songDictionary["title"] as? String))
                     .with(artist: songDictionary["artist"] as? String)
-                    .with(duration: songDictionary["duration"] as? TimeInterval)
+                    .with(duration: songDictionary["duration"] as? Int)
                     .with(mediaURL: songDictionary["mediaURL"] as? String)
                     .with(coverArtURL: songDictionary["coverArtURL"] as? String)
                     .with(voteCount: songDictionary["voteCount"] as? Int)

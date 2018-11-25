@@ -203,6 +203,7 @@ class HostHomeViewController: UIViewController {
             }
             print("Player was initialized")
             SpotifyPlayer.shared.setPlayer(player: self.player!)
+            SpotifyPlayer.shared.setAccessToken(token: authSession.accessToken)
         }
         else {
             print("Error Initializing Player")
@@ -307,27 +308,31 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
         print("Logged Out")
         try! SpotifyPlayer.shared.player?.stop()
     }
+    
     // User skipped to the next trakc
     func audioStreamingDidSkip(toNextTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Next Track")
     }
+    
     // User skipped to previous track
     func audioStreamingDidSkip(toPreviousTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Previous Track")
     }
+    
     // User stopped playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
-        
-        if let newSong = SpotifyPlayer.shared.skipToNextSong() {
-            print("woohoo")
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // alert user that queue is empty
+            SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                if(songs.count > 0){
+                    SpotifyPlayer.shared.startSong(song: songs[0])
+                }
+            })
         }
         else {
-            // refresh the song playing state
-            SpotifyPlayer.shared.player?.setIsPlaying(false, callback: nil)
-            let notificationName = Notification.Name("songStoppedPlaying")
-            NotificationCenter.default.post(name: notificationName, object: nil)
+            let _ = SpotifyPlayer.shared.skipToNextSong()
         }
     }
+    
     // user started playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         SwiftSpinner.hide() // hide swift spinner
@@ -345,6 +350,7 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
         let notificationName = Notification.Name("changedPlaybackStatus")
         NotificationCenter.default.post(name: notificationName, object: nil)
     }
+    
     // Metadata of song changed
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
         print("Did Change")

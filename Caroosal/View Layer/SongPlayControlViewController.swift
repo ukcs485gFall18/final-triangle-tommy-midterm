@@ -89,15 +89,25 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
      */
     @IBAction func nextTapped(_ sender: Any) {
         if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
-            let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-            self.present(alert, animated: true)
-        }
-        else {
-            var newSong = SpotifyPlayer.shared.skipToNextSong()
+            if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+                SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                    if(songs.count > 0){
+                        self.currentSong = songs[0]
+                        self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                        SpotifyPlayer.shared.startSong(song: songs[0])
+                    }
+                    else {
+                        let alert = UIAlertController(title: "No Recommended Songs", message: "Please play songs and recommendations will appear", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                        self.present(alert, animated: true)
+                    }
+                })
+            }
+            else {
+                let _ = SpotifyPlayer.shared.skipToNextSong()
+            }
         }
     }
-    
 }
 
 // MARK: - Internal
@@ -120,7 +130,7 @@ extension Song {
     var presentationTime: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "mm:ss"
-        let date = Date(timeIntervalSince1970: duration)
+        let date = Date(timeIntervalSince1970: Double(duration) / 1000.0)
         return formatter.string(from: date)
     }
 }

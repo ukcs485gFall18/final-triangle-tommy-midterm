@@ -15,7 +15,7 @@ struct Song {
     
     // MARK: - Properties
     let title: String
-    var duration: TimeInterval = 0
+    var duration: Int = 0
     let artist: String
     var mediaURL: URL?
     var coverArtURL: URL?

@@ -9,6 +9,7 @@
 import UIKit
 import AVKit
 import SwiftSpinner
+import EmptyDataSet_Swift
 
 //Portions of this involving search bar created by Steven Gripshover
 class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
@@ -24,12 +25,40 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var songSegment: UISegmentedControl!
+    
+    
+    @IBAction func songSegmentChanged(_ sender: Any) {
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            self.searchBar.isUserInteractionEnabled = true
+            // perform a search w/ the contents of the search bar
+            if let token = self.accessToken {
+                var queryURL: String?
+                let searchText = self.searchBar.text
+                let modifiedText = searchText!.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
+                self.performSpotifyQuery(queryURL: queryURL!)
+            }
+            
+        case 1: // Recommendations
+            self.searchBar.isUserInteractionEnabled = false
+            SpotifyAPIController.shared.sendRecommendationsRequest(accessToken: self.accessToken!, completionHandler: { data in
+                let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifyRecommendations(songs: data)
+                self.datasource.loadSpotify(dict: dict)
+            })
+        default:
+            self.searchBar.isUserInteractionEnabled = true
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
+        collectionView.emptyDataSetSource = self
+        collectionView.emptyDataSetDelegate = self
         
         // Long Press gesture code referenced from
         // https://stackoverflow.com/questions/18848725/long-press-gesture-on-uicollectionviewcell
@@ -55,7 +84,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
                 print("Spotify Query nil")
                 return
             }
-            let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
+            let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifySearch(songs: data)
             self.datasource.loadSpotify(dict: dict)
         })
     }
@@ -68,13 +97,8 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
             if let token = self.accessToken {
                 var queryURL: String?
-                if searchText.isEmpty {
-                    queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
-                }
-                else {
-                    let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                    queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
-                }
+                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
                 self.performSpotifyQuery(queryURL: queryURL!)
             }
         })
@@ -155,5 +179,46 @@ extension SongViewController: MiniPlayerDelegate {
 //        maxiCard.player = self.player
         // 6. Present the Maxi Player
         present(maxiCard, animated: false)
+    }
+}
+
+// MARK: - EmptyDataSetSource & EmptyDataSetDelegate
+// Set the view to display message if there are no songs in the search query
+extension SongViewController: EmptyDataSetSource, EmptyDataSetDelegate {
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        var str: String?
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            str = "No Search Results Found"
+        case 1: // Recommendations
+            str = "No Recommendations"
+        default:
+            str = "No Search Results Found"
+        }
+        
+        return NSAttributedString(string: str!, attributes: attrs)
+        
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        var str: String?
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            str = "Please make sure your words are spelled correctly, or use a different search query."
+        case 1: // Recommendations
+            str = "Begin to play some songs and we'll reccomend songs to play!"
+        default:
+            str = "Please make sure your words are spelled correctly, or use a different search query."
+        }
+        
+        return NSAttributedString(string: str!, attributes: attrs)
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "search")
     }
 }
