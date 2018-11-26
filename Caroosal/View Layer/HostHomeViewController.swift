@@ -83,11 +83,6 @@ class HostHomeViewController: UIViewController {
                 }
             })
         }
-        
-        // send a welcome alert
-//        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Select songs to add to the playlist by performing a long press gesture and pulling up, or play songs by tapping on them quickly.", preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-//        self.present(alert, animated: true)
     }
     
     @objc func logoutPressed(){
@@ -110,23 +105,16 @@ class HostHomeViewController: UIViewController {
     
     
     @objc func listenForParty(){
-        print("listening for party")
-        self.ref!.child("parties").child(self.currentUsername!).observeSingleEvent(of: .value, with: {(datasnapshot) in
-            let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: datasnapshot)
-            self.currentParty = party
-            
-            self.createButton.setTitle("View Party", for: .normal)
-            
-            self.partyTableView.reloadData()
+        self.ref!.child("parties").child(self.currentUsername!).observeSingleEvent(of: .value, with: {(data) in
+            let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: data)
+            if party != nil {
+                self.currentParty = party
+                self.createButton.setTitle("View Party", for: .normal)
+                self.partyTableView.reloadData()
+            }
         })
     }
 
-//
-//    func setParty(){
-//        self.currentParty = party
-//        self.partyTableView.reloadData()
-//    }
-    
     
     @IBAction func createButtonPressed(_ sender: Any) {
         // Presenting Modal View Controller
@@ -271,6 +259,24 @@ extension HostHomeViewController: UITableViewDataSource {
 }
 
 extension HostHomeViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.currentParty!.ref.removeValue()
+            var currentRef = self.ref!.child("songs/currentSong").child(self.currentUsername!)
+            var queueRef = self.ref!.child("songs/queue").child(self.currentUsername!)
+            queueRef.removeValue()
+            currentRef.removeValue()
+            self.currentParty = nil
+            self.createButton.setTitle("Create Party", for: .normal)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
+        }
+    }
+    
 }
 
 // MARK: EmptyDataSetSource Methods

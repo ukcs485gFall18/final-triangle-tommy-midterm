@@ -58,11 +58,20 @@
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wFz-60-9qz" customClass="CheckMarkView" customModule="CheckMarkView">
+                                                    <rect key="frame" x="100" y="142" width="30" height="30"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="30" id="1y9-xQ-eA2"/>
+                                                        <constraint firstAttribute="height" constant="30" id="uQN-TC-lmQ"/>
+                                                    </constraints>
+                                                </view>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstItem="xT5-sS-aXU" firstAttribute="top" secondItem="s7n-4B-Ya1" secondAttribute="bottom" constant="8" id="Uyb-g6-giH"/>
                                             <constraint firstItem="LeW-bR-cGS" firstAttribute="trailing" secondItem="xT5-sS-aXU" secondAttribute="trailing" id="XTg-XK-DrN"/>
+                                            <constraint firstAttribute="trailing" secondItem="wFz-60-9qz" secondAttribute="trailing" constant="20" id="YM8-Ao-YM5"/>
                                             <constraint firstItem="xT5-sS-aXU" firstAttribute="leading" secondItem="iHp-vh-Toe" secondAttribute="leadingMargin" id="d1t-42-lMN"/>
                                             <constraint firstItem="s7n-4B-Ya1" firstAttribute="leading" secondItem="iHp-vh-Toe" secondAttribute="leadingMargin" id="hry-cQ-Yov"/>
                                             <constraint firstItem="LeW-bR-cGS" firstAttribute="leading" secondItem="xT5-sS-aXU" secondAttribute="leading" id="i29-4B-MKs"/>
@@ -70,9 +79,11 @@
                                             <constraint firstAttribute="trailingMargin" secondItem="xT5-sS-aXU" secondAttribute="trailing" id="k1y-8B-klu"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="s7n-4B-Ya1" secondAttribute="trailing" id="nn7-rN-Vft"/>
                                             <constraint firstItem="s7n-4B-Ya1" firstAttribute="top" secondItem="iHp-vh-Toe" secondAttribute="topMargin" constant="20" id="xBv-Og-H6a"/>
+                                            <constraint firstItem="wFz-60-9qz" firstAttribute="top" secondItem="s7n-4B-Ya1" secondAttribute="bottom" constant="-40" id="xWo-LR-eei"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="artistName" destination="LeW-bR-cGS" id="94N-ac-AKp"/>
+                                            <outlet property="checkMark" destination="wFz-60-9qz" id="pDW-WQ-boc"/>
                                             <outlet property="coverArt" destination="s7n-4B-Ya1" id="rvT-gM-sjR"/>
                                             <outlet property="songTitle" destination="xT5-sS-aXU" id="gqQ-bb-Qyz"/>
                                         </connections>
@@ -102,6 +113,13 @@
                                     <action selector="songSegmentChanged:" destination="SJy-oP-cn0" eventType="valueChanged" id="2Gb-ge-0XE"/>
                                 </connections>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qzx-TZ-ThI">
+                                <rect key="frame" x="329" y="32" width="30" height="30"/>
+                                <state key="normal" title="Add"/>
+                                <connections>
+                                    <action selector="addButtonPressed:" destination="SJy-oP-cn0" eventType="touchUpInside" id="4ak-Pv-bme"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -109,12 +127,15 @@
                             <constraint firstItem="wfO-2w-gVZ" firstAttribute="bottom" secondItem="C9T-m5-pTt" secondAttribute="bottom" id="7ib-xm-WbG"/>
                             <constraint firstItem="M6G-4j-AG3" firstAttribute="trailing" secondItem="wfO-2w-gVZ" secondAttribute="trailing" id="AVX-Ca-Ppu"/>
                             <constraint firstItem="wfO-2w-gVZ" firstAttribute="trailing" secondItem="C9T-m5-pTt" secondAttribute="trailing" id="HqX-KX-hMa"/>
+                            <constraint firstItem="qzx-TZ-ThI" firstAttribute="top" secondItem="DCn-eJ-vUL" secondAttribute="top" id="IR6-hn-SbF"/>
+                            <constraint firstItem="qzx-TZ-ThI" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DCn-eJ-vUL" secondAttribute="trailing" constant="8" symbolic="YES" id="V4g-Cj-taS"/>
                             <constraint firstItem="gA2-gj-rFn" firstAttribute="top" secondItem="C9T-m5-pTt" secondAttribute="top" constant="121" id="ZLk-rA-pkV"/>
                             <constraint firstItem="gA2-gj-rFn" firstAttribute="trailing" secondItem="C9T-m5-pTt" secondAttribute="trailing" id="c62-st-tvd"/>
                             <constraint firstItem="gA2-gj-rFn" firstAttribute="leading" secondItem="C9T-m5-pTt" secondAttribute="leading" id="eT4-lW-FGN"/>
                             <constraint firstItem="gA2-gj-rFn" firstAttribute="bottom" secondItem="C9T-m5-pTt" secondAttribute="bottom" id="fWW-9P-dHa"/>
                             <constraint firstItem="wfO-2w-gVZ" firstAttribute="leading" secondItem="C9T-m5-pTt" secondAttribute="leading" id="gJq-77-TF4"/>
                             <constraint firstItem="gA2-gj-rFn" firstAttribute="top" secondItem="M6G-4j-AG3" secondAttribute="bottom" id="jZg-dL-hmX"/>
+                            <constraint firstItem="C9T-m5-pTt" firstAttribute="trailing" secondItem="qzx-TZ-ThI" secondAttribute="trailing" constant="16" id="mwx-N6-vD7"/>
                             <constraint firstItem="M6G-4j-AG3" firstAttribute="leading" secondItem="gA2-gj-rFn" secondAttribute="leading" id="qQb-20-GkB"/>
                             <constraint firstItem="M6G-4j-AG3" firstAttribute="top" secondItem="DCn-eJ-vUL" secondAttribute="bottom" constant="25" id="tSf-pg-rb1"/>
                         </constraints>
@@ -122,6 +143,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Music" image="music-playlist" id="ewv-xW-ME5"/>
                     <connections>
+                        <outlet property="addButton" destination="qzx-TZ-ThI" id="e24-ww-3sx"/>
                         <outlet property="collectionView" destination="gA2-gj-rFn" id="HqI-1T-dn9"/>
                         <outlet property="searchBar" destination="M6G-4j-AG3" id="VUu-kS-tuG"/>
                         <outlet property="songSegment" destination="DCn-eJ-vUL" id="inQ-Ip-XXk"/>

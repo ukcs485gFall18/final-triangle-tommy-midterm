@@ -62,6 +62,21 @@ class SpotifyPlayer: NSObject {
         self.accessToken = token
     }
     
+    
+    /**
+     Checks to see if the queue contains the inputted song
+     - parameter song: a song object
+     */
+    func containsSong(song: Song) -> Bool{
+        // check to see the spotify URI is in the queue
+        for cSong in self.currentPlaylist! {
+            if cSong.mediaURL?.absoluteString == song.mediaURL?.absoluteString {
+                return true
+            }
+        }
+        return false
+    }
+    
     // Returns just the track ID from the MediaURL of the track:
     // i.e. Is stored in database like: "spotify:track:5mCPDVBb16L4XQwDdbRUpz"
     // we just want the "5mCPDVBb16L4XQwDdbRUpz" for song recommendations
@@ -69,7 +84,6 @@ class SpotifyPlayer: NSObject {
         let split = uri.components(separatedBy: ":")
         return split[2]
     }
-    
     
     /**
      Sets the player to play the current song

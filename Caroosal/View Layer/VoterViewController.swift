@@ -91,7 +91,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // Length of the queue num rows in the second section
         
         if section == 0 {
-            if self.currentPlaylist == nil {
+            if self.currentSong == nil {
                 return 0
             } else {
                 return 1

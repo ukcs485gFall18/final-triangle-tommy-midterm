@@ -6,6 +6,7 @@
 //  Copyright © 2018 Tommy Deeter. All rights reserved.
 //
 import UIKit
+import CheckMarkView
 
 // This file is base-code from Tutorial
 // SongCell refers to the songs in the collection view
@@ -15,4 +16,6 @@ class SongCell: UICollectionViewCell {
     @IBOutlet weak var coverArt: UIImageView!
     @IBOutlet weak var songTitle: UILabel!
     @IBOutlet weak var artistName: UILabel!
+    @IBOutlet weak var checkMark: CheckMarkView!
+    
 }

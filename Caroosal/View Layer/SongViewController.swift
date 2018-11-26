@@ -10,6 +10,7 @@ import UIKit
 import AVKit
 import SwiftSpinner
 import EmptyDataSet_Swift
+import CFNotify
 
 //Portions of this involving search bar created by Steven Gripshover
 class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
@@ -22,10 +23,13 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
     var searchTimer: Timer?
+    var isAddingToQueue = false // Bool to keep track if adding songs to queue
+    var songsToAdd: [Song] = []
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var songSegment: UISegmentedControl!
+    @IBOutlet weak var addButton: UIButton!
     
     
     @IBAction func songSegmentChanged(_ sender: Any) {
@@ -74,6 +78,10 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        self.collectionView.reloadData()
+    }
+    
     /**
      Perform a Spotify API Query
      - parameter queryURL: endpoint of url to query
@@ -87,6 +95,45 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifySearch(songs: data)
             self.datasource.loadSpotify(dict: dict)
         })
+    }
+    
+    @IBAction func addButtonPressed(_ sender: Any) {
+        if isAddingToQueue { // Hits the button when user is done adding songs
+            
+            if self.songsToAdd.count > 0 {
+                for song in self.songsToAdd {
+                    self.addToPlaylist(song: song)
+                }
+                
+                // Add a success message
+                var bodyStr: String?
+                if self.songsToAdd.count == 1 {
+                    bodyStr = "Successfully added 1 Song to the Queue!"
+                }
+                else {
+                    bodyStr = "Successfully added \(self.songsToAdd.count) Songs to the Queue!"
+                }
+                var alertConfig = CFNotify.Config()
+                alertConfig.hideTime = .custom(seconds: 1)
+                let addedView = CFNotifyView.cyberWith(title: "Added to Queue",
+                                                       body: bodyStr!,
+                                                       theme: .success(.light))
+                CFNotify.present(config: alertConfig, view: addedView)
+            }
+            
+            // reset parameters
+            self.songsToAdd.removeAll()
+            self.datasource.isAddingToQueue = false
+            addButton.setTitle("Add", for: .normal)
+            self.isAddingToQueue = false
+            self.collectionView.reloadData()
+        }
+        else { // User wants to add songs to queue
+            addButton.setTitle("Done", for: .normal)
+            self.datasource.isAddingToQueue = true
+            self.isAddingToQueue = true
+            self.collectionView.reloadData()
+        }
     }
     
     //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
@@ -131,7 +178,15 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
+                let bodyStr = "Successfully added \"\(self.currentSong!.title)\" to the Queue!"
+                var alertConfig = CFNotify.Config()
+                alertConfig.hideTime = .custom(seconds: 1)
+                let addedView = CFNotifyView.cyberWith(title: "Added to Queue",
+                                                       body: bodyStr,
+                                                       theme: .success(.light))
+                CFNotify.present(config: alertConfig, view: addedView)
                 self.addToPlaylist(song: self.currentSong!)
+                self.collectionView.reloadData()
             }))
             self.present(alert, animated: true)
         } else {
@@ -154,8 +209,26 @@ extension SongViewController: UICollectionViewDelegate {
     // set the current song when an item is tapped in the CollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentSong = datasource.song(at: indexPath.row)
-        miniPlayer?.configure(song: currentSong)
-        SpotifyPlayer.shared.startSong(song: currentSong!)
+        var cell = collectionView.cellForItem(at: indexPath) as! SongCell
+        if self.isAddingToQueue {
+            print(self.songsToAdd)
+            // user is undoing their choice to add the song
+            for i in 0..<self.songsToAdd.count {
+                let song = self.songsToAdd[i]
+                if song.mediaURL?.absoluteString == currentSong!.mediaURL?.absoluteString {
+                    self.songsToAdd.remove(at: i)
+                    cell.checkMark.checked = false
+                    return
+                }
+            }
+            
+            self.songsToAdd.append(currentSong!)
+            cell.checkMark.checked = true
+        }
+        else {
+            miniPlayer?.configure(song: currentSong)
+            SpotifyPlayer.shared.startSong(song: currentSong!)
+        }
     }
 }
 

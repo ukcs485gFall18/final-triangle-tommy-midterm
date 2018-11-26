@@ -13,6 +13,8 @@ target 'Caroosal' do
   pod 'SwiftSpinner'
   pod 'EmptyDataSet-Swift', '~> 4.2.0'
   pod 'Eureka'
+  pod 'CheckMarkView'
+  pod "CFNotify"
 
   target 'CaroosalTests' do
     inherit! :search_paths
