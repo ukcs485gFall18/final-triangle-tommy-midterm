@@ -21,6 +21,7 @@ extension Song {
         return anyDict
     }
     
+    // Set the object's firebase reference
     mutating func setRef(newRef: DatabaseReference){
         self.ref = newRef
     }

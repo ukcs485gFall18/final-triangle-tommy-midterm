@@ -11,6 +11,7 @@ import AVKit
 import SwiftSpinner
 import EmptyDataSet_Swift
 import FirebaseDatabase
+import MediaPlayer
 
 class HostHomeViewController: UIViewController {
 
@@ -202,8 +203,6 @@ class HostHomeViewController: UIViewController {
             print("Error Initializing Player")
         }
     }
-    
-    
     
     
     // MARK: - Navigation

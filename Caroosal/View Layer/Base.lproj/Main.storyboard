@@ -763,15 +763,22 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="wZJ-j8-KqX">
+                                <rect key="frame" x="18" y="9" width="378" height="30"/>
+                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="0j7-i9-EYJ"/>
                             <constraint firstItem="2IN-OI-Wt1" firstAttribute="leading" secondItem="paZ-Q5-TZ6" secondAttribute="leadingMargin" id="2dk-nP-Qk2"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="centerX" secondItem="Cil-QD-vh6" secondAttribute="centerX" id="3jR-Cd-0WB"/>
+                            <constraint firstItem="wZJ-j8-KqX" firstAttribute="trailing" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="E4e-Ag-TmR"/>
+                            <constraint firstItem="Kkp-oQ-dx0" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="bottom" constant="-2" id="Na4-Py-Y6x"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="top" secondItem="Cil-QD-vh6" secondAttribute="bottom" constant="40" id="Obp-uo-ILB"/>
+                            <constraint firstItem="djL-bM-Liz" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="top" constant="11" id="Ry9-yE-IC5"/>
                             <constraint firstItem="djL-bM-Liz" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="20" id="VuE-tO-Hiv"/>
                             <constraint firstItem="2IN-OI-Wt1" firstAttribute="top" secondItem="paZ-Q5-TZ6" secondAttribute="topMargin" constant="16" id="lAA-2P-u0q"/>
+                            <constraint firstItem="wZJ-j8-KqX" firstAttribute="leading" secondItem="djL-bM-Liz" secondAttribute="leading" constant="20" id="wHP-v5-g5s"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="djL-bM-Liz"/>
                     </view>

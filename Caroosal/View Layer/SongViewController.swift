@@ -13,7 +13,7 @@ import EmptyDataSet_Swift
 import CFNotify
 
 //Portions of this involving search bar created by Steven Gripshover
-class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
+class SongViewController: UIViewController, SongSubscriber {
     
     // MARK: - Properties
     var datasource:SongCollectionDatasource!
@@ -78,6 +78,8 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         }
     }
     
+    // Reload the collection view when the view appears
+    // This helps check to see whether or not the songs have been added to the playlist.
     override func viewDidAppear(_ animated: Bool) {
         self.collectionView.reloadData()
     }
@@ -97,6 +99,12 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         })
     }
     
+    /**
+     The user hits the add/done button in the upper right corner of the view
+     This button is used for adding songs to the queue.
+     When the user hits "add", they can tap on multiple songs to add, and a checkmark appears
+     When the user hits "done", the selected songs are added to the queue.
+     */
     @IBAction func addButtonPressed(_ sender: Any) {
         if isAddingToQueue { // Hits the button when user is done adding songs
             
@@ -136,21 +144,6 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         }
     }
     
-    //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchTimer?.invalidate()
-        
-        // Timer code referenced from Andre: https://stackoverflow.com/questions/43327991/delayed-search-in-swift-ios-app
-        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
-            if let token = self.accessToken {
-                var queryURL: String?
-                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
-                self.performSpotifyQuery(queryURL: queryURL!)
-            }
-        })
-    }
-    
     /**
      Add a song to the shared Spotify controller object playlist
      - parameter song: the song to add to the playlist
@@ -178,6 +171,7 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
+                // Add a success notifcation when songs added to the queue
                 let bodyStr = "Successfully added \"\(self.currentSong!.title)\" to the Queue!"
                 var alertConfig = CFNotify.Config()
                 alertConfig.hideTime = .custom(seconds: 1)
@@ -248,10 +242,33 @@ extension SongViewController: MiniPlayerDelegate {
         maxiCard.currentSong = song
         //4. Set the source view
         maxiCard.sourceView = miniPlayer
-        //5. Set the MaxiCard's player to the current SPT player
-//        maxiCard.player = self.player
-        // 6. Present the Maxi Player
+        // 5. Present the Maxi Player
         present(maxiCard, animated: false)
+    }
+}
+
+
+// MARK: - UISearchBarDelegate Code
+extension SongViewController: UISearchBarDelegate {
+    
+    //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchTimer?.invalidate()
+        
+        // Timer code referenced from Andre: https://stackoverflow.com/questions/43327991/delayed-search-in-swift-ios-app
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
+            if let token = self.accessToken {
+                var queryURL: String?
+                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
+                self.performSpotifyQuery(queryURL: queryURL!)
+            }
+        })
+    }
+    
+    // Dismiss the keyboard when the "Search" Button is tapped
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.resignFirstResponder()
     }
 }
 
