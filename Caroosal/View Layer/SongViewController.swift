@@ -9,9 +9,11 @@
 import UIKit
 import AVKit
 import SwiftSpinner
+import EmptyDataSet_Swift
+import CFNotify
 
 //Portions of this involving search bar created by Steven Gripshover
-class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate {
+class SongViewController: UIViewController, SongSubscriber {
     
     // MARK: - Properties
     var datasource:SongCollectionDatasource!
@@ -20,15 +22,47 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
     var accessToken: String?
     var currentMaxiCard:MaxiSongCardViewController?
     var playlistVC: PlaylistViewController?
+    var searchTimer: Timer?
+    var isAddingToQueue = false // Bool to keep track if adding songs to queue
+    var songsToAdd: [Song] = []
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var songSegment: UISegmentedControl!
+    @IBOutlet weak var addButton: UIButton!
+    
+    
+    @IBAction func songSegmentChanged(_ sender: Any) {
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            self.searchBar.isUserInteractionEnabled = true
+            // perform a search w/ the contents of the search bar
+            if let token = self.accessToken {
+                var queryURL: String?
+                let searchText = self.searchBar.text
+                let modifiedText = searchText!.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
+                self.performSpotifyQuery(queryURL: queryURL!)
+            }
+            
+        case 1: // Recommendations
+            self.searchBar.isUserInteractionEnabled = false
+            SpotifyAPIController.shared.sendRecommendationsRequest(accessToken: self.accessToken!, completionHandler: { data in
+                let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifyRecommendations(songs: data)
+                self.datasource.loadSpotify(dict: dict)
+            })
+        default:
+            self.searchBar.isUserInteractionEnabled = true
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         datasource = SongCollectionDatasource(collectionView: collectionView)
         collectionView.delegate = self
         searchBar.delegate = self
+        collectionView.emptyDataSetSource = self
+        collectionView.emptyDataSetDelegate = self
         
         // Long Press gesture code referenced from
         // https://stackoverflow.com/questions/18848725/long-press-gesture-on-uicollectionviewcell
@@ -44,6 +78,12 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
         }
     }
     
+    // Reload the collection view when the view appears
+    // This helps check to see whether or not the songs have been added to the playlist.
+    override func viewDidAppear(_ animated: Bool) {
+        self.collectionView.reloadData()
+    }
+    
     /**
      Perform a Spotify API Query
      - parameter queryURL: endpoint of url to query
@@ -54,23 +94,53 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
                 print("Spotify Query nil")
                 return
             }
-            let dict: [[String: Any]] = self.datasource.parseSpotifySearch(songs: data)
+            let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifySearch(songs: data)
             self.datasource.loadSpotify(dict: dict)
         })
     }
     
-    //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if let token = self.accessToken {
-            var queryURL: String?
-            if searchText.isEmpty {
-                queryURL = "search?q=Drake&type=track&market=US&limit=50&offset=0"
+    /**
+     The user hits the add/done button in the upper right corner of the view
+     This button is used for adding songs to the queue.
+     When the user hits "add", they can tap on multiple songs to add, and a checkmark appears
+     When the user hits "done", the selected songs are added to the queue.
+     */
+    @IBAction func addButtonPressed(_ sender: Any) {
+        if isAddingToQueue { // Hits the button when user is done adding songs
+            
+            if self.songsToAdd.count > 0 {
+                for song in self.songsToAdd {
+                    self.addToPlaylist(song: song)
+                }
+                
+                // Add a success message
+                var bodyStr: String?
+                if self.songsToAdd.count == 1 {
+                    bodyStr = "Successfully added 1 Song to the Queue!"
+                }
+                else {
+                    bodyStr = "Successfully added \(self.songsToAdd.count) Songs to the Queue!"
+                }
+                var alertConfig = CFNotify.Config()
+                alertConfig.hideTime = .custom(seconds: 1)
+                let addedView = CFNotifyView.cyberWith(title: "Added to Queue",
+                                                       body: bodyStr!,
+                                                       theme: .success(.light))
+                CFNotify.present(config: alertConfig, view: addedView)
             }
-            else {
-                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
-                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
-            }
-            self.performSpotifyQuery(queryURL: queryURL!)
+            
+            // reset parameters
+            self.songsToAdd.removeAll()
+            self.datasource.isAddingToQueue = false
+            addButton.setTitle("Add", for: .normal)
+            self.isAddingToQueue = false
+            self.collectionView.reloadData()
+        }
+        else { // User wants to add songs to queue
+            addButton.setTitle("Done", for: .normal)
+            self.datasource.isAddingToQueue = true
+            self.isAddingToQueue = true
+            self.collectionView.reloadData()
         }
     }
     
@@ -101,7 +171,16 @@ class SongViewController: UIViewController, SongSubscriber, UISearchBarDelegate 
             let alert = UIAlertController(title: "Add to Playlist", message: "Would you like to add \"\(currentSong!.title)\" to the playlist?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: {(action) in
+                // Add a success notifcation when songs added to the queue
+                let bodyStr = "Successfully added \"\(self.currentSong!.title)\" to the Queue!"
+                var alertConfig = CFNotify.Config()
+                alertConfig.hideTime = .custom(seconds: 1)
+                let addedView = CFNotifyView.cyberWith(title: "Added to Queue",
+                                                       body: bodyStr,
+                                                       theme: .success(.light))
+                CFNotify.present(config: alertConfig, view: addedView)
                 self.addToPlaylist(song: self.currentSong!)
+                self.collectionView.reloadData()
             }))
             self.present(alert, animated: true)
         } else {
@@ -124,8 +203,26 @@ extension SongViewController: UICollectionViewDelegate {
     // set the current song when an item is tapped in the CollectionView
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         currentSong = datasource.song(at: indexPath.row)
-        miniPlayer?.configure(song: currentSong)
-        SpotifyPlayer.shared.startSong(song: currentSong!)
+        var cell = collectionView.cellForItem(at: indexPath) as! SongCell
+        if self.isAddingToQueue {
+            print(self.songsToAdd)
+            // user is undoing their choice to add the song
+            for i in 0..<self.songsToAdd.count {
+                let song = self.songsToAdd[i]
+                if song.mediaURL?.absoluteString == currentSong!.mediaURL?.absoluteString {
+                    self.songsToAdd.remove(at: i)
+                    cell.checkMark.checked = false
+                    return
+                }
+            }
+            
+            self.songsToAdd.append(currentSong!)
+            cell.checkMark.checked = true
+        }
+        else {
+            miniPlayer?.configure(song: currentSong)
+            SpotifyPlayer.shared.startSong(song: currentSong!)
+        }
     }
 }
 
@@ -145,9 +242,73 @@ extension SongViewController: MiniPlayerDelegate {
         maxiCard.currentSong = song
         //4. Set the source view
         maxiCard.sourceView = miniPlayer
-        //5. Set the MaxiCard's player to the current SPT player
-//        maxiCard.player = self.player
-        // 6. Present the Maxi Player
+        // 5. Present the Maxi Player
         present(maxiCard, animated: false)
+    }
+}
+
+
+// MARK: - UISearchBarDelegate Code
+extension SongViewController: UISearchBarDelegate {
+    
+    //Created by Steven Gripshover, allowing the user to see a search bar and for it to modify the URL given to the spotify API
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchTimer?.invalidate()
+        
+        // Timer code referenced from Andre: https://stackoverflow.com/questions/43327991/delayed-search-in-swift-ios-app
+        searchTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false, block: { (timer) in
+            if let token = self.accessToken {
+                var queryURL: String?
+                let modifiedText = searchText.replacingOccurrences(of: " ", with: "%20")
+                queryURL = "search?q=\(modifiedText)&type=track&market=US&limit=50&offset=0"
+                self.performSpotifyQuery(queryURL: queryURL!)
+            }
+        })
+    }
+    
+    // Dismiss the keyboard when the "Search" Button is tapped
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.searchBar.resignFirstResponder()
+    }
+}
+
+// MARK: - EmptyDataSetSource & EmptyDataSetDelegate
+// Set the view to display message if there are no songs in the search query
+extension SongViewController: EmptyDataSetSource, EmptyDataSetDelegate {
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        var str: String?
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            str = "No Search Results Found"
+        case 1: // Recommendations
+            str = "No Recommendations"
+        default:
+            str = "No Search Results Found"
+        }
+        
+        return NSAttributedString(string: str!, attributes: attrs)
+        
+    }
+    
+    func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+        var str: String?
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        
+        switch songSegment.selectedSegmentIndex {
+        case 0: // Search
+            str = "Please make sure your words are spelled correctly, or use a different search query."
+        case 1: // Recommendations
+            str = "Begin to play some songs and we'll reccomend songs to play!"
+        default:
+            str = "Please make sure your words are spelled correctly, or use a different search query."
+        }
+        
+        return NSAttributedString(string: str!, attributes: attrs)
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+        return UIImage(named: "search")
     }
 }

@@ -89,42 +89,23 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
      */
     @IBAction func nextTapped(_ sender: Any) {
         if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
-            let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-            self.present(alert, animated: true)
-        }
-        else {
-            var newSong = SpotifyPlayer.shared.skipToNextSong()
-        }
-    }
-    
-    /**
-     Plus button that adds the song to the play list in the big player
-     */
-    @IBAction func plusButton(_ sender: Any) {
-        // check to make sure the song is not nil
-        var alertTitle: String?
-        var alertMessage: String?
-        if let currSong = SpotifyPlayer.shared.currentSong {
-            SpotifyPlayer.shared.addToPlaylist(song: currSong, isCurrent: true)
-            alertTitle = "Added to Playlist!"
-            alertMessage = "Successfully added \"\(currSong.title)\" to the playlist"
-            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
-            self.present(alert, animated: true)
-            // code for auto dismissal referenced from
-            // https://stackoverflow.com/questions/27613926/dismiss-uialertview-after-5-seconds-swift
-            let when = DispatchTime.now() + 1
-            DispatchQueue.main.asyncAfter(deadline: when){
-                // your code with delay
-                alert.dismiss(animated: true, completion: nil)
+            if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+                SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                    if(songs.count > 0){
+                        self.currentSong = songs[0]
+                        self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                        SpotifyPlayer.shared.startSong(song: songs[0])
+                    }
+                    else {
+                        let alert = UIAlertController(title: "No Recommended Songs", message: "Please play songs and recommendations will appear", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                        self.present(alert, animated: true)
+                    }
+                })
             }
-        }
-        else { // No current song selected
-            alertTitle = "No Song Selected"
-            alertMessage = "Please select a song to add to the playlist."
-            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-            self.present(alert, animated: true)
+            else {
+                let _ = SpotifyPlayer.shared.skipToNextSong()
+            }
         }
     }
 }
@@ -149,7 +130,7 @@ extension Song {
     var presentationTime: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "mm:ss"
-        let date = Date(timeIntervalSince1970: duration)
+        let date = Date(timeIntervalSince1970: Double(duration) / 1000.0)
         return formatter.string(from: date)
     }
 }

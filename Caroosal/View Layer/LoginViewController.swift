@@ -41,9 +41,8 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         voteButton.layer.cornerRadius = 5
         self.ref = Database.database().reference()
         
-        self.ref!.child("parties").observeSingleEvent(of: .value, with: {(snapshot) in
+        self.ref!.child("parties").observe(DataEventType.value, with: {(snapshot) in
             self.currentParties = FirebaseController.shared.getAllParties(snapshot: snapshot)
-            print(self.currentParties)
         })
     }
     
