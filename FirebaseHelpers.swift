@@ -26,3 +26,15 @@ extension Song {
     }
 }
 
+extension Party {
+    // deletes the party related firebase data
+    func endParty() {
+        self.ref.removeValue()
+        let baseRef = Database.database().reference()
+        let currentRef = baseRef.child("songs/currentSong").child(self.host)
+        let queueRef = baseRef.child("songs/queue").child(self.host)
+        queueRef.removeValue()
+        currentRef.removeValue()
+    }
+}
+

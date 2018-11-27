@@ -84,7 +84,7 @@ class HostHomeViewController: UIViewController {
             })
         }
     }
-    
+
     @objc func logoutPressed(){
         self.auth.session = nil
         
@@ -97,7 +97,6 @@ class HostHomeViewController: UIViewController {
             presentedVc.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext;
             presentedVc.view.backgroundColor = UIColor.init(white: 0.4, alpha: 0.8)
 
-            
             self.dismiss(animated: true, completion: nil)
             self.present(presentedVc, animated: true, completion: nil)
         }
@@ -110,6 +109,12 @@ class HostHomeViewController: UIViewController {
             if party != nil {
                 self.currentParty = party
                 self.createButton.setTitle("View Party", for: .normal)
+                self.partyTableView.reloadData()
+            }
+            else {
+                print("NIL NIL NIL")
+                self.currentParty = party
+                self.createButton.setTitle("Create Party", for: .normal)
                 self.partyTableView.reloadData()
             }
         })
@@ -265,18 +270,13 @@ extension HostHomeViewController: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.currentParty!.ref.removeValue()
-            var currentRef = self.ref!.child("songs/currentSong").child(self.currentUsername!)
-            var queueRef = self.ref!.child("songs/queue").child(self.currentUsername!)
-            queueRef.removeValue()
-            currentRef.removeValue()
+            self.currentParty!.endParty()
             self.currentParty = nil
             self.createButton.setTitle("Create Party", for: .normal)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.reloadData()
         }
     }
-    
 }
 
 // MARK: EmptyDataSetSource Methods

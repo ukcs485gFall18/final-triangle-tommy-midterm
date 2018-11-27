@@ -55,6 +55,17 @@ class SpotifyPlayer: NSObject {
     }
     
     /**
+     Ends the current party and pauses the player
+     */
+    func endCurrentParty(){
+        if self.currentParty != nil {
+            pauseSong()
+            self.currentParty!.endParty()
+            self.currentParty = nil
+        }
+    }
+    
+    /**
      Set the access token to the token provided
      - parameter token: A Spotify access token
      */

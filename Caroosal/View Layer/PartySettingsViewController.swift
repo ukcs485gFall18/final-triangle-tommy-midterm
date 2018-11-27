@@ -13,7 +13,6 @@ import FirebaseDatabase
 class PartySettingsViewController: FormViewController {
     
     var spotifySession: SPTSession?
-    var currentUsername: String?
     var ref: DatabaseReference?
     
     // on viewDidLoad, initialize the form components
@@ -23,6 +22,18 @@ class PartySettingsViewController: FormViewController {
         self.ref = Database.database().reference()
         
         // first section is information about creating the party
+        
+        form +++ Section("End Party")
+            // logout button section
+            <<< ButtonRow("EndButton") {
+                $0.title = "End Party"
+                $0.onCellSelection { cell, row in
+                    SpotifyPlayer.shared.endCurrentParty()
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "partyListener"), object: nil)
+                    self.dismiss(animated: true, completion: nil)
+                }
+        }
+        
         form +++ Section("Log Out")
             // logout button section
             <<< ButtonRow("LogoutButton") {
