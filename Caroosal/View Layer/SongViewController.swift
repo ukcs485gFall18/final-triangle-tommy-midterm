@@ -70,12 +70,6 @@ class SongViewController: UIViewController, SongSubscriber {
         lpgr.minimumPressDuration = 0.5
         lpgr.delaysTouchesBegan = true
         self.collectionView.addGestureRecognizer(lpgr)
-        
-        if let _ = self.accessToken {
-            // runs a query for Drake songs on load
-            let queryURL = "search?q=Drake&type=track&market=US&limit=15&offset=0"
-            self.performSpotifyQuery(queryURL: queryURL)
-        }
     }
     
     // Reload the collection view when the view appears

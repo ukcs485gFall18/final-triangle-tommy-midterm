@@ -720,7 +720,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2IN-OI-Wt1">
-                                <rect key="frame" x="20" y="36" width="374" height="73"/>
+                                <rect key="frame" x="20" y="54" width="374" height="73"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Song Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kkp-oQ-dx0">
                                         <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
@@ -745,7 +745,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="xOz-xw-DuV">
-                                <rect key="frame" x="167" y="125" width="80" height="28"/>
+                                <rect key="frame" x="167" y="130" width="80" height="28"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bEq-UR-R6r">
                                         <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
@@ -766,18 +766,36 @@
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="wZJ-j8-KqX">
                                 <rect key="frame" x="18" y="9" width="378" height="30"/>
                             </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRs-JE-yJ4">
+                                <rect key="frame" x="20" y="39" width="28.5" height="16"/>
+                                <color key="tintColor" red="1" green="0.25007479399999999" blue="0.084036610580000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="36q-ry-GAH">
+                                <rect key="frame" x="365.5" y="39" width="28.5" height="16"/>
+                                <color key="tintColor" red="1" green="0.25007479399999999" blue="0.084036610580000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="NRs-JE-yJ4" firstAttribute="leading" secondItem="djL-bM-Liz" secondAttribute="leading" constant="20" id="0BA-vp-Rp7"/>
                             <constraint firstAttribute="trailingMargin" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="0j7-i9-EYJ"/>
                             <constraint firstItem="2IN-OI-Wt1" firstAttribute="leading" secondItem="paZ-Q5-TZ6" secondAttribute="leadingMargin" id="2dk-nP-Qk2"/>
                             <constraint firstItem="xOz-xw-DuV" firstAttribute="centerX" secondItem="Cil-QD-vh6" secondAttribute="centerX" id="3jR-Cd-0WB"/>
+                            <constraint firstItem="djL-bM-Liz" firstAttribute="trailing" secondItem="36q-ry-GAH" secondAttribute="trailing" constant="20" id="3xB-nT-iLr"/>
                             <constraint firstItem="wZJ-j8-KqX" firstAttribute="trailing" secondItem="2IN-OI-Wt1" secondAttribute="trailing" id="E4e-Ag-TmR"/>
-                            <constraint firstItem="Kkp-oQ-dx0" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="bottom" constant="-2" id="Na4-Py-Y6x"/>
-                            <constraint firstItem="xOz-xw-DuV" firstAttribute="top" secondItem="Cil-QD-vh6" secondAttribute="bottom" constant="40" id="Obp-uo-ILB"/>
+                            <constraint firstItem="Kkp-oQ-dx0" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="bottom" constant="16" id="Na4-Py-Y6x"/>
+                            <constraint firstItem="xOz-xw-DuV" firstAttribute="top" secondItem="Cil-QD-vh6" secondAttribute="bottom" constant="27" id="Obp-uo-ILB"/>
                             <constraint firstItem="djL-bM-Liz" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="top" constant="11" id="Ry9-yE-IC5"/>
                             <constraint firstItem="djL-bM-Liz" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="xOz-xw-DuV" secondAttribute="bottom" constant="20" id="VuE-tO-Hiv"/>
-                            <constraint firstItem="2IN-OI-Wt1" firstAttribute="top" secondItem="paZ-Q5-TZ6" secondAttribute="topMargin" constant="16" id="lAA-2P-u0q"/>
+                            <constraint firstItem="NRs-JE-yJ4" firstAttribute="top" secondItem="wZJ-j8-KqX" secondAttribute="bottom" constant="1" id="cc4-Mt-WhT"/>
+                            <constraint firstItem="NRs-JE-yJ4" firstAttribute="top" secondItem="36q-ry-GAH" secondAttribute="bottom" constant="-16" id="jAn-P0-5EB"/>
+                            <constraint firstItem="2IN-OI-Wt1" firstAttribute="top" secondItem="paZ-Q5-TZ6" secondAttribute="topMargin" constant="34" id="lAA-2P-u0q"/>
                             <constraint firstItem="wZJ-j8-KqX" firstAttribute="leading" secondItem="djL-bM-Liz" secondAttribute="leading" constant="20" id="wHP-v5-g5s"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="djL-bM-Liz"/>
@@ -785,8 +803,11 @@
                     <size key="freeformSize" width="414" height="736"/>
                     <connections>
                         <outlet property="playButton" destination="bEq-UR-R6r" id="1EA-MF-OcD"/>
+                        <outlet property="sliderDurationLabel" destination="36q-ry-GAH" id="nHl-J2-uDK"/>
                         <outlet property="songArtist" destination="Cil-QD-vh6" id="1hA-QW-KcF"/>
                         <outlet property="songDuration" destination="2Ka-6o-Of4" id="qzL-i9-YNu"/>
+                        <outlet property="songProgressLabel" destination="NRs-JE-yJ4" id="USc-px-vnv"/>
+                        <outlet property="songProgressSlider" destination="wZJ-j8-KqX" id="HVg-52-bpD"/>
                         <outlet property="songTitle" destination="Kkp-oQ-dx0" id="Tui-fQ-cQv"/>
                     </connections>
                 </viewController>

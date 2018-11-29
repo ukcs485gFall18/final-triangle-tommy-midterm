@@ -21,8 +21,21 @@ class PartySettingsViewController: FormViewController {
         
         self.ref = Database.database().reference()
         
-        // first section is information about creating the party
+        // first section displays party information
+        form +++ Section("Party Information")
+            <<< TextRow(){ row in
+                row.title = "Party Name"
+                row.placeholder = SpotifyPlayer.shared.currentParty?.name
+                row.disabled = true
+            }
         
+            <<< TextRow(){ row in
+                row.title = "Party Password"
+                row.placeholder = SpotifyPlayer.shared.currentParty?.password
+                row.disabled = true
+            }
+        
+        // second section is a button to end the party
         form +++ Section("End Party")
             // logout button section
             <<< ButtonRow("EndButton") {
@@ -34,6 +47,7 @@ class PartySettingsViewController: FormViewController {
                 }
         }
         
+        // third section allows the host to log out (does not end party)
         form +++ Section("Log Out")
             // logout button section
             <<< ButtonRow("LogoutButton") {
@@ -48,7 +62,6 @@ class PartySettingsViewController: FormViewController {
                         presentedVc.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext;
                         self.present(presentedVc, animated: true, completion: nil)
                     }
-                    
                 }
         }
     }

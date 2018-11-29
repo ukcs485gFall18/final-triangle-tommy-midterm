@@ -21,7 +21,10 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     weak var delegate: MiniPlayerDelegate?
     var currentSongProgress: Float = 0.0
     var songTimer = Timer()
-    var startTime: Date?
+    
+    var startTime: Date? // time when the song begins playing (or resumed after pause)
+    var pauseCheckpoint: TimeInterval = 0.0 // the total progress of song at pause checkpoints
+    var totalElapsedTime: TimeInterval = 0.0 // total elapsed progress of the song
     
     @IBOutlet weak var thumbImage: UIImageView!
     @IBOutlet weak var songTitle: UILabel!
@@ -62,37 +65,56 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
         self.configure(song: SpotifyPlayer.shared.currentSong)
     }
     
+    /**
+     Starts the song timer
+     Used when a song begins playback
+     */
     @objc func startSongTimer(){
         self.resetSongTimer()
         self.songTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.fireTimer), userInfo: nil, repeats: true)
     }
     
+    /**
+     Timer callback function
+     Grabs the current time, compares to the song was last played, gets the time difference, sets progress slider to percent done
+     */
     @objc func fireTimer(){
         // workaround because pausing timer isn't working
         if SpotifyPlayer.shared.currentPlaybackState == .isPlaying {
-            let nowTime = Date()
-            let elapsedTime = nowTime.timeIntervalSince(startTime!)
-            print(elapsedTime)
-            let percentDone = (elapsedTime * 1000.0) / Double((self.currentSong?.duration)!)
-            self.songProgressBar.setProgress(Float(percentDone), animated: true)
+            let nowTime = Date() // get the current time
+            let currentElapsedTime = nowTime.timeIntervalSince(startTime!) // compare to when the song was last started
+            self.totalElapsedTime = self.pauseCheckpoint + currentElapsedTime // add the current duration to the checkpoint
+            let percentDone = (totalElapsedTime * 1000.0) / Double((self.currentSong?.duration)!) // calculate percent done
+            let postData = ["progress": percentDone, "elapsedTime": totalElapsedTime * 1000.0] // post data in notification
+            NotificationCenter.default.post(name: Notification.Name("updatedSongProgress"), object: self, userInfo: postData)
+            self.songProgressBar.setProgress(Float(percentDone), animated: true) // set the song progress
         }
     }
     
-    // pauses the song timer
+    /**
+     Pauses the song timer
+     */
     func pauseSongTimer(){
+        self.pauseCheckpoint = self.totalElapsedTime
         self.songTimer.invalidate()
     }
     
-    // resumes the song timer
+    /**
+     Resumes the song timer
+     */
     func resumeSongTimer(){
         startTime = Date()
         self.songTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.fireTimer), userInfo: nil, repeats: true)
     }
     
-    // resets the song timer
+    /**
+     Resets the song timer: sets all progress intervals to 0.0, and resets the progress bar
+     */
     func resetSongTimer(){
         startTime = Date()
         self.currentSongProgress = 0
+        self.totalElapsedTime = 0.0
+        self.pauseCheckpoint = 0.0
         self.songProgressBar.setProgress(0.0, animated: true)
         self.songTimer.invalidate()
     }
