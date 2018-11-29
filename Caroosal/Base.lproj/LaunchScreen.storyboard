@@ -18,15 +18,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Caroosal" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EKh-33-eeC">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Caroosal" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EKh-33-eeC">
                                 <rect key="frame" x="97" y="41" width="181" height="66"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="thin" pointSize="50"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="carousel app icon no background" translatesAutoresizingMaskIntoConstraints="NO" id="tBZ-Ct-IEO">
-                                <rect key="frame" x="114.5" y="282" width="146" height="123"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="carousel app icon no background" translatesAutoresizingMaskIntoConstraints="NO" id="tBZ-Ct-IEO">
+                                <rect key="frame" x="115" y="282" width="146" height="151"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="123" id="GHG-vv-W7G"/>
                                     <constraint firstAttribute="width" constant="146" id="UEE-GM-boP"/>
@@ -36,6 +35,8 @@
                         <color key="backgroundColor" red="0.39215686274509803" green="0.36862745098039218" blue="0.84705882352941175" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="tBZ-Ct-IEO" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="H3h-qQ-7Sp"/>
+                            <constraint firstItem="EKh-33-eeC" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="TPK-xD-Zp1"/>
+                            <constraint firstItem="EKh-33-eeC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="21" id="V5h-KM-aeO"/>
                             <constraint firstItem="tBZ-Ct-IEO" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="ygm-tU-j9F"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
