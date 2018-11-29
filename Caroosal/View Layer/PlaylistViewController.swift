@@ -99,6 +99,8 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
                 print("OUT OF RANGE")
             }
             else {
+                
+                cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .selected)
                 currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
             }
         }
@@ -139,7 +141,11 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
+        
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
+            cell.upvoteButton.setImage(UIImage(named: "upvoteselected.png"), for: .normal)
+            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
             var modifier = 1
             var indexOfVoted = 0
             let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
@@ -163,6 +169,9 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
             votedOnArray.append(songData)
             updateSongVoteCount(modifier: modifier, row: indexPath.row)
         }
+        
+        
+        
     }
     
     @IBAction func downvoteTouched(_ sender: Any) {
@@ -170,6 +179,9 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
             if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > -5 { // if song gets to -5, gets booted
+                let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
+                cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
+                cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .normal)
                 var modifier = -1
                 var indexOfVoted = 0
                 let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
