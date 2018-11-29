@@ -114,13 +114,7 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         animateCoverImageIn()
         animateLowerModuleIn()
     }
-    
-    // Added by Thomas Deeter. Refreshes the mini player buttons when the maxi player disappears.
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-        self.sourceView.refreshButtonState()
-    }
-    
+        
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destination = segue.destination as? SongSubscriber {
             destination.currentSong = currentSong

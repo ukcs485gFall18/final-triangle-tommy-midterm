@@ -14,7 +14,7 @@ class SongBuilder: NSObject {
     
     // MARK: - Properties
     private var title: String?
-    private var duration: TimeInterval = 0
+    private var duration: Int = 0
     private var artist: String?
     private var mediaURL: URL?
     private var coverArtURL: URL?
@@ -35,7 +35,7 @@ class SongBuilder: NSObject {
         return self
     }
     
-    func with(duration: TimeInterval?) -> Self {
+    func with(duration: Int?) -> Self {
         self.duration = duration ?? 0
         return self
     }

@@ -91,7 +91,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // Length of the queue num rows in the second section
         
         if section == 0 {
-            if self.currentPlaylist == nil {
+            if self.currentSong == nil {
                 return 0
             } else {
                 return 1
@@ -164,7 +164,11 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
             {
                 // if the user clicks on the row with a song they've already voted on
                 if(votedSong.ref!.key == (songObj["songKey"])){
-                    if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
+                    if(songObj["voteType"] == "upvote"){
+                        // user cannot upvote on song twice, reset their vote
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = -1
+                        updateSongVoteCount(modifier: modifier, row: indexPath.row)
                         return
                     }
                     else { // user decides to upvote on a song they previously downvoted on, so add 2
@@ -174,7 +178,6 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
                     }
                 }
                 indexOfVoted = indexOfVoted + 1
-                
             }
             let songData = ["songKey": votedSong.ref!.key!, "voteType": "upvote"]
             votedOnArray.append(songData)
@@ -193,7 +196,11 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
             {
                 // if the user clicks on the row with a song they've already voted on
                 if(votedSong.ref!.key == (songObj["songKey"])){
-                    if(songObj["voteType"] == "downvote"){ // user cannot downvote on song twice
+                    if(songObj["voteType"] == "downvote"){
+                        // user cannot downvote on song twice, reset their vote
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = 1
+                        updateSongVoteCount(modifier: modifier, row: indexPath.row)
                         return
                     }
                     else { // user decides to downvote on a song they previously upvoted on, so subtract 2

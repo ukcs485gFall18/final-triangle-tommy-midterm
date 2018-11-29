@@ -20,6 +20,10 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
     @IBOutlet weak var songDuration: UILabel!
     @IBOutlet weak var playButton: UIButton!
     
+    @IBOutlet weak var songProgressSlider: UISlider!
+    @IBOutlet weak var songProgressLabel: UILabel! // label that shows current song progress
+    @IBOutlet weak var sliderDurationLabel: UILabel! // slider label that shows total song duration
+    
     // MARK: - Properties
     var currentSong: Song? {
         didSet {
@@ -34,10 +38,20 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         let stoppedNotification = Notification.Name("songStoppedPlaying")
         let startedNotification = Notification.Name("songStartedPlaying")
         let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        let updatedSongProgress = Notification.Name("updatedSongProgress")
+        
         // Register to receive notification
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateButtons), name: stoppedNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.configureFields), name: startedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.changeCoverImage), name: startedNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateButtons), name: changedPlaybackName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateProgressSlider(_:)), name: updatedSongProgress, object: nil)
+        
+        // prevent the user from moving the slider
+        self.songProgressSlider.isUserInteractionEnabled = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        updateButtons()
     }
 
     /**
@@ -56,13 +70,31 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         }
     }
     
+    /**
+     Changes the cover image
+     */
     @objc func changeCoverImage(){
         self.currentSong = SpotifyPlayer.shared.currentSong
         self.configureFields()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        updateButtons()
+    /**
+     Updates the song progress slider every time the player receives a notification that the progress was changed
+     */
+    @objc func updateProgressSlider(_ notification: Notification){
+        if let data = notification.userInfo as? [String: Any] {
+            // update the progress slider
+            if let progress = data["progress"] as? Double {
+                self.songProgressSlider.setValue(Float(progress), animated: true)
+            }
+            // set the song label to indicate elapsed progress
+            if let elapsedTime = data["elapsedTime"] as? TimeInterval {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "mm:ss"
+                let date = Date(timeIntervalSince1970: elapsedTime / 1000.0)
+                self.songProgressLabel.text = formatter.string(from: date)
+            }
+        }
     }
     
     /**
@@ -89,42 +121,23 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
      */
     @IBAction func nextTapped(_ sender: Any) {
         if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
-            let alert = UIAlertController(title: "No Songs in Queue", message: "You can't skip if the queue is empty.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-            self.present(alert, animated: true)
-        }
-        else {
-            var newSong = SpotifyPlayer.shared.skipToNextSong()
-        }
-    }
-    
-    /**
-     Plus button that adds the song to the play list in the big player
-     */
-    @IBAction func plusButton(_ sender: Any) {
-        // check to make sure the song is not nil
-        var alertTitle: String?
-        var alertMessage: String?
-        if let currSong = SpotifyPlayer.shared.currentSong {
-            SpotifyPlayer.shared.addToPlaylist(song: currSong, isCurrent: true)
-            alertTitle = "Added to Playlist!"
-            alertMessage = "Successfully added \"\(currSong.title)\" to the playlist"
-            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
-            self.present(alert, animated: true)
-            // code for auto dismissal referenced from
-            // https://stackoverflow.com/questions/27613926/dismiss-uialertview-after-5-seconds-swift
-            let when = DispatchTime.now() + 1
-            DispatchQueue.main.asyncAfter(deadline: when){
-                // your code with delay
-                alert.dismiss(animated: true, completion: nil)
+            if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
+                SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                    if(songs.count > 0){
+                        self.currentSong = songs[0]
+                        self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                        SpotifyPlayer.shared.startSong(song: songs[0])
+                    }
+                    else {
+                        let alert = UIAlertController(title: "No Recommended Songs", message: "Please play songs and recommendations will appear", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                        self.present(alert, animated: true)
+                    }
+                })
             }
-        }
-        else { // No current song selected
-            alertTitle = "No Song Selected"
-            alertMessage = "Please select a song to add to the playlist."
-            let alert = UIAlertController(title: alertTitle!, message: alertMessage!, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-            self.present(alert, animated: true)
+            else {
+                let _ = SpotifyPlayer.shared.skipToNextSong()
+            }
         }
     }
 }
@@ -133,13 +146,13 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
 extension SongPlayControlViewController {
     
     @objc func configureFields() {
-        print("configuring fields!!!!!!!!")
         guard songTitle != nil else {
             return
         }
         songTitle.text = currentSong?.title
         songArtist.text = currentSong?.artist
         songDuration.text = "Duration \(currentSong?.presentationTime ?? "")"
+        sliderDurationLabel.text = currentSong?.presentationTime ?? ""
     }
 }
 
@@ -149,7 +162,7 @@ extension Song {
     var presentationTime: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "mm:ss"
-        let date = Date(timeIntervalSince1970: duration)
+        let date = Date(timeIntervalSince1970: Double(duration) / 1000.0)
         return formatter.string(from: date)
     }
 }

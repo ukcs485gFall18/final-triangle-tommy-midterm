@@ -11,6 +11,7 @@ import AVKit
 import SwiftSpinner
 import EmptyDataSet_Swift
 import FirebaseDatabase
+import MediaPlayer
 
 class HostHomeViewController: UIViewController {
 
@@ -83,36 +84,43 @@ class HostHomeViewController: UIViewController {
                 }
             })
         }
-        
-        // send a welcome alert
-//        let alert = UIAlertController(title: "Welcome to Caroosal!", message: "Select songs to add to the playlist by performing a long press gesture and pulling up, or play songs by tapping on them quickly.", preferredStyle: .alert)
-//        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-//        self.present(alert, animated: true)
     }
-    
+
     @objc func logoutPressed(){
-        print("logout pressed")
+        self.auth.session = nil
+        
+        SpotifyPlayer.shared.logoutPlayer()
+        
+        let presentedVc = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as! LoginViewController
+        if presentedVc != nil {
+            presentedVc.providesPresentationContextTransitionStyle = true
+            presentedVc.definesPresentationContext = true
+            presentedVc.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext;
+            presentedVc.view.backgroundColor = UIColor.init(white: 0.4, alpha: 0.8)
+
+            self.dismiss(animated: true, completion: nil)
+            self.present(presentedVc, animated: true, completion: nil)
+        }
     }
     
     
     @objc func listenForParty(){
-        print("listening for party")
-        self.ref!.child("parties").child(self.currentUsername!).observeSingleEvent(of: .value, with: {(datasnapshot) in
-            let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: datasnapshot)
-            self.currentParty = party
-            
-            self.createButton.setTitle("View Party", for: .normal)
-            
-            self.partyTableView.reloadData()
+        self.ref!.child("parties").child(self.currentUsername!).observeSingleEvent(of: .value, with: {(data) in
+            let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: data)
+            if party != nil {
+                self.currentParty = party
+                self.createButton.setTitle("View Party", for: .normal)
+                self.partyTableView.reloadData()
+            }
+            else {
+                print("NIL NIL NIL")
+                self.currentParty = party
+                self.createButton.setTitle("Create Party", for: .normal)
+                self.partyTableView.reloadData()
+            }
         })
     }
 
-//
-//    func setParty(){
-//        self.currentParty = party
-//        self.partyTableView.reloadData()
-//    }
-    
     
     @IBAction func createButtonPressed(_ sender: Any) {
         // Presenting Modal View Controller
@@ -189,13 +197,12 @@ class HostHomeViewController: UIViewController {
             }
             print("Player was initialized")
             SpotifyPlayer.shared.setPlayer(player: self.player!)
+            SpotifyPlayer.shared.setAccessToken(token: authSession.accessToken)
         }
         else {
             print("Error Initializing Player")
         }
     }
-    
-    
     
     
     // MARK: - Navigation
@@ -256,6 +263,19 @@ extension HostHomeViewController: UITableViewDataSource {
 }
 
 extension HostHomeViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.currentParty!.endParty()
+            self.currentParty = nil
+            self.createButton.setTitle("Create Party", for: .normal)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
+        }
+    }
 }
 
 // MARK: EmptyDataSetSource Methods
@@ -291,28 +311,33 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
     // User logged out
     func audioStreamingDidLogout(_ audioStreaming: SPTAudioStreamingController!) {
         print("Logged Out")
+        try! SpotifyPlayer.shared.player?.stop()
     }
+    
     // User skipped to the next trakc
     func audioStreamingDidSkip(toNextTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Next Track")
     }
+    
     // User skipped to previous track
     func audioStreamingDidSkip(toPreviousTrack audioStreaming: SPTAudioStreamingController!) {
         print("Skipped To Previous Track")
     }
+    
     // User stopped playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
-        
-        if let newSong = SpotifyPlayer.shared.skipToNextSong() {
-            print("woohoo")
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // alert user that queue is empty
+            SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                if(songs.count > 0){
+                    SpotifyPlayer.shared.startSong(song: songs[0])
+                }
+            })
         }
         else {
-            // refresh the song playing state
-            SpotifyPlayer.shared.player?.setIsPlaying(false, callback: nil)
-            let notificationName = Notification.Name("songStoppedPlaying")
-            NotificationCenter.default.post(name: notificationName, object: nil)
+            let _ = SpotifyPlayer.shared.skipToNextSong()
         }
     }
+    
     // user started playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStartPlayingTrack trackUri: String!) {
         SwiftSpinner.hide() // hide swift spinner
@@ -330,6 +355,7 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
         let notificationName = Notification.Name("changedPlaybackStatus")
         NotificationCenter.default.post(name: notificationName, object: nil)
     }
+    
     // Metadata of song changed
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didChange metadata: SPTPlaybackMetadata!) {
         print("Did Change")
