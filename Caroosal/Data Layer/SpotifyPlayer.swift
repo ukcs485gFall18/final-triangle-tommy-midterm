@@ -22,6 +22,7 @@ class SpotifyPlayer: NSObject {
     var player: SPTAudioStreamingController? // the player class that controls audio playback
     var currentPlaybackState: currentState? // current state of the player
     var currentPlaylist: [Song]? // the playlist (queue)
+    var songHistory: [Song]?
     static let shared = SpotifyPlayer() // static reference to class
     var ref: DatabaseReference! // Firebase database reference
     var currentParty: Party?
@@ -33,6 +34,7 @@ class SpotifyPlayer: NSObject {
         self.currentPlaybackState = .isNil
         self.currentPlaylist = []
         self.previousPlayedURI = []
+        self.songHistory = []
         self.ref = Database.database().reference()
         self.dataStack = DataStack()
         super.init()
@@ -52,6 +54,14 @@ class SpotifyPlayer: NSObject {
      */
     func setCurrentParty(party: Party){
         self.currentParty = party
+    }
+    
+    func addHistory(){
+        
+        if self.currentSong != nil{
+            self.songHistory!.append(self.currentSong!)
+        }
+        
     }
     
     /**

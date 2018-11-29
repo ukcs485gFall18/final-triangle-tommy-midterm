@@ -326,6 +326,7 @@ extension HostHomeViewController: SPTAudioStreamingPlaybackDelegate {
     
     // User stopped playing track
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didStopPlayingTrack trackUri: String!) {
+        SpotifyPlayer.shared.addHistory()
         if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // alert user that queue is empty
             SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
                 if(songs.count > 0){

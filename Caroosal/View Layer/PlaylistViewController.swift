@@ -60,7 +60,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -77,31 +77,36 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
                 return 0
             }
             return SpotifyPlayer.shared.currentPlaylist!.count
-        } else {
+        } else if section == 2{
+            if SpotifyPlayer.shared.songHistory!.isEmpty{
+                return 0
+            }
+            return SpotifyPlayer.shared.songHistory!.count
+        }else {
             return 0
         }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
+        //This disables the songs from being voted on by the host of the party
+        cell.upvoteButton.isHidden = true
+        cell.downvoteButton.isHidden = true
         var currSong: Song?
-        if indexPath.section == 0 { // The currently playing song
-            if SpotifyPlayer.shared.currentSong != nil {
-                currSong = SpotifyPlayer.shared.currentSong!
-                cell.upvoteButton.isHidden = true
-                cell.downvoteButton.isHidden = true
-            }
-            else {
-                return cell
-            }
-        } else {
-            if indexPath.row >= SpotifyPlayer.shared.currentPlaylist!.count {
-                print("OUT OF RANGE")
-            }
-            else {
+        if indexPath.row >= SpotifyPlayer.shared.currentPlaylist!.count {
+            print("OUT OF RANGE")
+        }
+        else {
+            
+            if indexPath.section == 1{
                 currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
             }
+            else{
+                currSong = SpotifyPlayer.shared.songHistory![indexPath.row]
+            }
+            
         }
+        
         
         if currSong != nil {
             cell.voteCounterLabel.text = "\(currSong!.voteCount!)"
@@ -148,8 +153,10 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
                 // if the user clicks on the row with a song they've already voted on
                 if(votedSong.ref!.key == (songObj["songKey"])){
                     if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
-                        return
-                    }
+                        self.votedOnArray.remove(at: indexOfVoted)
+                        modifier = -1
+                        updateSongVoteCount(modifier: modifier, row: indexPath.row)
+                        return                    }
                     else { // user decides to upvote on a song they previously downvoted on, so add 2
                         self.votedOnArray.remove(at: indexOfVoted)
                         modifier = 2
@@ -178,6 +185,10 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
                     // if the user clicks on the row with a song they've already voted on
                     if(votedSong.ref!.key == (songObj["songKey"])){
                         if(songObj["voteType"] == "downvote"){ // user cannot upvote on song twice
+                            
+                            self.votedOnArray.remove(at: indexOfVoted)
+                            modifier = 1
+                            updateSongVoteCount(modifier: modifier, row: indexPath.row)
                             return
                         }
                         else { // user decides to upvote on a song they previously downvoted on, so add 2
@@ -228,7 +239,10 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
             return "Currently Playing"
         } else if section == 1 {
             return "Party Queue"
+        } else if section == 2{
+            return "Party History"
         }
+        
         
         return "Empty"
         

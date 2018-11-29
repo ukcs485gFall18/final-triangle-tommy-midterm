@@ -120,6 +120,7 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
      User hits the next button, and the player status is refreshed
      */
     @IBAction func nextTapped(_ sender: Any) {
+        SpotifyPlayer.shared.addHistory()
         if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
             if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
                 SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
