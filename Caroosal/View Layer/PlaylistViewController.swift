@@ -66,23 +66,18 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // 1 row in the first section (the currently playing song)
         // Length of the queue num rows in the second section
-        if section == 0 {
+        switch section {
+        case 0: // Current Song
             if SpotifyPlayer.shared.currentSong == nil {
                 return 0
             } else {
                 return 1
             }
-        } else if section == 1 {
-            if SpotifyPlayer.shared.currentPlaylist!.isEmpty {
-                return 0
-            }
+        case 1: // Party Queue
             return SpotifyPlayer.shared.currentPlaylist!.count
-        } else if section == 2{
-            if SpotifyPlayer.shared.songHistory!.isEmpty{
-                return 0
-            }
+        case 2: // Party History
             return SpotifyPlayer.shared.songHistory!.count
-        }else {
+        default:
             return 0
         }
     }
@@ -93,17 +88,18 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         cell.upvoteButton.isHidden = true
         cell.downvoteButton.isHidden = true
         var currSong: Song?
-        if indexPath.row >= SpotifyPlayer.shared.currentPlaylist!.count {
-            print("OUT OF RANGE")
-        }
-        else {
-            if indexPath.section == 1 {
-                cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .selected)
-                currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+        
+        switch indexPath.section {
+        case 0: // Current Song
+            if SpotifyPlayer.shared.currentSong != nil {
+                currSong = SpotifyPlayer.shared.currentSong!
             }
-            else{
-                currSong = SpotifyPlayer.shared.songHistory![indexPath.row]
-            }
+        case 1: // Party Queue
+            currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+        case 2: // Party History
+            currSong = SpotifyPlayer.shared.songHistory![indexPath.row]
+        default:
+            print("doing nothing")
         }
         
         if currSong != nil {
@@ -119,103 +115,6 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     }
     
     /**
-     When the user hits either the upvote / downvote button, update the playlist
-     - parameter modifier: number to modify the vote count by
-     - parameter row: the row in the array to modify the votecount
-    */
-    func updateSongVoteCount(modifier: Int, row: Int){
-        let currSong = SpotifyPlayer.shared.currentPlaylist![row]
-        let newVoteCount = currSong.voteCount! + modifier
-        if newVoteCount < -4 { // Remove the song if the song hits -5
-            SpotifyPlayer.shared.currentPlaylist?.remove(at: row)
-            currSong.ref?.removeValue()
-            self.tableView.reloadData()
-            return
-        }
-        let childUpdates = ["VoteCount": newVoteCount]
-        currSong.ref!.updateChildValues(childUpdates)
-    }
-    
-    /**
-        Code for upvoting and downvoting: The playlist admins can currently vote on playlists, but we may modify this feature in the final product
-    */
-    @IBAction func upvoteTouched(_ sender: Any) {
-        // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
-        let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
-        
-        if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
-            cell.upvoteButton.setImage(UIImage(named: "upvoteselected.png"), for: .normal)
-            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
-            var modifier = 1
-            var indexOfVoted = 0
-            let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
-            for songObj in self.votedOnArray
-            {
-                // if the user clicks on the row with a song they've already voted on
-                if(votedSong.ref!.key == (songObj["songKey"])){
-                    if(songObj["voteType"] == "upvote"){ // user cannot upvote on song twice
-                        self.votedOnArray.remove(at: indexOfVoted)
-                        modifier = -1
-                        updateSongVoteCount(modifier: modifier, row: indexPath.row)
-                        return                    }
-                    else { // user decides to upvote on a song they previously downvoted on, so add 2
-                        self.votedOnArray.remove(at: indexOfVoted)
-                        modifier = 2
-                        break
-                    }
-                }
-                indexOfVoted = indexOfVoted + 1
-                
-            }
-            let songData = ["songKey": votedSong.ref!.key!, "voteType": "upvote"]
-            votedOnArray.append(songData)
-            updateSongVoteCount(modifier: modifier, row: indexPath.row)
-        }
-        
-        
-        
-    }
-    
-    @IBAction func downvoteTouched(_ sender: Any) {
-        // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
-        let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
-        if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            if SpotifyPlayer.shared.currentPlaylist![indexPath.row].voteCount! > -5 { // if song gets to -5, gets booted
-                let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
-                cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
-                cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .normal)
-                var modifier = -1
-                var indexOfVoted = 0
-                let votedSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
-                for songObj in self.votedOnArray
-                {
-                    // if the user clicks on the row with a song they've already voted on
-                    if(votedSong.ref!.key == (songObj["songKey"])){
-                        if(songObj["voteType"] == "downvote"){ // user cannot upvote on song twice
-                            
-                            self.votedOnArray.remove(at: indexOfVoted)
-                            modifier = 1
-                            updateSongVoteCount(modifier: modifier, row: indexPath.row)
-                            return
-                        }
-                        else { // user decides to upvote on a song they previously downvoted on, so add 2
-                            self.votedOnArray.remove(at: indexOfVoted)
-                            modifier = -2
-                            break
-                        }
-                    }
-                    indexOfVoted = indexOfVoted + 1
-                    
-                }
-                let songData = ["songKey": votedSong.ref!.key!, "voteType": "downvote"]
-                votedOnArray.append(songData)
-                updateSongVoteCount(modifier: modifier, row: indexPath.row)
-            }
-        }
-    }
-    
-    /**
         sort the playlist in descending order, set it in the player, and reload the tableView
     */
     func updatePlaylist() {
@@ -225,6 +124,19 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        switch indexPath.section {
+        case 0: // Current Song
+            return false
+        case 1: // Party Queue
+            return true
+        case 2: // Party History
+            return false
+        default:
+            return false
+        }
     }
     
     // Override to support editing the table view.
@@ -243,17 +155,16 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     
     // Add the titles for the current song section here
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
+        switch section {
+        case 0: // Current Song
             return "Currently Playing"
-        } else if section == 1 {
+        case 1: // Party Queue
             return "Party Queue"
-        } else if section == 2{
-            return "Party History"
+        case 2: // Party History
+            return "Current Session History"
+        default:
+            return "Empty"
         }
-        
-        
-        return "Empty"
-        
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

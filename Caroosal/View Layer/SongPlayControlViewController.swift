@@ -50,6 +50,7 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
         self.songProgressSlider.isUserInteractionEnabled = false
     }
     
+    // update the buttons on appear
     override func viewDidAppear(_ animated: Bool) {
         updateButtons()
     }
@@ -121,24 +122,22 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
      */
     @IBAction func nextTapped(_ sender: Any) {
         SpotifyPlayer.shared.addHistory()
-        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // Playlist is empty
-            if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! {
-                SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
-                    if(songs.count > 0){
-                        self.currentSong = songs[0]
-                        self.playButton.setImage(UIImage(named: "pause"), for: .normal)
-                        SpotifyPlayer.shared.startSong(song: songs[0])
-                    }
-                    else {
-                        let alert = UIAlertController(title: "No Recommended Songs", message: "Please play songs and recommendations will appear", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
-                        self.present(alert, animated: true)
-                    }
-                })
-            }
-            else {
-                let _ = SpotifyPlayer.shared.skipToNextSong()
-            }
+        if (SpotifyPlayer.shared.currentPlaylist?.isEmpty)! { // playlist is empty
+            SpotifyPlayer.shared.startRecommendedSong(completion: { songs in
+                if(songs.count > 0){
+                    self.currentSong = songs[0]
+                    self.playButton.setImage(UIImage(named: "pause"), for: .normal)
+                    SpotifyPlayer.shared.startSong(song: songs[0])
+                }
+                else {
+                    let alert = UIAlertController(title: "No Recommended Songs", message: "Please play songs and recommendations will appear", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+            })
+        }
+        else {
+            let _ = SpotifyPlayer.shared.skipToNextSong()
         }
     }
 }

@@ -30,6 +30,8 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
     weak var sourceView: MaxiPlayerSourceProtocol!
     let primaryDuration = 0.5
     let backingImageEdgeInset: CGFloat = 15.0
+    // custom UIColor found from http://uicolor.xyz/#/hex-to-ui
+    let customPurpleColor = UIColor(red:0.39, green:0.37, blue:0.85, alpha:1.0)
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -103,7 +105,7 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         configureImageLayerInStartPosition()
         coverArtImage.image = sourceView.originatingCoverImageView.image
         configureCoverImageInStartPosition()
-        stretchySkirt.backgroundColor = .white //from starter project, this hides the gap
+        stretchySkirt.backgroundColor = customPurpleColor //from starter project, this hides the gap
         configureLowerModuleInStartPosition()
     }
     
@@ -192,7 +194,7 @@ extension MaxiSongCardViewController {
     }
     
     private var endColor: UIColor {
-        return .white
+        return customPurpleColor
     }
     
     //1.

@@ -23,6 +23,13 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     var currentSong: Song? // Currently playing song
     var currentParty: Party?
     
+    // enum to keep track of song vote states
+    enum voteState {
+        case upVoted
+        case downVoted
+        case notVoted
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.emptyDataSetSource = self
@@ -121,6 +128,20 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         } else {
             currSong = self.currentPlaylist![indexPath.row]
         }
+        
+        let songVote = self.getSongVoteStatus(song: currSong)
+        switch songVote {
+        case .upVoted:
+            cell.upvoteButton.setImage(UIImage(named: "upvoteselected.png"), for: .normal)
+            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
+        case .downVoted:
+            cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
+            cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .normal)
+        case .notVoted:
+            cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
+            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
+        }
+        
         cell.voteCounterLabel.text = "\(currSong.voteCount!)"
         cell.songTitleLabel.text = currSong.title
         cell.artistLabel.text = currSong.artist
@@ -128,6 +149,26 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
             cell.albumCover.image = image
         })
         return cell
+    }
+    
+    /**
+     Check whether or not the user up/down voted on the particular song
+     - parameter song: the song to check vote status
+     */
+    func getSongVoteStatus(song: Song) -> voteState {
+        for voteDict in self.votedOnArray {
+            if voteDict["songKey"] == song.ref?.key { // found the right song
+                switch voteDict["voteType"] {
+                case "upvote":
+                    return .upVoted
+                case "downvote":
+                    return .downVoted
+                default:
+                    return .notVoted
+                }
+            }
+        }
+        return .notVoted
     }
 
     /**
@@ -146,17 +187,17 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         }
         let childUpdates = ["VoteCount": newVoteCount]
         currSong.ref!.updateChildValues(childUpdates)
+        self.tableView.reloadData()
     }
-
     
     // upvote and downvote code: Users can only up/downvote on a song once, however, they can change their vote on each song
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         
         var upButton = sender as! UIButton
-        //upButton.image
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
             var modifier = 1
             var indexOfVoted = 0
             let votedSong = self.currentPlaylist![indexPath.row]
@@ -189,6 +230,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
+            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
             var modifier = -1
             var indexOfVoted = 0
             let votedSong = self.currentPlaylist![indexPath.row]
