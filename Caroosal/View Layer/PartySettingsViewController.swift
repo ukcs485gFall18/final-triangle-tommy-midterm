@@ -14,21 +14,32 @@ class PartySettingsViewController: FormViewController {
     
     var spotifySession: SPTSession?
     var ref: DatabaseReference?
+    let customPurpleColor = UIColor(red:0.39, green:0.37, blue:0.85, alpha:1.0)
     
     // on viewDidLoad, initialize the form components
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.ref = Database.database().reference()
+        self.tableView.backgroundColor = customPurpleColor
         
         // first section displays party information
-        form +++ Section("Party Information")
+        // editing section labels: https://github.com/xmartlabs/Eureka/issues/379
+        form +++ Section(){ section in
+            var header = HeaderFooterView<UILabel>(.class)
+            header.height = { 60.0 }
+            header.onSetupView = {view, _ in
+                view.textColor = .white
+                view.text = "Party Information"
+                view.font = UIFont.boldSystemFont(ofSize: 24)
+            }
+            section.header = header
+        }
             <<< TextRow(){ row in
                 row.title = "Party Name"
                 row.placeholder = SpotifyPlayer.shared.currentParty?.name
                 row.disabled = true
-            }
-        
+                }
             <<< TextRow(){ row in
                 row.title = "Party Password"
                 row.placeholder = SpotifyPlayer.shared.currentParty?.password
@@ -36,7 +47,16 @@ class PartySettingsViewController: FormViewController {
             }
         
         // second section is a button to end the party
-        form +++ Section("End Party")
+        form +++ Section(){ section in
+            var header = HeaderFooterView<UILabel>(.class)
+            header.height = { 60.0 }
+            header.onSetupView = {view, _ in
+                view.textColor = .white
+                view.text = "End Party"
+                view.font = UIFont.boldSystemFont(ofSize: 24)
+            }
+            section.header = header
+        }
             // logout button section
             <<< ButtonRow("EndButton") {
                 $0.title = "End Party"
@@ -48,7 +68,16 @@ class PartySettingsViewController: FormViewController {
         }
         
         // third section allows the host to log out (does not end party)
-        form +++ Section("Log Out")
+        form +++ Section(){ section in
+            var header = HeaderFooterView<UILabel>(.class)
+            header.height = { 60.0 }
+            header.onSetupView = {view, _ in
+                view.textColor = .white
+                view.text = "Log Out"
+                view.font = UIFont.boldSystemFont(ofSize: 24)
+            }
+            section.header = header
+        }
             // logout button section
             <<< ButtonRow("LogoutButton") {
                 $0.title = "Logout"

@@ -272,7 +272,7 @@ extension SongViewController: UISearchBarDelegate {
 extension SongViewController: EmptyDataSetSource, EmptyDataSetDelegate {
     func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var str: String?
-        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline), NSAttributedStringKey.foregroundColor: UIColor.white]
         
         switch songSegment.selectedSegmentIndex {
         case 0: // Search
@@ -289,7 +289,7 @@ extension SongViewController: EmptyDataSetSource, EmptyDataSetDelegate {
     
     func description(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
         var str: String?
-        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)]
+        let attrs = [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline), NSAttributedStringKey.foregroundColor: UIColor.white]
         
         switch songSegment.selectedSegmentIndex {
         case 0: // Search
