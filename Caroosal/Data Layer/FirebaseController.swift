@@ -66,17 +66,19 @@ class FirebaseController: NSObject {
      */
     func buildSongFromSnapshot(snapshot: DataSnapshot) -> Song? {
         let songVals = snapshot.value as? [String: Any]
-        let newRef = self.ref.child("songs/currentSong").child(SpotifyPlayer.shared.currentParty!.host)
-        if songVals != nil {
-            let artist = songVals!["Artist"] as! String
-            let coverURL = songVals!["CoverURL"] as! String
-            let duration = songVals!["Duration"] as! Int
-            let mediaURL = songVals!["MediaURL"] as! String
-            let title = songVals!["Title"] as! String
-            let voteCount = songVals!["VoteCount"] as! Int
-            
-            let song = Song(title: title, duration: duration, artist: artist, mediaURL: URL(string: mediaURL), coverArtURL: URL(string: coverURL), voteCount: voteCount, ref: newRef)
-            return song
+        if SpotifyPlayer.shared.currentParty != nil {
+            let newRef = self.ref.child("songs/currentSong").child(SpotifyPlayer.shared.currentParty!.host)
+            if songVals != nil {
+                let artist = songVals!["Artist"] as! String
+                let coverURL = songVals!["CoverURL"] as! String
+                let duration = songVals!["Duration"] as! Int
+                let mediaURL = songVals!["MediaURL"] as! String
+                let title = songVals!["Title"] as! String
+                let voteCount = songVals!["VoteCount"] as! Int
+                
+                let song = Song(title: title, duration: duration, artist: artist, mediaURL: URL(string: mediaURL), coverArtURL: URL(string: coverURL), voteCount: voteCount, ref: newRef)
+                return song
+            }
         }
         return nil
     }

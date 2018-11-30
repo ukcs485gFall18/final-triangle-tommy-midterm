@@ -214,6 +214,7 @@ extension SongViewController: UICollectionViewDelegate {
             cell.checkMark.checked = true
         }
         else {
+            SpotifyPlayer.shared.addHistory()
             miniPlayer?.configure(song: currentSong)
             SpotifyPlayer.shared.startSong(song: currentSong!)
         }
