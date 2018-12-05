@@ -56,12 +56,13 @@ class SpotifyPlayer: NSObject {
         self.currentParty = party
     }
     
+    /**
+     Adds the current song to the history
+     */
     func addHistory(){
-        
         if self.currentSong != nil{
             self.songHistory!.append(self.currentSong!)
         }
-        
     }
     
     /**
@@ -72,6 +73,15 @@ class SpotifyPlayer: NSObject {
             pauseSong()
             self.currentParty!.endParty()
             self.currentParty = nil
+            self.currentPlaybackState = .isNil
+            self.currentPlaylist = []
+            self.previousPlayedURI = []
+            self.songHistory = []
+            self.dataStack = DataStack()
+            
+            if self.currentSong != nil{
+                self.currentSong!.ref!.removeValue()
+            }
         }
     }
     
@@ -117,6 +127,7 @@ class SpotifyPlayer: NSObject {
             self.currentSong!.ref!.ref.removeValue()
             // set as the current song in the firebase database
             self.currentSong!.ref! = self.ref.child("songs/currentSong").child(self.currentParty!.host)
+            self.currentSong!.ref!.onDisconnectRemoveValue()
             self.writeSongToFirebase(song: self.currentSong!, isCurrent: false)
             SwiftSpinner.show("Loading Track")
             return
@@ -177,7 +188,6 @@ class SpotifyPlayer: NSObject {
      - Returns: The song to be played
      */
     func skipToNextSong() -> Song? {
-        // TODO: Use the Reccomendation's API endpoint if the queue becomes empty
         if (self.currentPlaylist?.count)! > 0 {
             if self.currentSong != nil {
                 let songToPlay = self.currentPlaylist![0]
@@ -212,9 +222,16 @@ class SpotifyPlayer: NSObject {
         }
     }
     
+    /**
+     Pauses the player on logout, but does not remove any party queue details
+    */
     func logoutPlayer(){
         if self.player != nil {
-         self.player!.logout()
+            self.player!.logout()
+        }
+        if self.currentSong != nil{
+            self.currentSong!.ref!.removeValue()
+            self.currentSong = nil
         }
     }
 }

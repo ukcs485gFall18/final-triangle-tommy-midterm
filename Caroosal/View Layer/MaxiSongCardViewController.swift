@@ -129,8 +129,6 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         let coverImageData = NSData(contentsOf: (SpotifyPlayer.shared.currentSong?.coverArtURL)!)
         self.coverArtImage.image = UIImage(data: coverImageData! as Data)
     }
-    
-    
 }
 
 // MARK: - IBActions

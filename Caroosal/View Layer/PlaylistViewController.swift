@@ -148,9 +148,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
             // Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
             
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
     
     // Add the titles for the current song section here
