@@ -27,36 +27,30 @@ class FirebaseController: NSObject {
      - Returns: Array of songs constructed from the snapshot
      */
     func parseQueueSnapshot(snapshot: DataSnapshot) -> [Song]{
-        var dataStack = DataStack()
         let playlistDict = snapshot.value as? [String: Any]
+        var songsToReturn = [Song]()
         if let songDict = playlistDict {
-            var songArr = [[String: Any]]()
             // Iterate through each item in the snapshot and grab their metadata & parse into Song object
             for item in songDict {
                 let newRef = self.ref.child("songs/queue").child(SpotifyPlayer.shared.currentParty!.host).child(item.key)
-                var songVals = item.value as! [String: Any]
+                var songVals = item.value as? [String: Any]
                 if songVals != nil {
-                    let artist = songVals["Artist"] as! String
-                    let coverURL = songVals["CoverURL"] as! String
-                    let duration = songVals["Duration"] as! Int
-                    let mediaURL = songVals["MediaURL"] as! String
-                    let title = songVals["Title"] as! String
-                    let voteCount = songVals["VoteCount"] as! Int
-                    let newDict: [String: Any] = ["title": title, "artist": artist, "coverArtURL": coverURL, "duration": duration, "mediaURL": mediaURL, "voteCount": voteCount, "databaseRef": newRef]
-                    songArr.append(newDict)
-                }
-                else {
-                    print("nil song vals!!!!")
+                    let builder = SongBuilder()
+                        .with(title: songVals!["Title"] as? String)
+                        .with(artist: songVals!["Artist"] as? String)
+                        .with(duration: songVals!["Duration"] as? Int)
+                        .with(mediaURL: songVals!["MediaURL"] as? String)
+                        .with(coverArtURL: songVals!["CoverURL"] as? String)
+                        .with(voteCount: songVals!["VoteCount"] as? Int)
+                        .with(databaseRef: newRef)
+                    
+                    if let song = builder.build() {
+                        songsToReturn.append(song)
+                    }
                 }
             }
-            var dictionaryTest:[String: Any] = [:]
-            dictionaryTest["Songs"] = songArr
-            dataStack.load(dictionary: dictionaryTest) { [weak self] success in
-                print(dataStack.allSongs)
-            }
-            return dataStack.allSongs
         }
-        return []
+        return songsToReturn
     }
     
     /**
@@ -69,15 +63,18 @@ class FirebaseController: NSObject {
         if SpotifyPlayer.shared.currentParty != nil {
             let newRef = self.ref.child("songs/currentSong").child(SpotifyPlayer.shared.currentParty!.host)
             if songVals != nil {
-                let artist = songVals!["Artist"] as! String
-                let coverURL = songVals!["CoverURL"] as! String
-                let duration = songVals!["Duration"] as! Int
-                let mediaURL = songVals!["MediaURL"] as! String
-                let title = songVals!["Title"] as! String
-                let voteCount = songVals!["VoteCount"] as! Int
-                
-                let song = Song(title: title, duration: duration, artist: artist, mediaURL: URL(string: mediaURL), coverArtURL: URL(string: coverURL), voteCount: voteCount, ref: newRef)
-                return song
+                let builder = SongBuilder()
+                    .with(title: songVals!["Title"] as? String)
+                    .with(artist: songVals!["Artist"] as? String)
+                    .with(duration: songVals!["Duration"] as? Int)
+                    .with(mediaURL: songVals!["MediaURL"] as? String)
+                    .with(coverArtURL: songVals!["CoverURL"] as? String)
+                    .with(voteCount: songVals!["VoteCount"] as? Int)
+                    .with(databaseRef: newRef)
+            
+                if let song = builder.build() {
+                    return song
+                }
             }
         }
         return nil
@@ -91,11 +88,14 @@ class FirebaseController: NSObject {
     func buildPartyFromSnapshot(snapshot: DataSnapshot) -> Party? {
         let partyVals = snapshot.value as? [String: Any]
         if partyVals != nil {
-            let name = partyVals!["Name"] as! String
-            let password = partyVals!["Password"] as! String
-            let host = snapshot.key
-            let party = Party(name: name, password: password, host: host, ref: snapshot.ref)
-            return party
+            let builder = PartyBuilder()
+                .with(name: partyVals!["Name"] as? String)
+                .with(password: partyVals!["Password"] as? String)
+                .with(host: snapshot.key)
+                .with(databaseRef: snapshot.ref)
+            if let party = builder.build() {
+                return party
+            }
         }
         return nil
     }
@@ -110,13 +110,14 @@ class FirebaseController: NSObject {
         var allChildren = snapshot.children.allObjects
         var currentChild: DataSnapshot?
         for i in 0..<allChildren.count {
-            currentChild = allChildren[i] as! DataSnapshot
-            let newParty = self.buildPartyFromSnapshot(snapshot: currentChild!)
-            if newParty != nil {
-                allParties.append(newParty!)
+            currentChild = allChildren[i] as? DataSnapshot
+            if currentChild != nil {
+                let newParty = self.buildPartyFromSnapshot(snapshot: currentChild!)
+                if newParty != nil {
+                    allParties.append(newParty!)
+                }
             }
         }
-        print(allParties)
         return allParties
     }
     

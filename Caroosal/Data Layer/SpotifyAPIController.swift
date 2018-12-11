@@ -50,7 +50,7 @@ class SpotifyAPIController: NSObject {
         let playedTracks = SpotifyPlayer.shared.previousPlayedURI?.shuffled()
         if playedTracks!.isEmpty {
             print("Spotify Query nil")
-            completionHandler(nil)
+            completionHandler(JSON.null)
             return
         }
         var i=0
@@ -64,12 +64,11 @@ class SpotifyAPIController: NSObject {
             // add comma in between
             seedTracks = seedTracks + ","
         }
-        
         let queryURL = "recommendations?limit=25&market=US&seed_tracks=\(seedTracks)"
         sendAPIRequest(apiURL: queryURL, accessToken: accessToken, completionHandler: { data in
             print("querying recommendations!")
-            if data == nil { // if the query is unsuccessful, load the canned songs from tutorial
-                completionHandler(nil)
+            if data == JSON.null { // if the query is unsuccessful, load the canned songs from tutorial
+                completionHandler(JSON.null)
                 return
             }
             completionHandler(data)

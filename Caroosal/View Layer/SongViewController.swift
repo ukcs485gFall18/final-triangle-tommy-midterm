@@ -35,7 +35,7 @@ class SongViewController: UIViewController, SongSubscriber {
     @IBAction func songSegmentChanged(_ sender: Any) {
         switch songSegment.selectedSegmentIndex {
         case 0: // Search
-            self.searchBar.isUserInteractionEnabled = true
+            self.searchBar.isHidden = false
             // perform a search w/ the contents of the search bar
             if let token = self.accessToken {
                 var queryURL: String?
@@ -46,7 +46,7 @@ class SongViewController: UIViewController, SongSubscriber {
             }
             
         case 1: // Recommendations
-            self.searchBar.isUserInteractionEnabled = false
+            self.searchBar.isHidden = true
             SpotifyAPIController.shared.sendRecommendationsRequest(accessToken: self.accessToken!, completionHandler: { data in
                 let dict: [[String: Any]] = SpotifyAPIController.shared.parseSpotifyRecommendations(songs: data)
                 self.datasource.loadSpotify(dict: dict)
@@ -70,6 +70,7 @@ class SongViewController: UIViewController, SongSubscriber {
         lpgr.minimumPressDuration = 0.5
         lpgr.delaysTouchesBegan = true
         self.collectionView.addGestureRecognizer(lpgr)
+        self.hideKeyboardWhenTappedAround()
     }
     
     // Reload the collection view when the view appears
@@ -305,5 +306,17 @@ extension SongViewController: EmptyDataSetSource, EmptyDataSetDelegate {
     
     func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
         return UIImage(named: "search")
+    }
+}
+
+// Referenced from https://freakycoder.com/ios-notes-31-how-to-hide-keyboard-by-touching-anywhere-cdf4f0c5151c
+extension SongViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        self.searchBar.resignFirstResponder()
     }
 }

@@ -20,6 +20,7 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     var ref: DatabaseReference? // Reference to database
     var votedOnArray = [[String: String]]() // Array of currently voted on songs
     var currentPlaylist: [Song]? // Current party playlist
+    var songHistory: [Song] = []
     var currentSong: Song? // Currently playing song
     var currentParty: Party?
     
@@ -35,8 +36,10 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
-        self.navigationItem.title = "Queue"
+        // set the navigation title to the current party name
+        self.navigationItem.title = self.currentParty?.name ?? "Queue"
         
+        // add a logout button
         let logoutButton = UIBarButtonItem(title: "Home", style: .plain, target: self, action: #selector(homePressed))
         self.navigationItem.leftItemsSupplementBackButton = true
         self.navigationItem.leftBarButtonItem = logoutButton
@@ -48,7 +51,21 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     }
 
     override func viewDidAppear(_ animated: Bool) {
+        self.songHistory.removeAll()
         self.tableView.reloadData()
+        // listen to the current playing song being updated
+        let currentPartyRef = self.ref!.child("parties").child((self.currentParty?.host)!)
+        currentPartyRef.observe(DataEventType.value, with: {(snapshot) in
+            let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: snapshot)
+            if party == nil {
+                // send an alert when the party is ended & redirect to home screen
+                let alert = UIAlertController(title: "Party Ended!", message: "The host has deleted the party. You will be redirected to the home screen.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: {action in
+                    self.dismiss(animated: true, completion: {})
+                }))
+                self.present(alert, animated: true)
+            }
+        })
     }
     
     /**
@@ -78,6 +95,9 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         // listen to the current playing song being updated
         let currentSongRef = self.ref!.child("songs").child("currentSong").child((self.currentParty?.host)!)
         currentSongRef.observe(DataEventType.value, with: {(snapshot) in
+            if self.currentSong != nil {
+                self.songHistory.append(self.currentSong!)
+            }
             self.currentSong = FirebaseController.shared.buildSongFromSnapshot(snapshot: snapshot)
             self.tableView.reloadData()
         })
@@ -88,68 +108,111 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     }
 
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // 1 row in the first section (the currently playing song)
         // Length of the queue num rows in the second section
-        
-        if section == 0 {
+        // Length of song history in third section
+        switch section {
+        case 0: // Current Song
             if self.currentSong == nil {
                 return 0
             } else {
                 return 1
             }
-        } else if section == 1 {
+        case 1: // Party Queue
             if self.currentPlaylist == nil {
                 return 0
             }
             return self.currentPlaylist!.count
-        } else {
+        case 2: // Party History
+            return self.songHistory.count
+        default:
             return 0
         }
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "songCell", for: indexPath) as! SongTableCell
-        var currSong: Song
-        if indexPath.section == 0 {
+        var currSong: Song?
+        
+        // grab the current song & hide any necessary labels
+        switch indexPath.section {
+        case 0: // Current Song
             if self.currentSong != nil {
                 currSong = self.currentSong!
                 cell.upvoteButton.isHidden = true
                 cell.downvoteButton.isHidden = true
+                cell.voteCounterLabel.isHidden = true
             }
             else {
                 return cell
             }
-        } else {
+        case 1: // Party Queue
             currSong = self.currentPlaylist![indexPath.row]
+            cell.upvoteButton.isHidden = false
+            cell.downvoteButton.isHidden = false
+            cell.voteCounterLabel.isHidden = false
+            
+            // get the vote status if necessary
+            let songVote = self.getSongVoteStatus(song: currSong!)
+            switch songVote {
+            case .upVoted:
+                cell.upvoteButton.setImage(UIImage(named: "upvoteselected.png"), for: .normal)
+                cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
+            case .downVoted:
+                cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
+                cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .normal)
+            case .notVoted:
+                cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
+                cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
+            }
+            
+        case 2: // Party History
+            currSong = self.songHistory[indexPath.row]
+            cell.upvoteButton.isHidden = true
+            cell.downvoteButton.isHidden = true
+            cell.voteCounterLabel.isHidden = true
+        default:
+            return cell
         }
         
-        let songVote = self.getSongVoteStatus(song: currSong)
-        switch songVote {
-        case .upVoted:
-            cell.upvoteButton.setImage(UIImage(named: "upvoteselected.png"), for: .normal)
-            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
-        case .downVoted:
-            cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
-            cell.downvoteButton.setImage(UIImage(named: "downvoteselected.png"), for: .normal)
-        case .notVoted:
-            cell.upvoteButton.setImage(UIImage(named: "upvote.png"), for: .normal)
-            cell.downvoteButton.setImage(UIImage(named: "downvote.png"), for: .normal)
-        }
-        
-        cell.voteCounterLabel.text = "\(currSong.voteCount!)"
-        cell.songTitleLabel.text = currSong.title
-        cell.artistLabel.text = currSong.artist
-        currSong.loadSongImage(completion: { image in
+        cell.voteCounterLabel.text = "\(currSong!.voteCount!)"
+        cell.songTitleLabel.text = currSong!.title
+        cell.artistLabel.text = currSong!.artist
+        currSong!.loadSongImage(completion: { image in
             cell.albumCover.image = image
         })
         return cell
     }
+    
+    // MARK: - Table view delegate methods
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 25.0
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0: // Current Song
+            return "Currently Playing"
+        case 1: // Party Queue
+            return "Party Queue"
+        case 2: // Party History
+            return "Current Session History"
+        default:
+            return "Empty"
+        }
+    }
+    
     
     /**
      Check whether or not the user up/down voted on the particular song
@@ -189,15 +252,14 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         currSong.ref!.updateChildValues(childUpdates)
         self.tableView.reloadData()
     }
-    
-    // upvote and downvote code: Users can only up/downvote on a song once, however, they can change their vote on each song
+
+    /**
+     Upvote code: Votes +1 on song if not voted before, +2 if previously downvoted -1 if already voted
+     */
     @IBAction func upvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
-        
-        var upButton = sender as! UIButton
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
             var modifier = 1
             var indexOfVoted = 0
             let votedSong = self.currentPlaylist![indexPath.row]
@@ -226,11 +288,13 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         }
     }
 
+    /**
+     Downvote code: Votes -1 on song if not voted before, -2 if previously upvoted +1 if already voted
+     */
     @IBAction func downvoteTouched(_ sender: Any) {
         // code for finding current cell in row was found at https://stackoverflow.com/questions/39585638/get-indexpath-of-uitableviewcell-on-click-of-button-from-cell
         let buttonPostion = (sender as AnyObject).convert((sender as AnyObject).bounds.origin, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: buttonPostion) {
-            let cell = tableView.cellForRow(at: indexPath) as! SongTableCell
             var modifier = -1
             var indexOfVoted = 0
             let votedSong = self.currentPlaylist![indexPath.row]
@@ -265,23 +329,6 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         self.currentPlaylist = self.currentPlaylist!.sorted(by: { $0.voteCount! > $1.voteCount!})
         self.tableView.reloadData()
     }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60.0
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Currently Playing"
-        } else if section == 1 {
-            return "Party Queue"
-        }
-        return "Empty"
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 25.0
-    }
     
     // MARK: - Empty DataSource Delegates
     
@@ -301,14 +348,4 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
         return UIImage(named: "song")
     }
     
-    /*
-     // MARK: - Navigation
-
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-
 }

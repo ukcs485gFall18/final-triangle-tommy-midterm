@@ -15,6 +15,6 @@ struct Party {
     var name: String
     var password: String
     var host: String
-    var ref: DatabaseReference
+    var ref: DatabaseReference?
 }
 

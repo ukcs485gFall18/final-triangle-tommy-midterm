@@ -10,7 +10,7 @@ import UIKit
 import FirebaseDatabase
 import SwiftSpinner
 // LoginViewController
-// Login with Spotify, and upon successful login, go to the main SongViewController scene
+// Login with Spotify, and upon successful login, go to the HostViewController scene
 // Created by Thomas Deeter
 // Partially referenced from Brian Hans' tutorial and Elon Rubin's
 // Brian Hans: https://medium.com/@brianhans/spotify-ios-sdk-authentication-b2c35cd4affb
@@ -166,17 +166,6 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
             let nav = segue.destination as! UINavigationController
             let dvc = nav.viewControllers[0] as! HostHomeViewController
             dvc.spotifySession = self.session
-        }
-        else if segue.identifier == "voteSegue" {
-            print(sender as! Party)
-            let nav = segue.destination as! UINavigationController
-            let voteVC = nav.viewControllers[0] as! VoterViewController
-            // Set the current party in the Spotify player
-            let selectedParty = (sender as! Party)
-            SpotifyPlayer.shared.setCurrentParty(party: selectedParty)
-            voteVC.currentParty = selectedParty
-            voteVC.ref = Database.database().reference()
-            voteVC.setPlaylistListener()
         }
     }
 }

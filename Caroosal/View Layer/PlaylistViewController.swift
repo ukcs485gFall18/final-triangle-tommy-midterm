@@ -29,6 +29,10 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         tableView.emptyDataSetDelegate = self
         tableView.tableFooterView = UIView()
     }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         self.tableView.reloadData()
@@ -53,8 +57,12 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         })
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    /**
+     sort the playlist in descending order, set it in the player, and reload the tableView
+     */
+    func updatePlaylist() {
+        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount! > $1.voteCount!})
+        self.tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -93,11 +101,14 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         case 0: // Current Song
             if SpotifyPlayer.shared.currentSong != nil {
                 currSong = SpotifyPlayer.shared.currentSong!
+                cell.voteCounterLabel.isHidden = true
             }
         case 1: // Party Queue
             currSong = SpotifyPlayer.shared.currentPlaylist![indexPath.row]
+            cell.voteCounterLabel.isHidden = false
         case 2: // Party History
             currSong = SpotifyPlayer.shared.songHistory![indexPath.row]
+            cell.voteCounterLabel.isHidden = true
         default:
             print("doing nothing")
         }
@@ -114,13 +125,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
         return cell
     }
     
-    /**
-        sort the playlist in descending order, set it in the player, and reload the tableView
-    */
-    func updatePlaylist() {
-        SpotifyPlayer.shared.currentPlaylist = SpotifyPlayer.shared.currentPlaylist!.sorted(by: { $0.voteCount! > $1.voteCount!})
-        self.tableView.reloadData()
-    }
+    // MARK: - Table view delegate methods
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
@@ -186,14 +191,6 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
         return UIImage(named: "song")
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
 }
 

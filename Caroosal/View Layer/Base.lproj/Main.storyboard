@@ -99,7 +99,7 @@
                                     <segue destination="guh-pd-ZQs" kind="embed" identifier="MiniPlayerEmbed" id="W6n-1s-DsO"/>
                                 </connections>
                             </containerView>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="M6G-4j-AG3">
+                            <searchBar contentMode="redraw" placeholder="Enter Search Query" translatesAutoresizingMaskIntoConstraints="NO" id="M6G-4j-AG3">
                                 <rect key="frame" x="0.0" y="85" width="375" height="56"/>
                                 <color key="barTintColor" red="0.3921568627" green="0.36862745099999999" blue="0.84705882349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits"/>
