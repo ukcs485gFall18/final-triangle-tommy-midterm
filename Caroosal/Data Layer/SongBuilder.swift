@@ -10,6 +10,7 @@ import Foundation
 import FirebaseDatabase
 
 // This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
+// abstracted way to construct song objects safely
 class SongBuilder: NSObject {
     
     // MARK: - Properties

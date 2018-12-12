@@ -18,7 +18,7 @@ class PlaylistViewController: UITableViewController, EmptyDataSetSource, EmptyDa
     // MARK: Properties
     var ref: DatabaseReference? // Firebase database reference
     var votedOnArray = [[String: String]]() // Array that contains voted on song keys
-    var currentParty: Party?
+    var currentParty: Party? // current party host is hosting
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -8,7 +8,7 @@
 import UIKit
 import CheckMarkView
 
-// This file is base-code from Tutorial
+// This file is base-code from Tutorial (https://www.raywenderlich.com/221-recreating-the-apple-music-now-playing-transition)
 // SongCell refers to the songs in the collection view
 class SongCell: UICollectionViewCell {
     

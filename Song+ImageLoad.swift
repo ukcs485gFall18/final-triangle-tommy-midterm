@@ -10,6 +10,9 @@ import UIKit
 
 extension Song {
     
+    /**
+     Loads the song cover image into the table view cells
+    */
     func loadSongImage(completion: @escaping ((UIImage?) -> (Void))) {
         // Changed Image loading code
         if self.coverArtURL == nil {

@@ -35,10 +35,10 @@ class SongPlayControlViewController: UIViewController, SongSubscriber {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureFields()
-        let stoppedNotification = Notification.Name("songStoppedPlaying")
-        let startedNotification = Notification.Name("songStartedPlaying")
-        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
-        let updatedSongProgress = Notification.Name("updatedSongProgress")
+        let stoppedNotification = Notification.Name("songStoppedPlaying") // song finishes playing
+        let startedNotification = Notification.Name("songStartedPlaying") // song begins playing
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus") // song either pauses or resumes playing
+        let updatedSongProgress = Notification.Name("updatedSongProgress") // changes spot in song
         
         // Register to receive notification
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateButtons), name: stoppedNotification, object: nil)

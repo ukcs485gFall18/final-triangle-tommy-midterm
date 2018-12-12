@@ -21,11 +21,10 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
     var auth = SPTAuth.defaultInstance()!
     var session:SPTSession!
     var player: SPTAudioStreamingController?
-    var webUrl: URL?
-    var appUrl: URL?
+    var webUrl: URL? // web login URL
+    var appUrl: URL? // app login URL
     var ref: DatabaseReference?
     var currentParties: [Party]?
-    
     
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var voteButton: UIButton!
@@ -116,7 +115,10 @@ class LoginViewController: UIViewController, SPTAudioStreamingPlaybackDelegate, 
         self.present(alert, animated: true)
     }
     
-    
+    /**
+     Present the voting view controller on successful party authentication
+     - parameter selectedParty: The party the user will view
+     */
     func presentVoteVC(selectedParty: Party){
         let navVC = self.storyboard?.instantiateViewController(withIdentifier: "voteVC") as! UINavigationController
         if navVC != nil {

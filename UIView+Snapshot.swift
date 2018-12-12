@@ -10,6 +10,10 @@ import UIKit
 
 extension UIView  {
     
+    /**
+     Gets a snapshot of the current view
+     - Returns: UIImage snapshot of the current view
+     */
     func makeSnapshot() -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(bounds.size, true, 0.0)
         drawHierarchy(in: bounds, afterScreenUpdates: true)

@@ -8,6 +8,7 @@
 
 import UIKit
 
+// Cell to display party information in the HostViewController
 class PartyCell: UITableViewCell {
     @IBOutlet weak var partyNameLabel: UILabel!
     @IBOutlet weak var partyPasswordLabel: UILabel!

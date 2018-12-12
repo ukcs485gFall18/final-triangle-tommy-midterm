@@ -10,6 +10,7 @@ import UIKit
 import Eureka
 import FirebaseDatabase
 
+// Displays the settings of the party & logout / end party buttons
 class PartySettingsViewController: FormViewController {
     
     var spotifySession: SPTSession?
@@ -57,7 +58,7 @@ class PartySettingsViewController: FormViewController {
             }
             section.header = header
         }
-            // logout button section
+            // end party button section
             <<< ButtonRow("EndButton") {
                 $0.title = "End Party"
                 $0.onCellSelection { cell, row in
@@ -83,7 +84,7 @@ class PartySettingsViewController: FormViewController {
                 $0.title = "Logout"
                 $0.onCellSelection { cell, row in
                     SpotifyPlayer.shared.logoutPlayer()
-                    
+                    // return to home login screen
                     let presentedVc = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as! LoginViewController
                     if presentedVc != nil {
                         presentedVc.providesPresentationContextTransitionStyle = true

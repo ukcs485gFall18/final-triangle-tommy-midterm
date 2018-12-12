@@ -44,7 +44,11 @@ class SpotifyAPIController: NSObject {
         })
     }
     
-    // grab up to 5 random tracks that you've played so far, and display them
+    /**
+     Grab up to 5 random tracks that you've played so far, and display them
+     - parameter accessToken: The Spotify access token needed to query API
+     - parameter completionHandler: Code that executes upon completion of API request
+    */
     func sendRecommendationsRequest(accessToken: String, completionHandler: @escaping (JSON) ->Void){
         var seedTracks = ""
         let playedTracks = SpotifyPlayer.shared.previousPlayedURI?.shuffled()

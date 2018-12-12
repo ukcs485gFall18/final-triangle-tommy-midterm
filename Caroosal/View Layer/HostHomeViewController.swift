@@ -13,8 +13,10 @@ import EmptyDataSet_Swift
 import FirebaseDatabase
 import MediaPlayer
 
+// Added by Thomas Deeter: Home screen for party hosts where they can view / delete / create their current party
 class HostHomeViewController: UIViewController {
-
+    
+    // MARK: Properties
     var accessToken: String?
     var spotifySession: SPTSession?
     var currentUsername: String?
@@ -41,7 +43,7 @@ class HostHomeViewController: UIViewController {
         
         self.ref = Database.database().reference()
         
-        let notificationName = Notification.Name("partyListener")
+        let notificationName = Notification.Name("partyListener") // listen for party creation
         // Register to receive notification
         NotificationCenter.default.addObserver(self, selector: #selector(self.listenForParty), name: notificationName, object: nil)
         
@@ -65,6 +67,7 @@ class HostHomeViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = logoutButton
         
         if let token = self.accessToken {
+            // Grab the logged in user's profile information (username, image, display name)
             SPTUser.requestCurrentUser(withAccessToken: token, callback: {(error, data) in
                 guard let user = data as? SPTUser else { print("Couldn't cast as SPTUser"); return }
                 self.currentUsername = user.canonicalUserName!
@@ -86,6 +89,9 @@ class HostHomeViewController: UIViewController {
         }
     }
 
+    /**
+     User hits the logout button. Returns them to the login interface.
+    */
     @objc func logoutPressed(){
         self.auth.session = nil
         
@@ -103,7 +109,9 @@ class HostHomeViewController: UIViewController {
         }
     }
     
-    
+    /**
+     Listens for party creation. If party exists, set button to view, otherwise, set to create
+     */
     @objc func listenForParty(){
         self.ref!.child("parties").child(self.currentUsername!).observeSingleEvent(of: .value, with: {(data) in
             let party = FirebaseController.shared.buildPartyFromSnapshot(snapshot: data)
@@ -113,7 +121,6 @@ class HostHomeViewController: UIViewController {
                 self.partyTableView.reloadData()
             }
             else {
-                print("NIL NIL NIL")
                 self.currentParty = party
                 self.createButton.setTitle("Create Party", for: .normal)
                 self.partyTableView.reloadData()
@@ -121,7 +128,9 @@ class HostHomeViewController: UIViewController {
         })
     }
 
-    
+    /**
+     Create button handler. If party exists, view party, otherwise, present create party form
+     */
     @IBAction func createButtonPressed(_ sender: Any) {
         // Presenting Modal View Controller
         // Source: https://stackoverflow.com/questions/47936039/how-to-present-viewcontroller-in-modaly-swift-4

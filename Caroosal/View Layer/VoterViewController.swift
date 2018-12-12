@@ -20,9 +20,9 @@ class VoterViewController: UITableViewController, EmptyDataSetSource, EmptyDataS
     var ref: DatabaseReference? // Reference to database
     var votedOnArray = [[String: String]]() // Array of currently voted on songs
     var currentPlaylist: [Song]? // Current party playlist
-    var songHistory: [Song] = []
+    var songHistory: [Song] = [] // songs played since user joined party
     var currentSong: Song? // Currently playing song
-    var currentParty: Party?
+    var currentParty: Party? // current party object
     
     // enum to keep track of song vote states
     enum voteState {

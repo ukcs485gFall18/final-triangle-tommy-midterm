@@ -22,13 +22,13 @@ class SpotifyPlayer: NSObject {
     var player: SPTAudioStreamingController? // the player class that controls audio playback
     var currentPlaybackState: currentState? // current state of the player
     var currentPlaylist: [Song]? // the playlist (queue)
-    var songHistory: [Song]?
+    var songHistory: [Song]? // Songs played since entering party
     static let shared = SpotifyPlayer() // static reference to class
     var ref: DatabaseReference! // Firebase database reference
-    var currentParty: Party?
-    var previousPlayedURI: [String]?
-    var accessToken: String?
-    var dataStack: DataStack
+    var currentParty: Party? // reference to current party object
+    var previousPlayedURI: [String]? // Spotify URIs of previously played tracks
+    var accessToken: String? // Spotify API Access token
+    var dataStack: DataStack // class to load song items
     
     override init(){
         self.currentPlaybackState = .isNil
@@ -108,9 +108,12 @@ class SpotifyPlayer: NSObject {
         return false
     }
     
-    // Returns just the track ID from the MediaURL of the track:
-    // i.e. Is stored in database like: "spotify:track:5mCPDVBb16L4XQwDdbRUpz"
-    // we just want the "5mCPDVBb16L4XQwDdbRUpz" for song recommendations
+    /**
+        Returns just the track ID from the MediaURL of the track:
+        i.e. Is stored in database like: "spotify:track:5mCPDVBb16L4XQwDdbRUpz"
+        we just want the "5mCPDVBb16L4XQwDdbRUpz" for song recommendations
+        - parameter uri: the song's Spotify URI
+    */
     func getTrackIDfromURI(uri: String) -> String{
         let split = uri.components(separatedBy: ":")
         return split[2]

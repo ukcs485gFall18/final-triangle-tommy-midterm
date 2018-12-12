@@ -35,9 +35,9 @@ class MiniPlayerViewController: UIViewController, SongSubscriber {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(song: nil)
-        let startedName = Notification.Name("songStartedPlaying")
-        let stoppedName = Notification.Name("songStoppedPlaying")
-        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        let startedName = Notification.Name("songStartedPlaying") // song begins playing
+        let stoppedName = Notification.Name("songStoppedPlaying") // song is completed
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus") // song is either paused or resumed
         // Register to receive notification
         NotificationCenter.default.addObserver(self, selector: #selector(self.startSongTimer), name: startedName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshButtonState), name: startedName, object: nil)

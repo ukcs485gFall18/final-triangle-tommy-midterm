@@ -31,7 +31,9 @@ class SongViewController: UIViewController, SongSubscriber {
     @IBOutlet weak var songSegment: UISegmentedControl!
     @IBOutlet weak var addButton: UIButton!
     
-    
+    /**
+     Switches between searching & recommended interfaces
+    */
     @IBAction func songSegmentChanged(_ sender: Any) {
         switch songSegment.selectedSegmentIndex {
         case 0: // Search

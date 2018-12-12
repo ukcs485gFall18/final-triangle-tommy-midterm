@@ -10,6 +10,7 @@ import UIKit
 import Eureka
 import FirebaseDatabase
 
+// Added by Thomas Deeter: Form for users to create their parties
 class PartyCreationViewController: FormViewController {
     
     var spotifySession: SPTSession?

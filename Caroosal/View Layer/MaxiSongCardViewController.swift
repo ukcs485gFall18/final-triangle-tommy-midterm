@@ -93,8 +93,8 @@ class MaxiSongCardViewController: UIViewController, SongSubscriber {
         coverImageContainer.layer.cornerRadius = cardCornerRadius
         coverImageContainer.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         
-        let startedName = Notification.Name("songStoppedPlaying")
-        let changedPlaybackName = Notification.Name("changedPlaybackStatus")
+        let startedName = Notification.Name("songStoppedPlaying") // song completes playing
+        let changedPlaybackName = Notification.Name("changedPlaybackStatus") // song either pauses or resumes playing
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCoverImage), name: startedName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCoverImage), name: changedPlaybackName, object: nil)
